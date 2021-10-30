@@ -11,7 +11,6 @@ namespace Catalog.Infrastructure
 {
     public class InfrastructureServiceRegistration : ICoreModule
     {
-        
         public void Load(IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton(typeof(ICatalogContext<>), typeof(CatalogContext<>));

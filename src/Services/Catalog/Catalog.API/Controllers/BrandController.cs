@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Catalog.Application.Dtos;
+using Catalog.Application.Features.Commands.UpdateBrandCommand;
 using Catalog.Application.Features.Queries.Brands.GetActiveBrandsQuery;
 using Catalog.Application.Features.Queries.Brands.GetAllBrandsQuery;
 using Catalog.Application.Features.Queries.Brands.GetBrandByIdQuery;
@@ -58,6 +59,17 @@ namespace Catalog.API.Controllers
         public async Task<IActionResult> GetById(string id)
         {
             var result = await _mediator.Send(new GetBrandByIdQuery(id));
+            return result.Success ? Ok(result.Data) : BadRequest(result.Message);
+        }
+        
+        // PUT api/v1/[controller]/{id}
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BrandDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] BrandDto brandDto)
+        {
+            var result = await _mediator.Send(new UpdateBrandCommand(brandDto));
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
     }

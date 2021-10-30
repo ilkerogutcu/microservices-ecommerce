@@ -14,17 +14,16 @@
       <PackageReference Include="Autofac.Extras.DynamicProxy" Version="6.0.0" />
       <PackageReference Include="AutoMapper" Version="10.1.1" />
       <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
-      <PackageReference Include="FluentValidation" Version="10.3.4" />
-      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="10.3.4" />
+      <PackageReference Include="FluentValidation" Version="9.5.2" />
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="9.5.2" />
       <PackageReference Include="MediatR" Version="9.0.0" />
       <PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" Version="7.3.0" />
+      <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
       <PackageReference Include="MongoDB.Bson" Version="2.13.2" />
       <PackageReference Include="Olcsan.Boilerplate" Version="1.0.5" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Extensions" />
-      <Folder Include="Features\Commands" />
       <Folder Include="Implements" />
     </ItemGroup>
 
