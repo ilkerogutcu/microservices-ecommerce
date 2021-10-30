@@ -3,14 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Catalog.Application.Models.Configs;
 using Catalog.Domain.Common;
-using Catalog.Domain.Utilities.Messages;
 using Catalog.Infrastructure.Persistence;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
-using Olcsan.Boilerplate.Utilities.IoC;
 
 namespace Catalog.Infrastructure.Repositories
 {
@@ -18,12 +13,14 @@ namespace Catalog.Infrastructure.Repositories
     {
         private readonly IMongoCollection<T> _collection;
         private readonly ICatalogContext<T> _context;
+        private IDocumentDbRepository<T> _documentDbRepositoryImplementation;
 
         public MongoDbRepositoryBase(ICatalogContext<T> context)
         {
             _context = context;
             _collection = context.GetCollection();
         }
+
         public void Add(T entity)
         {
             var options = new InsertOneOptions {BypassDocumentValidation = false};
@@ -46,6 +43,11 @@ namespace Catalog.Infrastructure.Repositories
         public T GetById(string id)
         {
             return _collection.Find(x => x.Id == id).FirstOrDefault();
+        }
+
+        public T Get(Expression<Func<T, bool>> predicate = null)
+        {
+            return _collection.Find(predicate).FirstOrDefault();
         }
 
         public virtual void Update(string id, T record)
@@ -86,6 +88,12 @@ namespace Catalog.Infrastructure.Repositories
         public async Task<T> GetByIdAsync(string id)
         {
             return await _collection.Find(x => x.Id == id).FirstOrDefaultAsync();
+        }
+
+        public async Task<T> GetAsync(Expression<Func<T, bool>> predicate = null)
+        {
+            var result = await _collection.FindAsync(predicate);
+            return await result.FirstOrDefaultAsync();
         }
 
         public async Task AddAsync(T entity)

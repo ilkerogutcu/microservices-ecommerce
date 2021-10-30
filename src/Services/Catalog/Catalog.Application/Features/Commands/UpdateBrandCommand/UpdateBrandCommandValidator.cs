@@ -2,7 +2,7 @@
 
 namespace Catalog.Application.Features.Commands.UpdateBrandCommand
 {
-    public class UpdateBrandCommandValidator:AbstractValidator<UpdateBrandCommand>
+    public class UpdateBrandCommandValidator : AbstractValidator<UpdateBrandCommand>
     {
         public UpdateBrandCommandValidator()
         {

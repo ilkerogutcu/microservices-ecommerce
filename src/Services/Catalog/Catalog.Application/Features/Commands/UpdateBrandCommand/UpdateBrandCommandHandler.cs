@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using Catalog.Application.Constants;
 using Catalog.Application.Dtos;
 using Catalog.Application.Interfaces.Repositories;
 using MediatR;
@@ -29,6 +30,11 @@ namespace Catalog.Application.Features.Commands.UpdateBrandCommand
         [ValidationAspect(typeof(UpdateBrandCommandValidator))]
         public async Task<IDataResult<BrandDto>> Handle(UpdateBrandCommand request, CancellationToken cancellationToken)
         {
+            var isAlreadyExist = await _brandRepository.GetAsync(x => x.NormalizedName.Equals(request.BrandDto.Name.ToLower()));
+            if (isAlreadyExist is not null)
+            {
+                return new ErrorDataResult<BrandDto>(Messages.DataAlreadyExist);
+            }
             var brand = await _brandRepository.GetByIdAsync(request.BrandDto.Id);
             var updateBrand = _mapper.Map(request.BrandDto, brand);
             updateBrand.LastUpdatedBy = "admin";
