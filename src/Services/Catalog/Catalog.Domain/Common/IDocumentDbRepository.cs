@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Catalog.Domain.Common;
-using MongoDB.Bson;
 
-namespace Catalog.Application.Contracts.Persistence
+namespace Catalog.Domain.Common
 {
     public interface IDocumentDbRepository<T> where T : BaseEntity
     {

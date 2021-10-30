@@ -3,11 +3,11 @@ using Catalog.Application.Dtos;
 using MediatR;
 using Olcsan.Boilerplate.Utilities.Results;
 
-namespace Catalog.Application.Features.Queries.Brands.GetBrandsByIsActiveQuery
+namespace Catalog.Application.Features.Queries.Brands.GetActiveBrandsQuery
 {
-    public class GetBrandsByIsActiveQuery : IRequest<IDataResult<List<BrandDto>>>
+    public class GetActiveBrandsQuery : IRequest<IDataResult<List<BrandDto>>>
     {
-        public GetBrandsByIsActiveQuery(int pageSize, int pageIndex)
+        public GetActiveBrandsQuery(int pageSize, int pageIndex)
         {
             PageSize = pageSize;
             PageIndex = pageIndex;

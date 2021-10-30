@@ -1,7 +1,14 @@
-﻿namespace Catalog.Application.Mappings
+﻿using AutoMapper;
+using Catalog.Application.Dtos;
+using Catalog.Domain.Entities;
+
+namespace Catalog.Application.Mappings
 {
-    public class MappingProfile
+    public class MappingProfile:Profile
     {
-        
+        public MappingProfile()
+        {
+            CreateMap<Brand, BrandDto>().ReverseMap();
+        }
     }
 }

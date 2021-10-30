@@ -1,27 +1,41 @@
 ﻿using Olcsan.Boilerplate.Utilities.Results;
 
-namespace Catalog.Application.ViewModels
+namespace Catalog.Application.Wrappers
 {
-    public class PaginatedItemsViewModel<T> : DataResult<T> where T : class
+    public class PaginatedResult<T> : DataResult<T> where T : class
     {
-        public int PageIndex { get; private set; }
-        public int PageSize { get; private set; }
-        public long Count { get; private set; }
+        public int PageIndex { get; }
+        public int PageSize { get; }
+        public long Count { get; }
 
-        public PaginatedItemsViewModel(T data, string message) : base(data, true, message)
+
+        public PaginatedResult(T data, string message, int pageIndex, int pageSize, long count) : base(data, true,
+            message)
         {
+            PageIndex = pageIndex;
+            PageSize = pageSize;
+            Count = count;
         }
 
-        public PaginatedItemsViewModel(T data) : base(data, true)
+        public PaginatedResult(T data, int pageIndex, int pageSize, long count) : base(data, true)
         {
+            PageIndex = pageIndex;
+            PageSize = pageSize;
+            Count = count;
         }
 
-        public PaginatedItemsViewModel(string message) : base(default, true, message)
+        public PaginatedResult(string message, int pageIndex, int pageSize, long count) : base(default, true, message)
         {
+            PageIndex = pageIndex;
+            PageSize = pageSize;
+            Count = count;
         }
 
-        public PaginatedItemsViewModel() : base(default, true)
+        public PaginatedResult(int pageIndex, int pageSize, long count) : base(default, true)
         {
+            PageIndex = pageIndex;
+            PageSize = pageSize;
+            Count = count;
         }
     }
 }

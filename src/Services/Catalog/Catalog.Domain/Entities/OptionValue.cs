@@ -1,7 +1,10 @@
-﻿namespace Catalog.Domain.Entities
+﻿using Catalog.Domain.Common;
+
+namespace Catalog.Domain.Entities
 {
-    public class OptionValue
+    public class OptionValue : BaseEntity
     {
-        
+        public Option Option { get; set; }
+        public string Name { get; set; }
     }
 }
