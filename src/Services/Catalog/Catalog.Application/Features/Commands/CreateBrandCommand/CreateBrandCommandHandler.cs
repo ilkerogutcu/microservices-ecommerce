@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Catalog.Application.Constants;
+using Catalog.Application.Dtos;
 using Catalog.Application.Interfaces.Repositories;
 using Catalog.Domain.Entities;
 using MediatR;
@@ -15,7 +16,7 @@ using Olcsan.Boilerplate.Utilities.Results;
 
 namespace Catalog.Application.Features.Commands.CreateBrandCommand
 {
-    public class CreateBrandCommandHandler : IRequestHandler<CreateBrandCommand, IResult>
+    public class CreateBrandCommandHandler : IRequestHandler<CreateBrandCommand, IDataResult<Brand>>
     {
         private readonly IMapper _mapper;
         private readonly IBrandRepository _brandRepository;
@@ -29,20 +30,21 @@ namespace Catalog.Application.Features.Commands.CreateBrandCommand
         [LogAspect(typeof(FileLogger), "Catalog-Application")]
         [ExceptionLogAspect(typeof(FileLogger), "Catalog-Application")]
         [ValidationAspect(typeof(CreateBrandCommandValidator))]
-        public async Task<IResult> Handle(CreateBrandCommand request, CancellationToken cancellationToken)
+        public async Task<IDataResult<Brand>> Handle(CreateBrandCommand request, CancellationToken cancellationToken)
         {
             var isAlreadyExist = await _brandRepository.GetAsync(x => x.NormalizedName.Equals(request.Name.ToLower()));
             if (isAlreadyExist is not null)
             {
-                return new ErrorResult(Messages.DataAlreadyExist);
+                return new ErrorDataResult<Brand>(Messages.DataAlreadyExist);
             }
 
             var brand = _mapper.Map<Brand>(request);
             brand.CreatedBy = "admin";
             brand.CreatedDate = DateTime.Now;
-            
+            brand.NormalizedName = request.Name.ToLower();
+
             await _brandRepository.AddAsync(brand);
-            return new SuccessResult();
+            return new SuccessDataResult<Brand>(brand);
         }
     }
 }

@@ -10,10 +10,10 @@ namespace Catalog.Domain.Entities
         public string Name { get; set; }
         public bool IsActive { get; set; }
         public IList<Category> Nodes { get; set; } = new List<Category>();
-        
+
         public void AddNode(Category category)
         {
-            category.ParentId = this.ParentId;
+            category.ParentId = Id;
             Nodes.Add(category);
         }
     }

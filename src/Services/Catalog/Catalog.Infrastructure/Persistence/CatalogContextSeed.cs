@@ -63,29 +63,41 @@ namespace Catalog.Infrastructure.Persistence
         {
             return new List<Brand>
             {
-                new("Adidas",true)
+                new()
                 {
                     Id = "102d2149e773f2a3990b47f1",
+                    Name = "Adidas",
                     CreatedBy = "admin",
                     CreatedDate = DateTime.Now,
+                    IsActive = true,
+                    NormalizedName = "adidas"
                 },
-                new("Nike",true)
+                new()
                 {
                     Id = "102d2149e773f2a3990b47f12",
+                    Name = "Nike",
                     CreatedBy = "admin",
                     CreatedDate = DateTime.Now,
+                    IsActive = true,
+                    NormalizedName = "nike"
                 },
-                new("Puma",true)
+                new()
                 {
                     Id = "102d2149e773f2a3990b47f3",
+                    Name = "Puma",
                     CreatedBy = "admin",
                     CreatedDate = DateTime.Now,
+                    IsActive = true,
+                    NormalizedName = "puma"
                 },
-                new("Apple",true)
+                new()
                 {
                     Id = "102d2149e773f2a3990b47f4",
+                    Name = "Apple",
                     CreatedBy = "admin",
                     CreatedDate = DateTime.Now,
+                    IsActive = true,
+                    NormalizedName = "apple"
                 }
             };
         }

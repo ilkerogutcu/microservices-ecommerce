@@ -21,16 +21,18 @@ namespace Catalog.Infrastructure.Repositories
             _collection = context.GetCollection();
         }
 
-        public void Add(T entity)
+        public T Add(T entity)
         {
             var options = new InsertOneOptions {BypassDocumentValidation = false};
             _collection.InsertOne(entity, options);
+            return entity;
         }
 
-        public void AddMany(IEnumerable<T> entities)
+        public IEnumerable<T> AddMany(IEnumerable<T> entities)
         {
             var options = new BulkWriteOptions {IsOrdered = false, BypassDocumentValidation = false};
             _collection.BulkWriteAsync((IEnumerable<WriteModel<T>>) entities, options);
+            return entities;
         }
 
         public IQueryable<T> GetList(Expression<Func<T, bool>> predicate = null)
@@ -50,14 +52,16 @@ namespace Catalog.Infrastructure.Repositories
             return _collection.Find(predicate).FirstOrDefault();
         }
 
-        public virtual void Update(string id, T record)
+        public virtual T Update(string id, T record)
         {
             _collection.FindOneAndReplace(x => x.Id == id, record);
+            return record;
         }
 
-        public virtual void Update(T record, Expression<Func<T, bool>> predicate)
+        public virtual T Update(T record, Expression<Func<T, bool>> predicate)
         {
             _collection.FindOneAndReplace(predicate, record);
+            return record;
         }
 
         public void DeleteById(string id)
@@ -96,26 +100,30 @@ namespace Catalog.Infrastructure.Repositories
             return await result.FirstOrDefaultAsync();
         }
 
-        public async Task AddAsync(T entity)
+        public async Task<T> AddAsync(T entity)
         {
             var options = new InsertOneOptions {BypassDocumentValidation = false};
             await _collection.InsertOneAsync(entity, options);
+            return entity;
         }
 
-        public async Task AddManyAsync(IEnumerable<T> entities)
+        public async Task<IEnumerable<T> > AddManyAsync(IEnumerable<T> entities)
         {
             var options = new BulkWriteOptions {IsOrdered = false, BypassDocumentValidation = false};
             await _collection.BulkWriteAsync((IEnumerable<WriteModel<T>>) entities, options);
+            return entities;
         }
 
-        public async Task UpdateAsync(string id, T record)
+        public async Task<T> UpdateAsync(string id, T record)
         {
             await _collection.FindOneAndReplaceAsync(x => x.Id == id, record);
+            return record;
         }
 
-        public async Task UpdateAsync(T record, Expression<Func<T, bool>> predicate)
+        public async Task<T> UpdateAsync(T record, Expression<Func<T, bool>> predicate)
         {
             await _collection.FindOneAndReplaceAsync(predicate, record);
+            return record;
         }
 
         public async Task DeleteByIdAsync(string id)

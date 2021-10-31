@@ -7,6 +7,7 @@ using Catalog.Application.Features.Queries.Brands.GetActiveBrandsQuery;
 using Catalog.Application.Features.Queries.Brands.GetAllBrandsQuery;
 using Catalog.Application.Features.Queries.Brands.GetBrandByIdQuery;
 using Catalog.Application.Features.Queries.Brands.GetNotActiveBrandsQuery;
+using Catalog.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -78,13 +79,13 @@ namespace Catalog.API.Controllers
         
         // POST api/v1/[controller]/
         [Produces("application/json", "text/plain")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IResult))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Brand))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateBrandCommand command)
         {
             var result = await _mediator.Send(command);
-            return result.Success ? Ok(result) : BadRequest(result.Message);
+            return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
     }
 }

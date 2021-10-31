@@ -6,11 +6,8 @@ namespace Catalog.Application.Features.Commands.UpdateBrandCommand
 {
     public class UpdateBrandCommand : IRequest<IDataResult<BrandDto>>
     {
-        public UpdateBrandCommand(BrandDto brandDto)
-        {
-            BrandDto = brandDto;
-        }
-
-        public BrandDto BrandDto { get; }
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public bool IsActive { get; set; }
     }
 }

@@ -30,17 +30,26 @@ namespace Catalog.Application.Features.Commands.UpdateBrandCommand
         [ValidationAspect(typeof(UpdateBrandCommandValidator))]
         public async Task<IDataResult<BrandDto>> Handle(UpdateBrandCommand request, CancellationToken cancellationToken)
         {
-            var isAlreadyExist = await _brandRepository.GetAsync(x => x.NormalizedName.Equals(request.BrandDto.Name.ToLower()));
+            var isAlreadyExist = await _brandRepository.GetAsync(x => x.NormalizedName.Equals(request.Name.ToLower()));
             if (isAlreadyExist is not null)
             {
                 return new ErrorDataResult<BrandDto>(Messages.DataAlreadyExist);
             }
-            var brand = await _brandRepository.GetByIdAsync(request.BrandDto.Id);
-            var updateBrand = _mapper.Map(request.BrandDto, brand);
+
+            var brand = await _brandRepository.GetByIdAsync(request.Id);
+            if (brand is null)
+            {
+                return new ErrorDataResult<BrandDto>(Messages.DataNotFound);
+            }
+
+            var updateBrand = _mapper.Map(request, brand);
             updateBrand.LastUpdatedBy = "admin";
             updateBrand.LastUpdatedDate = DateTime.Now;
+            updateBrand.NormalizedName = updateBrand.Name.ToLower();
             await _brandRepository.UpdateAsync(brand.Id, updateBrand);
-            return new SuccessDataResult<BrandDto>(request.BrandDto);
+
+            var brandDto = _mapper.Map<BrandDto>(brand);
+            return new SuccessDataResult<BrandDto>(brandDto);
         }
     }
 }
