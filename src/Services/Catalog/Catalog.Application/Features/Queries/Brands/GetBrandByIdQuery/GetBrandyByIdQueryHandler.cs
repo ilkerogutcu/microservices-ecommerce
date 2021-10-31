@@ -28,7 +28,10 @@ namespace Catalog.Application.Features.Queries.Brands.GetBrandByIdQuery
         public async Task<IDataResult<BrandDto>> Handle(GetBrandByIdQuery request, CancellationToken cancellationToken)
         {
             var brand = await _brandRepository.GetByIdAsync(request.Id);
-
+            if (brand is null)
+            {
+                return new ErrorDataResult<BrandDto>(Messages.DataNotFound);
+            }
             var result = _mapper.Map<BrandDto>(brand);
             return new SuccessDataResult<BrandDto>(result);
         }

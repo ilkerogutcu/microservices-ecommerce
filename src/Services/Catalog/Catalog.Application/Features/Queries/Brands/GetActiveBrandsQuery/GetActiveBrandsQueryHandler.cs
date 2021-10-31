@@ -14,12 +14,12 @@ using Olcsan.Boilerplate.Utilities.Results;
 
 namespace Catalog.Application.Features.Queries.Brands.GetActiveBrandsQuery
 {
-    public class GetBrandsByIsActiveQueryHandler : IRequestHandler<GetActiveBrandsQuery, IDataResult<List<BrandDto>>>
+    public class GetActiveBrandsQueryHandler : IRequestHandler<GetActiveBrandsQuery, IDataResult<List<BrandDto>>>
     {
         private readonly IMapper _mapper;
         private readonly IBrandRepository _brandRepository;
 
-        public GetBrandsByIsActiveQueryHandler(IBrandRepository brandRepository, IMapper mapper)
+        public GetActiveBrandsQueryHandler(IBrandRepository brandRepository, IMapper mapper)
         {
             _brandRepository = brandRepository;
             _mapper = mapper;

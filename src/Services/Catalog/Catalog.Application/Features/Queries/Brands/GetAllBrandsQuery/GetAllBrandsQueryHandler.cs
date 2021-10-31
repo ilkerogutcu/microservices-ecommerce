@@ -32,7 +32,6 @@ namespace Catalog.Application.Features.Queries.Brands.GetAllBrandsQuery
             CancellationToken cancellationToken)
         {
             var brands = await _brandRepository.GetListAsync();
-
             var result = _mapper.Map<IEnumerable<BrandDto>>(brands)
                 .OrderBy(x => x.Name).Skip(request.PageSize * request.PageIndex)
                 .Take(request.PageSize).ToList();

@@ -6,10 +6,6 @@ namespace Catalog.Application.Features.Queries.Brands.GetBrandByIdQuery
 {
     public class GetBrandByIdQuery : IRequest<IDataResult<BrandDto>>
     {
-        public GetBrandByIdQuery(string id)
-        {
-            Id = id;
-        }
-        public string Id { get; }
+        public string Id { get; set; }
     }
 }

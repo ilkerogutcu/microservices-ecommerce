@@ -7,13 +7,7 @@ namespace Catalog.Application.Features.Queries.Brands.GetNotActiveBrandsQuery
 {
     public class GetNotActiveBrandsQuery : IRequest<IDataResult<List<BrandDto>>>
     {
-        public GetNotActiveBrandsQuery(int pageSize, int pageIndex)
-        {
-            PageSize = pageSize;
-            PageIndex = pageIndex;
-        }
-
-        public int PageSize { get; }
-        public int PageIndex { get; }
+        public int PageSize { get; set; }
+        public int PageIndex { get; set; }
     }
 }

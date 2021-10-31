@@ -12,12 +12,9 @@ namespace Catalog.Infrastructure.Repositories
     public class MongoDbRepositoryBase<T> : IDocumentDbRepository<T> where T : BaseEntity
     {
         private readonly IMongoCollection<T> _collection;
-        private readonly ICatalogContext<T> _context;
-        private IDocumentDbRepository<T> _documentDbRepositoryImplementation;
 
         public MongoDbRepositoryBase(ICatalogContext<T> context)
         {
-            _context = context;
             _collection = context.GetCollection();
         }
 

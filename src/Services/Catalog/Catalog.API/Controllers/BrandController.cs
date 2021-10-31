@@ -38,17 +38,29 @@ namespace Catalog.API.Controllers
             {
                 case null:
                 {
-                    var result = await _mediator.Send(new GetAllBrandsQuery(pageSize, pageIndex));
+                    var result = await _mediator.Send(new GetAllBrandsQuery
+                    {
+                        PageIndex = pageIndex,
+                        PageSize = pageSize
+                    });
                     return result.Success ? Ok(result.Data) : BadRequest(result.Message);
                 }
                 case true:
                 {
-                    var result = await _mediator.Send(new GetActiveBrandsQuery(pageSize, pageIndex));
+                    var result = await _mediator.Send(new GetActiveBrandsQuery
+                    {
+                        PageIndex = pageIndex,
+                        PageSize = pageSize
+                    });
                     return result.Success ? Ok(result.Data) : BadRequest(result.Message);
                 }
                 default:
                 {
-                    var result = await _mediator.Send(new GetNotActiveBrandsQuery(pageSize, pageIndex));
+                    var result = await _mediator.Send(new GetNotActiveBrandsQuery
+                    {
+                        PageIndex = pageIndex,
+                        PageSize = pageSize
+                    });
                     return result.Success ? Ok(result.Data) : BadRequest(result.Message);
                 }
             }
@@ -61,10 +73,13 @@ namespace Catalog.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(string id)
         {
-            var result = await _mediator.Send(new GetBrandByIdQuery(id));
+            var result = await _mediator.Send(new GetBrandByIdQuery
+            {
+                Id = id
+            });
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
-        
+
         // PUT api/v1/[controller]/{id}
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BrandDto))]
@@ -75,8 +90,8 @@ namespace Catalog.API.Controllers
             var result = await _mediator.Send(command);
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
-        
-        
+
+
         // POST api/v1/[controller]/
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Brand))]
