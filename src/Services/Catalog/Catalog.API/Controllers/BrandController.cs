@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Catalog.Application.Dtos;
 using Catalog.Application.Features.Commands.CreateBrandCommand;
+using Catalog.Application.Features.Commands.DeleteBrandCommand;
 using Catalog.Application.Features.Commands.UpdateBrandCommand;
 using Catalog.Application.Features.Queries.Brands.GetActiveBrandsQuery;
 using Catalog.Application.Features.Queries.Brands.GetAllBrandsQuery;
@@ -101,6 +102,21 @@ namespace Catalog.API.Controllers
         {
             var result = await _mediator.Send(command);
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
+        }
+
+
+        // DELETE api/v1/[controller]/{id}
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var result = await _mediator.Send(new DeleteBrandCommand
+            {
+                Id = id
+            });
+            return result.Success ? Ok(result.Message) : BadRequest(result.Message);
         }
     }
 }
