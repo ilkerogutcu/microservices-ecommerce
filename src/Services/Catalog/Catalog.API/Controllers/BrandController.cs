@@ -70,9 +70,9 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BrandDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] BrandDto brandDto)
+        public async Task<IActionResult> Update([FromBody] UpdateBrandCommand command)
         {
-            var result = await _mediator.Send(new UpdateBrandCommand(brandDto));
+            var result = await _mediator.Send(command);
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
         
