@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Catalog.Application.Constants;
 using Catalog.Application.Dtos;
-using Catalog.Application.Features.Commands.CreateBrandCommand;
 using Catalog.Application.Features.Commands.UpdateBrandCommand;
 using Catalog.Application.Interfaces.Repositories;
 using Catalog.Domain.Entities;
@@ -14,7 +13,7 @@ using MongoDB.Bson;
 using Moq;
 using Xunit;
 
-namespace Catalog.UnitTests.Handlers
+namespace Catalog.UnitTests.Handlers.BrandTests
 {
     public class UpdateBrandTests
     {
@@ -46,10 +45,8 @@ namespace Catalog.UnitTests.Handlers
 
             // Assert
             result.Success.Should().BeTrue();
-            result.Data.Should()
-                .BeEquivalentTo(command,
-                    cfg => cfg.ComparingByMembers<BrandDto>()
-                        .ExcludingMissingMembers());
+            result.Data.Should().BeEquivalentTo(command, options =>
+                options.ExcludingMissingMembers());
         }
         
         [Fact]

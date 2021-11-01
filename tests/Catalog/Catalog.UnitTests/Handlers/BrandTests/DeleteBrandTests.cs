@@ -5,11 +5,10 @@ using Catalog.Application.Features.Commands.DeleteBrandCommand;
 using Catalog.Application.Interfaces.Repositories;
 using Catalog.Domain.Entities;
 using FluentAssertions;
-using MongoDB.Bson;
 using Moq;
 using Xunit;
 
-namespace Catalog.UnitTests.Handlers
+namespace Catalog.UnitTests.Handlers.BrandTests
 {
     public class DeleteBrandTests
     {

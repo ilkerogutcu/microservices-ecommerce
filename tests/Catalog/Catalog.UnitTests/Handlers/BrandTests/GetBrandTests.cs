@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Catalog.Application.Constants;
 using Catalog.Application.Dtos;
-using Catalog.Application.Features.Commands.CreateBrandCommand;
 using Catalog.Application.Features.Queries.Brands.GetActiveBrandsQuery;
 using Catalog.Application.Features.Queries.Brands.GetAllBrandsQuery;
 using Catalog.Application.Features.Queries.Brands.GetBrandByIdQuery;
@@ -19,7 +18,7 @@ using MongoDB.Bson;
 using Moq;
 using Xunit;
 
-namespace Catalog.UnitTests.Handlers
+namespace Catalog.UnitTests.Handlers.BrandTests
 {
     public class GetBrandTests
     {
@@ -60,9 +59,7 @@ namespace Catalog.UnitTests.Handlers
             // Assert
             result.Success.Should().BeTrue();
             result.Data.Should()
-                .BeEquivalentTo(query,
-                    cfg => cfg.ComparingByMembers<BrandDto>()
-                        .ExcludingMissingMembers());
+                .BeEquivalentTo(query);
         }
 
 
@@ -96,7 +93,11 @@ namespace Catalog.UnitTests.Handlers
         private async Task GetAllBrands_WithExistingBrands_ReturnSuccessResult()
         {
             // Arrange
-            var query = new GetAllBrandsQuery();
+            var query = new GetAllBrandsQuery()
+            {
+                PageIndex = 0,
+                PageSize = 10
+            };
 
             var brandList = new List<Brand>()
             {
@@ -133,12 +134,9 @@ namespace Catalog.UnitTests.Handlers
             // Assert
             result.Success.Should().BeTrue();
             result.Data.Should().NotBeNull();
-            result.Data.Should()
-                .BeEquivalentTo(result.Data,
-                    cfg => cfg.ComparingByMembers<IQueryable<Brand>>()
-                        .ExcludingMissingMembers());
+            result.Data.Should().BeEquivalentTo(brandList, options =>
+                options.ExcludingMissingMembers());
         }
-
 
         [Fact]
         private async Task GetAllBrands_WithNonexistentBrands_ReturnSuccessResult()
@@ -159,7 +157,7 @@ namespace Catalog.UnitTests.Handlers
                 new CancellationToken());
 
             // Assert
-            result.Data.Count.Should().Be(0);
+            result.Data.Should().HaveCount(0);
             result.Success.Should().BeTrue();
         }
 
@@ -204,7 +202,8 @@ namespace Catalog.UnitTests.Handlers
             // Assert
             result.Success.Should().BeTrue();
             result.Data.Should().NotBeNull();
-            result.Data[0].IsActive.Should().BeTrue();
+            result.Data.Should().BeEquivalentTo(brandList, options =>
+                options.ExcludingMissingMembers());
         }
 
         [Fact]
@@ -231,7 +230,7 @@ namespace Catalog.UnitTests.Handlers
 
             // Assert
             result.Success.Should().BeTrue();
-            result.Data.Count.Should().Be(0);
+            result.Data.Should().HaveCount(0);
         }
 
         #endregion
@@ -275,7 +274,8 @@ namespace Catalog.UnitTests.Handlers
             // Assert
             result.Success.Should().BeTrue();
             result.Data.Should().NotBeNull();
-            result.Data[0].IsActive.Should().BeFalse();
+            result.Data.Should().BeEquivalentTo(brandList, options =>
+                options.ExcludingMissingMembers());
         }
 
         [Fact]
@@ -302,7 +302,7 @@ namespace Catalog.UnitTests.Handlers
 
             // Assert
             result.Success.Should().BeTrue();
-            result.Data.Count.Should().Be(0);
+            result.Data.Should().HaveCount(0);
         }
 
         #endregion

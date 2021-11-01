@@ -8,11 +8,10 @@ using Catalog.Application.Interfaces.Repositories;
 using Catalog.Domain.Entities;
 using Catalog.UnitTests.Helpers;
 using FluentAssertions;
-using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities;
 using Moq;
 using Xunit;
 
-namespace Catalog.UnitTests.Handlers
+namespace Catalog.UnitTests.Handlers.BrandTests
 {
     public class CreateBrandTests
     {
@@ -43,10 +42,8 @@ namespace Catalog.UnitTests.Handlers
 
             // Assert
             result.Success.Should().BeTrue();
-            result.Data.Should()
-                .BeEquivalentTo(command,
-                    cfg => cfg.ComparingByMembers<Brand>()
-                        .ExcludingMissingMembers());
+            result.Data.Should().BeEquivalentTo(command, options =>
+                options.ExcludingMissingMembers());
         }
 
         [Fact]
