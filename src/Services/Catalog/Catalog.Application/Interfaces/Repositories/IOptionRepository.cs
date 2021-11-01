@@ -3,8 +3,7 @@ using Catalog.Domain.Entities;
 
 namespace Catalog.Application.Interfaces.Repositories
 {
-    public interface IBrandRepository : IDocumentDbRepository<Brand>
+    public interface IOptionRepository : IDocumentDbRepository<Option>
     {
-        
     }
 }

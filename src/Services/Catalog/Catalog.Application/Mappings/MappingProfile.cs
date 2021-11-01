@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Catalog.Application.Dtos;
 using Catalog.Application.Features.Commands.CreateBrandCommand;
+using Catalog.Application.Features.Commands.CreateOptionCommand;
 using Catalog.Application.Features.Commands.UpdateBrandCommand;
 using Catalog.Domain.Entities;
 
@@ -14,6 +15,7 @@ namespace Catalog.Application.Mappings
             CreateMap<Brand, CreateBrandCommand>().ReverseMap();
             CreateMap<Brand, UpdateBrandCommand>().ReverseMap();
 
+            CreateMap<Option, CreateOptionCommand>().ReverseMap();
         }
     }
 }

@@ -4,9 +4,9 @@ using Catalog.Infrastructure.Persistence;
 
 namespace Catalog.Infrastructure.Repositories
 {
-    public class BrandRepository : MongoDbRepositoryBase<Brand>, IBrandRepository
+    public class OptionRepository : MongoDbRepositoryBase<Option>, IOptionRepository
     {
-        public BrandRepository(ICatalogContext<Brand> context) : base(context)
+        public OptionRepository(ICatalogContext<Option> context) : base(context)
         {
         }
     }
