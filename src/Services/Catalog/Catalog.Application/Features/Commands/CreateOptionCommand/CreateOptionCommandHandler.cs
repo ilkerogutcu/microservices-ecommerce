@@ -35,7 +35,7 @@ namespace Catalog.Application.Features.Commands.CreateOptionCommand
 
             if (isAlreadyExists is not null)
             {
-                return new SuccessDataResult<Option>(Messages.DataAlreadyExist);
+                return new ErrorDataResult<Option>(Messages.DataAlreadyExist);
             }
 
             var option = _mapper.Map<Option>(request);
