@@ -2,7 +2,7 @@
 using MediatR;
 using Olcsan.Boilerplate.Utilities.Results;
 
-namespace Catalog.Application.Features.Commands.UpdateBrandCommand
+namespace Catalog.Application.Features.Commands.Brands.UpdateBrandCommand
 {
     public class UpdateBrandCommand : IRequest<IDataResult<BrandDto>>
     {

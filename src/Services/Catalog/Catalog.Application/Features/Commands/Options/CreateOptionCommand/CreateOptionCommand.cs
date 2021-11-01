@@ -2,7 +2,7 @@
 using MediatR;
 using Olcsan.Boilerplate.Utilities.Results;
 
-namespace Catalog.Application.Features.Commands.CreateOptionCommand
+namespace Catalog.Application.Features.Commands.Options.CreateOptionCommand
 {
     public class CreateOptionCommand : IRequest<IDataResult<Option>>
     {

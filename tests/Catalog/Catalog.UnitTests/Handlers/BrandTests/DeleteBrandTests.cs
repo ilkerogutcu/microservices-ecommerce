@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Catalog.Application.Constants;
-using Catalog.Application.Features.Commands.DeleteBrandCommand;
+using Catalog.Application.Features.Commands.Brands.DeleteBrandCommand;
 using Catalog.Application.Interfaces.Repositories;
 using Catalog.Domain.Entities;
 using FluentAssertions;

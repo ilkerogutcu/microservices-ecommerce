@@ -1,5 +1,8 @@
-﻿using System.Threading.Tasks;
-using Catalog.Application.Features.Commands.CreateOptionCommand;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Catalog.Application.Dtos;
+using Catalog.Application.Features.Commands.Options.CreateOptionCommand;
+using Catalog.Application.Features.Queries.Options.GetAllOptionsQuery;
 using Catalog.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -17,7 +20,7 @@ namespace Catalog.API.Controllers
         {
             _mediator = mediator;
         }
-        
+
         // POST api/v1/[controller]/
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Option))]
@@ -26,6 +29,17 @@ namespace Catalog.API.Controllers
         public async Task<IActionResult> Create([FromBody] CreateOptionCommand command)
         {
             var result = await _mediator.Send(command);
+            return result.Success ? Ok(result.Data) : BadRequest(result.Message);
+        }
+
+        // GET api/v1/[controller]?pageSize=10&pageIndex=1&isActive=null&isRequired=null&varianter=null
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<OptionDto>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpGet]
+        public async Task<IActionResult> GetAll([FromQuery] GetAllOptionsQuery query)
+        {
+            var result = await _mediator.Send(query);
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
     }

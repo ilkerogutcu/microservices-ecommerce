@@ -12,7 +12,7 @@ using Olcsan.Boilerplate.Aspects.Autofac.Validation;
 using Olcsan.Boilerplate.CrossCuttingConcerns.Logging.Serilog.Loggers;
 using Olcsan.Boilerplate.Utilities.Results;
 
-namespace Catalog.Application.Features.Commands.UpdateBrandCommand
+namespace Catalog.Application.Features.Commands.Brands.UpdateBrandCommand
 {
     public class UpdateBrandCommandHandler : IRequestHandler<UpdateBrandCommand, IDataResult<BrandDto>>
     {

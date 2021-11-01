@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Catalog.Application.Features.Commands.CreateOptionCommand
+namespace Catalog.Application.Features.Commands.Options.CreateOptionCommand
 {
     public class CreateOptionCommandValidator : AbstractValidator<CreateOptionCommand>
     {

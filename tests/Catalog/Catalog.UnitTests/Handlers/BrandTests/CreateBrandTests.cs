@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Catalog.Application.Constants;
-using Catalog.Application.Features.Commands.CreateBrandCommand;
+using Catalog.Application.Features.Commands.Brands.CreateBrandCommand;
 using Catalog.Application.Interfaces.Repositories;
 using Catalog.Domain.Entities;
 using Catalog.UnitTests.Helpers;

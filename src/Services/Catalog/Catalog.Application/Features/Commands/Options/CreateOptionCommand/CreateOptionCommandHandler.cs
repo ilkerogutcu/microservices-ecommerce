@@ -12,7 +12,7 @@ using Olcsan.Boilerplate.Aspects.Autofac.Validation;
 using Olcsan.Boilerplate.CrossCuttingConcerns.Logging.Serilog.Loggers;
 using Olcsan.Boilerplate.Utilities.Results;
 
-namespace Catalog.Application.Features.Commands.CreateOptionCommand
+namespace Catalog.Application.Features.Commands.Options.CreateOptionCommand
 {
     public class CreateOptionCommandHandler : IRequestHandler<CreateOptionCommand, IDataResult<Option>>
     {

@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Catalog.Application.Constants;
 using Catalog.Application.Dtos;
-using Catalog.Application.Features.Commands.UpdateBrandCommand;
+using Catalog.Application.Features.Commands.Brands.UpdateBrandCommand;
 using Catalog.Application.Interfaces.Repositories;
 using Catalog.Domain.Entities;
 using Catalog.UnitTests.Helpers;

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Catalog.Application.Dtos;
-using Catalog.Application.Features.Commands.CreateBrandCommand;
-using Catalog.Application.Features.Commands.DeleteBrandCommand;
-using Catalog.Application.Features.Commands.UpdateBrandCommand;
+using Catalog.Application.Features.Commands.Brands.CreateBrandCommand;
+using Catalog.Application.Features.Commands.Brands.DeleteBrandCommand;
+using Catalog.Application.Features.Commands.Brands.UpdateBrandCommand;
 using Catalog.Application.Features.Queries.Brands.GetActiveBrandsQuery;
 using Catalog.Application.Features.Queries.Brands.GetAllBrandsQuery;
 using Catalog.Application.Features.Queries.Brands.GetBrandByIdQuery;
