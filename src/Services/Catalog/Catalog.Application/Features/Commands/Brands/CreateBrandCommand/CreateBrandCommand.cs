@@ -2,7 +2,7 @@
 using MediatR;
 using Olcsan.Boilerplate.Utilities.Results;
 
-namespace Catalog.Application.Features.Commands.CreateBrandCommand
+namespace Catalog.Application.Features.Commands.Brands.CreateBrandCommand
 {
     public class CreateBrandCommand : IRequest<IDataResult<Brand>>
     {

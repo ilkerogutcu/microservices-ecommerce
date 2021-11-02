@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using Catalog.Application.Constants;
 using Catalog.Application.Dtos;
 using Catalog.Application.Interfaces.Repositories;
 using Catalog.Application.Wrappers;
@@ -33,7 +32,8 @@ namespace Catalog.Application.Features.Queries.Brands.GetAllBrandsQuery
         {
             var brands = await _brandRepository.GetListAsync();
             var result = _mapper.Map<IEnumerable<BrandDto>>(brands)
-                .OrderBy(x => x.Name).Skip(request.PageSize * request.PageIndex)
+                .OrderBy(x => x.Name)
+                .Skip(request.PageSize * request.PageIndex)
                 .Take(request.PageSize).ToList();
 
             return new PaginatedResult<List<BrandDto>>(result, request.PageIndex, request.PageSize, brands.Count());

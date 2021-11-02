@@ -9,7 +9,7 @@ using Olcsan.Boilerplate.Aspects.Autofac.Validation;
 using Olcsan.Boilerplate.CrossCuttingConcerns.Logging.Serilog.Loggers;
 using Olcsan.Boilerplate.Utilities.Results;
 
-namespace Catalog.Application.Features.Commands.DeleteBrandCommand
+namespace Catalog.Application.Features.Commands.Brands.DeleteBrandCommand
 {
     public class DeleteBrandCommandHandler : IRequestHandler<DeleteBrandCommand, IResult>
     {

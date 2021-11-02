@@ -1,11 +1,9 @@
-﻿using Catalog.Domain.Common;
-
-namespace Catalog.Domain.Entities
+﻿namespace Catalog.Application.Dtos
 {
-    public class Option : BaseEntity
+    public class OptionDto
     {
+        public string Id { get; set; }
         public string Name { get; set; }
-        public string NormalizedName { get; set; }
         public bool IsRequired { get; set; }
         public bool Varianter { get; set; }
         public bool IsActive { get; set; }

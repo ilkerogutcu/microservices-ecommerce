@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Catalog.Application.Dtos;
-using Catalog.Application.Features.Commands.CreateBrandCommand;
-using Catalog.Application.Features.Commands.DeleteBrandCommand;
-using Catalog.Application.Features.Commands.UpdateBrandCommand;
+using Catalog.Application.Features.Commands.Brands.CreateBrandCommand;
+using Catalog.Application.Features.Commands.Brands.DeleteBrandCommand;
+using Catalog.Application.Features.Commands.Brands.UpdateBrandCommand;
 using Catalog.Application.Features.Queries.Brands.GetActiveBrandsQuery;
 using Catalog.Application.Features.Queries.Brands.GetAllBrandsQuery;
 using Catalog.Application.Features.Queries.Brands.GetBrandByIdQuery;
 using Catalog.Application.Features.Queries.Brands.GetNotActiveBrandsQuery;
+using Catalog.Application.Wrappers;
 using Catalog.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Olcsan.Boilerplate.Utilities.Results;
 
 namespace Catalog.API.Controllers
 {
@@ -29,7 +29,7 @@ namespace Catalog.API.Controllers
 
         // GET api/v1/[controller]?pageSize=10&pageIndex=1&isActive=null
         [Produces("application/json", "text/plain")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<BrandDto>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResult<List<BrandDto>>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 0,
@@ -44,11 +44,11 @@ namespace Catalog.API.Controllers
                         PageIndex = pageIndex,
                         PageSize = pageSize
                     });
-                    return result.Success ? Ok(result.Data) : BadRequest(result.Message);
+                    return result.Success ? Ok(result) : BadRequest(result.Message);
                 }
-                case true:
+                case false:
                 {
-                    var result = await _mediator.Send(new GetActiveBrandsQuery
+                    var result = await _mediator.Send(new GetNotActiveBrandsQuery
                     {
                         PageIndex = pageIndex,
                         PageSize = pageSize
@@ -57,12 +57,12 @@ namespace Catalog.API.Controllers
                 }
                 default:
                 {
-                    var result = await _mediator.Send(new GetNotActiveBrandsQuery
+                    var result = await _mediator.Send(new GetActiveBrandsQuery
                     {
                         PageIndex = pageIndex,
                         PageSize = pageSize
                     });
-                    return result.Success ? Ok(result.Data) : BadRequest(result.Message);
+                    return result.Success ? Ok(result) : BadRequest(result.Message);
                 }
             }
         }
@@ -81,9 +81,9 @@ namespace Catalog.API.Controllers
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
 
-        // PUT api/v1/[controller]/{id}
+        // PUT api/v1/[controller]
         [Produces("application/json", "text/plain")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BrandDto))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Brand))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] UpdateBrandCommand command)
@@ -107,7 +107,7 @@ namespace Catalog.API.Controllers
 
         // DELETE api/v1/[controller]/{id}
         [Produces("application/json", "text/plain")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
@@ -116,7 +116,7 @@ namespace Catalog.API.Controllers
             {
                 Id = id
             });
-            return result.Success ? Ok(result.Message) : BadRequest(result.Message);
+            return result.Success ? Ok() : BadRequest(result.Message);
         }
     }
 }

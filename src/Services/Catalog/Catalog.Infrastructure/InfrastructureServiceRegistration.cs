@@ -14,10 +14,11 @@ namespace Catalog.Infrastructure
         public void Load(IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton(typeof(ICatalogContext<>), typeof(CatalogContext<>));
-            serviceCollection.AddSingleton<IBrandRepository, BrandRepository>();
-
-            serviceCollection.AddSingleton<IProductRepository, ProductRepository>();
             serviceCollection.AddSingleton(typeof(IDocumentDbRepository<>), typeof(MongoDbRepositoryBase<>));
+
+            serviceCollection.AddSingleton<IBrandRepository, BrandRepository>();
+            serviceCollection.AddSingleton<IProductRepository, ProductRepository>();
+            serviceCollection.AddSingleton<IOptionRepository, OptionRepository>();
         }
     }
 }

@@ -4,8 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Catalog.Application.Constants;
 using Catalog.Application.Dtos;
-using Catalog.Application.Features.Commands.CreateBrandCommand;
-using Catalog.Application.Features.Commands.UpdateBrandCommand;
+using Catalog.Application.Features.Commands.Brands.UpdateBrandCommand;
 using Catalog.Application.Interfaces.Repositories;
 using Catalog.Domain.Entities;
 using Catalog.UnitTests.Helpers;
@@ -14,7 +13,7 @@ using MongoDB.Bson;
 using Moq;
 using Xunit;
 
-namespace Catalog.UnitTests.Handlers
+namespace Catalog.UnitTests.Handlers.BrandTests
 {
     public class UpdateBrandTests
     {
@@ -46,10 +45,8 @@ namespace Catalog.UnitTests.Handlers
 
             // Assert
             result.Success.Should().BeTrue();
-            result.Data.Should()
-                .BeEquivalentTo(command,
-                    cfg => cfg.ComparingByMembers<BrandDto>()
-                        .ExcludingMissingMembers());
+            result.Data.Should().BeEquivalentTo(command, options =>
+                options.ExcludingMissingMembers());
         }
         
         [Fact]
@@ -59,11 +56,33 @@ namespace Catalog.UnitTests.Handlers
             var command = new UpdateBrandCommand
             {
                 Id = ObjectId.GenerateNewId().ToString(),
-                Name = "Test",
+                Name = "Test2",
                 IsActive = true
             };
+            var brand = new Brand
+            {
+                Id = command.Id,
+                Name = "Test",
+                IsActive = true,
+                CreatedBy = "test user",
+                CreatedDate = DateTime.Now,
+                NormalizedName = "test",
+            };
+            var brand2 = new Brand
+            {
+                Id = ObjectId.GenerateNewId().ToString(),
+                Name = "Test2",
+                IsActive = true,
+                CreatedBy = "test user",
+                CreatedDate = DateTime.Now,
+                NormalizedName = "test2",
+            };
+
+            _brandRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
+                .ReturnsAsync(brand)
+                .Verifiable();
             _brandRepository.Setup(x => x.GetAsync(It.IsAny<Expression<Func<Brand, bool>>>()))
-                .ReturnsAsync(new Brand())
+                .ReturnsAsync(brand2)
                 .Verifiable();
             var handler = new UpdateBrandCommandHandler(_brandRepository.Object, MockHelper.CreateMapper());
 
@@ -87,6 +106,7 @@ namespace Catalog.UnitTests.Handlers
                 Name = "Test",
                 IsActive = true
             };
+        
             _brandRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
                 .ReturnsAsync(()=>null)
                 .Verifiable();

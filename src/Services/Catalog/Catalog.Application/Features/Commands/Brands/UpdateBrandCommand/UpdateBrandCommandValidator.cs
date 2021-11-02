@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Catalog.Application.Features.Commands.UpdateBrandCommand
+namespace Catalog.Application.Features.Commands.Brands.UpdateBrandCommand
 {
     public class UpdateBrandCommandValidator : AbstractValidator<UpdateBrandCommand>
     {
