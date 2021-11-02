@@ -36,8 +36,9 @@ namespace Catalog.Application.Features.Commands.Options.UpdateOptionCommand
                 return new ErrorDataResult<Option>(Messages.DataNotFound);
             }
 
-            var isAlreadyExist = await _optionRepository.GetAsync(x => x.NormalizedName.Equals(request.Name.ToLower()));
-            if (isAlreadyExist is not null && !isAlreadyExist.Name.Equals(option.Name))
+            var isAlreadyExist = await _optionRepository.AnyAsync(x =>
+                x.NormalizedName.Equals(request.Name.ToLower()) && !x.NormalizedName.Equals(option.NormalizedName));
+            if (isAlreadyExist)
             {
                 return new ErrorDataResult<Option>(Messages.DataAlreadyExist);
             }
@@ -47,7 +48,6 @@ namespace Catalog.Application.Features.Commands.Options.UpdateOptionCommand
             option.LastUpdatedDate = DateTime.Now;
             option.NormalizedName = request.Name.ToLower();
             await _optionRepository.UpdateAsync(option.Id, option);
-
             return new SuccessDataResult<Option>(option);
         }
     }

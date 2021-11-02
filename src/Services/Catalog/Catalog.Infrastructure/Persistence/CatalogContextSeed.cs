@@ -158,66 +158,66 @@ namespace Catalog.Infrastructure.Persistence
         {
             var option1 = optionCollection.Find(x => x.Id == "202d2149e773f2a3990b47f6").FirstOrDefault();
             var option2 = optionCollection.Find(x => x.Id == "202d2149e773f2a3990b47f5").FirstOrDefault();
-
-            return new List<OptionValue>
-            {
-                new()
-                {
-                    Id = "302d2149e773f2a3990b47f1",
-                    Option = option1,
-                    Name = "Erkek",
-                    CreatedBy = "admin",
-                    CreatedDate = DateTime.Now
-                },
-                new()
-                {
-                    Id = "302d2149e773f2a3990b47f2",
-                    Option = option1,
-                    Name = "Kadın / Kız",
-                    CreatedBy = "admin",
-                    CreatedDate = DateTime.Now
-                },
-                new()
-                {
-                    Id = "302d2149e773f2a3990b47f3",
-                    Option = option1,
-                    Name = "Unisex",
-                    CreatedBy = "admin",
-                    CreatedDate = DateTime.Now
-                },
-                new()
-                {
-                    Id = "302d2149e773f2a3990b47f4",
-                    Option = option2,
-                    Name = "Bebek",
-                    CreatedBy = "admin",
-                    CreatedDate = DateTime.Now
-                },
-                new()
-                {
-                    Id = "302d2149e773f2a3990b47f5",
-                    Option = option2,
-                    Name = "Çocuk",
-                    CreatedBy = "admin",
-                    CreatedDate = DateTime.Now
-                },
-                new()
-                {
-                    Id = "302d2149e773f2a3990b47f6",
-                    Option = option2,
-                    Name = "Genç",
-                    CreatedBy = "admin",
-                    CreatedDate = DateTime.Now
-                },
-                new()
-                {
-                    Id = "302d2149e773f2a3990b47f7",
-                    Option = option2,
-                    Name = "Yetişkin",
-                    CreatedBy = "admin",
-                    CreatedDate = DateTime.Now
-                }
-            };
+return null;
+            // return new List<OptionValue>
+            // {
+            //     new()
+            //     {
+            //         Id = "302d2149e773f2a3990b47f1",
+            //         Option = option1,
+            //         Name = "Erkek",
+            //         CreatedBy = "admin",
+            //         CreatedDate = DateTime.Now
+            //     },
+            //     new()
+            //     {
+            //         Id = "302d2149e773f2a3990b47f2",
+            //         Option = option1,
+            //         Name = "Kadın / Kız",
+            //         CreatedBy = "admin",
+            //         CreatedDate = DateTime.Now
+            //     },
+            //     new()
+            //     {
+            //         Id = "302d2149e773f2a3990b47f3",
+            //         Option = option1,
+            //         Name = "Unisex",
+            //         CreatedBy = "admin",
+            //         CreatedDate = DateTime.Now
+            //     },
+            //     new()
+            //     {
+            //         Id = "302d2149e773f2a3990b47f4",
+            //         Option = option2,
+            //         Name = "Bebek",
+            //         CreatedBy = "admin",
+            //         CreatedDate = DateTime.Now
+            //     },
+            //     new()
+            //     {
+            //         Id = "302d2149e773f2a3990b47f5",
+            //         Option = option2,
+            //         Name = "Çocuk",
+            //         CreatedBy = "admin",
+            //         CreatedDate = DateTime.Now
+            //     },
+            //     new()
+            //     {
+            //         Id = "302d2149e773f2a3990b47f6",
+            //         Option = option2,
+            //         Name = "Genç",
+            //         CreatedBy = "admin",
+            //         CreatedDate = DateTime.Now
+            //     },
+            //     new()
+            //     {
+            //         Id = "302d2149e773f2a3990b47f7",
+            //         Option = option2,
+            //         Name = "Yetişkin",
+            //         CreatedBy = "admin",
+            //         CreatedDate = DateTime.Now
+            //     }
+            // };
         }
 
         private static Category GetPreconfiguredCategories()

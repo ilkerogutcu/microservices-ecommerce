@@ -13,12 +13,14 @@ namespace Catalog.UnitTests.Handlers.OptionTests
     public class DeleteOptionTests
     {
         private readonly Mock<IOptionRepository> _optionRepository;
+        private readonly Mock<IOptionValueRepository> _optionValueRepository;
 
         public DeleteOptionTests()
         {
             _optionRepository = new Mock<IOptionRepository>();
+            _optionValueRepository = new Mock<IOptionValueRepository>();
         }
-  
+
         [Fact]
         private async Task DeleteOption_WithExistingOption_ReturnSuccessResult()
         {
@@ -29,7 +31,7 @@ namespace Catalog.UnitTests.Handlers.OptionTests
                 .ReturnsAsync(new Option())
                 .Verifiable();
 
-            var handler = new DeleteOptionCommandHandler(_optionRepository.Object);
+            var handler = new DeleteOptionCommandHandler(_optionRepository.Object, _optionValueRepository.Object);
 
             // Act
             var result = await handler.Handle(command,
@@ -49,7 +51,7 @@ namespace Catalog.UnitTests.Handlers.OptionTests
                 .ReturnsAsync(() => null)
                 .Verifiable();
 
-            var handler = new DeleteOptionCommandHandler(_optionRepository.Object);
+            var handler = new DeleteOptionCommandHandler(_optionRepository.Object, _optionValueRepository.Object);
 
             // Act
             var result = await handler.Handle(command,

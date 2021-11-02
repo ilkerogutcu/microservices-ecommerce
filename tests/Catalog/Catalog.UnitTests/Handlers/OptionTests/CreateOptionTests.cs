@@ -33,6 +33,9 @@ namespace Catalog.UnitTests.Handlers.OptionTests
                 IsActive = true,
                 IsRequired = true
             };
+            _optionRepository.Setup(x => x.AnyAsync(It.IsAny<Expression<Func<Option, bool>>>()))
+                .ReturnsAsync(() => false)
+                .Verifiable();
             _optionRepository.Setup(x => x.AddAsync(It.IsAny<Option>()))
                 .ReturnsAsync(new Option())
                 .Verifiable();
@@ -59,8 +62,8 @@ namespace Catalog.UnitTests.Handlers.OptionTests
                 IsActive = true,
                 IsRequired = true
             };
-            _optionRepository.Setup(x => x.GetAsync(It.IsAny<Expression<Func<Option, bool>>>()))
-                .ReturnsAsync(new Option())
+            _optionRepository.Setup(x => x.AnyAsync(It.IsAny<Expression<Func<Option, bool>>>()))
+                .ReturnsAsync(() => true)
                 .Verifiable();
             var handler = new CreateOptionCommandHandler(MockHelper.CreateMapper(), _optionRepository.Object);
 

@@ -1,23 +1,29 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Catalog.Application.Constants;
 using Catalog.Application.Interfaces.Repositories;
 using MediatR;
+using MongoDB.Driver;
 using Olcsan.Boilerplate.Aspects.Autofac.Exception;
 using Olcsan.Boilerplate.Aspects.Autofac.Logger;
+using Olcsan.Boilerplate.Aspects.Autofac.TransactionScopeAspect;
 using Olcsan.Boilerplate.Aspects.Autofac.Validation;
 using Olcsan.Boilerplate.CrossCuttingConcerns.Logging.Serilog.Loggers;
 using Olcsan.Boilerplate.Utilities.Results;
 
 namespace Catalog.Application.Features.Commands.Options.DeleteOptionCommand
 {
-    public class DeleteOptionCommandHandler: IRequestHandler<DeleteOptionCommand, IResult>
+    public class DeleteOptionCommandHandler : IRequestHandler<DeleteOptionCommand, IResult>
     {
         private readonly IOptionRepository _optionRepository;
+        private readonly IOptionValueRepository _optionValueRepository;
 
-        public DeleteOptionCommandHandler(IOptionRepository optionRepository)
+        public DeleteOptionCommandHandler(IOptionRepository optionRepository,
+            IOptionValueRepository optionValueRepository)
         {
             _optionRepository = optionRepository;
+            _optionValueRepository = optionValueRepository;
         }
 
         [LogAspect(typeof(FileLogger), "Catalog-Application")]
@@ -32,6 +38,7 @@ namespace Catalog.Application.Features.Commands.Options.DeleteOptionCommand
             }
 
             await _optionRepository.DeleteAsync(option);
+            await _optionValueRepository.DeleteManyByOptionId(option.Id);
             return new SuccessResult();
         }
     }
