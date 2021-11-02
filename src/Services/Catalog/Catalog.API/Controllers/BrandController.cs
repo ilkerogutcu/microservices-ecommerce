@@ -81,9 +81,9 @@ namespace Catalog.API.Controllers
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
 
-        // PUT api/v1/[controller]/{id}
+        // PUT api/v1/[controller]
         [Produces("application/json", "text/plain")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(BrandDto))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Brand))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] UpdateBrandCommand command)

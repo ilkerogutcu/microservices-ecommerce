@@ -5,6 +5,7 @@ using AutoMapper;
 using Catalog.Application.Constants;
 using Catalog.Application.Dtos;
 using Catalog.Application.Interfaces.Repositories;
+using Catalog.Domain.Entities;
 using MediatR;
 using Olcsan.Boilerplate.Aspects.Autofac.Exception;
 using Olcsan.Boilerplate.Aspects.Autofac.Logger;
@@ -14,7 +15,7 @@ using Olcsan.Boilerplate.Utilities.Results;
 
 namespace Catalog.Application.Features.Commands.Brands.UpdateBrandCommand
 {
-    public class UpdateBrandCommandHandler : IRequestHandler<UpdateBrandCommand, IDataResult<BrandDto>>
+    public class UpdateBrandCommandHandler : IRequestHandler<UpdateBrandCommand, IDataResult<Brand>>
     {
         private readonly IMapper _mapper;
         private readonly IBrandRepository _brandRepository;
@@ -28,28 +29,27 @@ namespace Catalog.Application.Features.Commands.Brands.UpdateBrandCommand
         [LogAspect(typeof(FileLogger), "Catalog-Application")]
         [ExceptionLogAspect(typeof(FileLogger), "Catalog-Application")]
         [ValidationAspect(typeof(UpdateBrandCommandValidator))]
-        public async Task<IDataResult<BrandDto>> Handle(UpdateBrandCommand request, CancellationToken cancellationToken)
+        public async Task<IDataResult<Brand>> Handle(UpdateBrandCommand request, CancellationToken cancellationToken)
         {
-            var isAlreadyExist = await _brandRepository.GetAsync(x => x.NormalizedName.Equals(request.Name.ToLower()));
-            if (isAlreadyExist is not null)
-            {
-                return new ErrorDataResult<BrandDto>(Messages.DataAlreadyExist);
-            }
-
             var brand = await _brandRepository.GetByIdAsync(request.Id);
             if (brand is null)
             {
-                return new ErrorDataResult<BrandDto>(Messages.DataNotFound);
+                return new ErrorDataResult<Brand>(Messages.DataNotFound);
             }
 
-            var updateBrand = _mapper.Map(request, brand);
-            updateBrand.LastUpdatedBy = "admin";
-            updateBrand.LastUpdatedDate = DateTime.Now;
-            updateBrand.NormalizedName = updateBrand.Name.ToLower();
-            await _brandRepository.UpdateAsync(brand.Id, updateBrand);
+            var isAlreadyExist = await _brandRepository.GetAsync(x => x.NormalizedName.Equals(request.Name.ToLower()));
+            if (isAlreadyExist is not null && !isAlreadyExist.Name.Equals(brand.Name))
+            {
+                return new ErrorDataResult<Brand>(Messages.DataAlreadyExist);
+            }
 
-            var brandDto = _mapper.Map<BrandDto>(brand);
-            return new SuccessDataResult<BrandDto>(brandDto);
+            brand = _mapper.Map(request, brand);
+            brand.LastUpdatedBy = "admin";
+            brand.LastUpdatedDate = DateTime.Now;
+            brand.NormalizedName = brand.Name.ToLower();
+            await _brandRepository.UpdateAsync(brand.Id, brand);
+
+            return new SuccessDataResult<Brand>(brand);
         }
     }
 }

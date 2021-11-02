@@ -25,7 +25,6 @@
 
     <ItemGroup>
       <Folder Include="Features\Commands\Brands" />
-      <Folder Include="Features\Commands\Options" />
       <Folder Include="Implements" />
     </ItemGroup>
 

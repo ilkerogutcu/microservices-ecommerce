@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Catalog.Application.Dtos;
 using Catalog.Application.Features.Commands.Options.CreateOptionCommand;
+using Catalog.Application.Features.Commands.Options.UpdateOptionCommand;
 using Catalog.Application.Features.Queries.Options.GetAllOptionsQuery;
 using Catalog.Application.Wrappers;
 using Catalog.Domain.Entities;
@@ -32,6 +33,18 @@ namespace Catalog.API.Controllers
             var result = await _mediator.Send(command);
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
+
+        // PUT api/v1/[controller]/
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Option))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] UpdateOptionCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return result.Success ? Ok(result.Data) : BadRequest(result.Message);
+        }
+
 
         // GET api/v1/[controller]?pageSize=10&pageIndex=1&isActive=null&isRequired=null&varianter=null
         [Produces("application/json", "text/plain")]
