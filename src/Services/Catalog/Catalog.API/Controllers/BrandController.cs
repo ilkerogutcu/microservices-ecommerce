@@ -8,11 +8,11 @@ using Catalog.Application.Features.Queries.Brands.GetActiveBrandsQuery;
 using Catalog.Application.Features.Queries.Brands.GetAllBrandsQuery;
 using Catalog.Application.Features.Queries.Brands.GetBrandByIdQuery;
 using Catalog.Application.Features.Queries.Brands.GetNotActiveBrandsQuery;
+using Catalog.Application.Wrappers;
 using Catalog.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Olcsan.Boilerplate.Utilities.Results;
 
 namespace Catalog.API.Controllers
 {
@@ -29,7 +29,7 @@ namespace Catalog.API.Controllers
 
         // GET api/v1/[controller]?pageSize=10&pageIndex=1&isActive=null
         [Produces("application/json", "text/plain")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<BrandDto>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResult<List<BrandDto>>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 0,
@@ -44,11 +44,11 @@ namespace Catalog.API.Controllers
                         PageIndex = pageIndex,
                         PageSize = pageSize
                     });
-                    return result.Success ? Ok(result.Data) : BadRequest(result.Message);
+                    return result.Success ? Ok(result) : BadRequest(result.Message);
                 }
-                case true:
+                case false:
                 {
-                    var result = await _mediator.Send(new GetActiveBrandsQuery
+                    var result = await _mediator.Send(new GetNotActiveBrandsQuery
                     {
                         PageIndex = pageIndex,
                         PageSize = pageSize
@@ -57,12 +57,12 @@ namespace Catalog.API.Controllers
                 }
                 default:
                 {
-                    var result = await _mediator.Send(new GetNotActiveBrandsQuery
+                    var result = await _mediator.Send(new GetActiveBrandsQuery
                     {
                         PageIndex = pageIndex,
                         PageSize = pageSize
                     });
-                    return result.Success ? Ok(result.Data) : BadRequest(result.Message);
+                    return result.Success ? Ok(result) : BadRequest(result.Message);
                 }
             }
         }

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Catalog.Application.Dtos;
 using Catalog.Application.Features.Commands.Options.CreateOptionCommand;
 using Catalog.Application.Features.Queries.Options.GetAllOptionsQuery;
+using Catalog.Application.Wrappers;
 using Catalog.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -34,13 +35,13 @@ namespace Catalog.API.Controllers
 
         // GET api/v1/[controller]?pageSize=10&pageIndex=1&isActive=null&isRequired=null&varianter=null
         [Produces("application/json", "text/plain")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<OptionDto>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResult<List<OptionDto>>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] GetAllOptionsQuery query)
         {
             var result = await _mediator.Send(query);
-            return result.Success ? Ok(result.Data) : BadRequest(result.Message);
+            return result.Success ? Ok(result) : BadRequest(result.Message);
         }
     }
 }
