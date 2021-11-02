@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Catalog.Application.Dtos;
 using Catalog.Application.Features.Commands.Options.CreateOptionCommand;
+using Catalog.Application.Features.Commands.Options.DeleteOptionCommand;
 using Catalog.Application.Features.Commands.Options.UpdateOptionCommand;
 using Catalog.Application.Features.Queries.Options.GetAllOptionsQuery;
 using Catalog.Application.Wrappers;
@@ -44,7 +45,19 @@ namespace Catalog.API.Controllers
             var result = await _mediator.Send(command);
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
-
+        // DELETE api/v1/[controller]/{id}
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var result = await _mediator.Send(new DeleteOptionCommand()
+            {
+                Id = id
+            });
+            return result.Success ? Ok() : BadRequest(result.Message);
+        }
 
         // GET api/v1/[controller]?pageSize=10&pageIndex=1&isActive=null&isRequired=null&varianter=null
         [Produces("application/json", "text/plain")]

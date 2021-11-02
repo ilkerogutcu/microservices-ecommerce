@@ -107,7 +107,7 @@ namespace Catalog.API.Controllers
 
         // DELETE api/v1/[controller]/{id}
         [Produces("application/json", "text/plain")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
@@ -116,7 +116,7 @@ namespace Catalog.API.Controllers
             {
                 Id = id
             });
-            return result.Success ? Ok(result.Message) : BadRequest(result.Message);
+            return result.Success ? Ok() : BadRequest(result.Message);
         }
     }
 }
