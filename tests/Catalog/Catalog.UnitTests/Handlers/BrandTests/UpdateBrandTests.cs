@@ -56,11 +56,33 @@ namespace Catalog.UnitTests.Handlers.BrandTests
             var command = new UpdateBrandCommand
             {
                 Id = ObjectId.GenerateNewId().ToString(),
-                Name = "Test",
+                Name = "Test2",
                 IsActive = true
             };
+            var brand = new Brand
+            {
+                Id = command.Id,
+                Name = "Test",
+                IsActive = true,
+                CreatedBy = "test user",
+                CreatedDate = DateTime.Now,
+                NormalizedName = "test",
+            };
+            var brand2 = new Brand
+            {
+                Id = ObjectId.GenerateNewId().ToString(),
+                Name = "Test2",
+                IsActive = true,
+                CreatedBy = "test user",
+                CreatedDate = DateTime.Now,
+                NormalizedName = "test2",
+            };
+
+            _brandRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
+                .ReturnsAsync(brand)
+                .Verifiable();
             _brandRepository.Setup(x => x.GetAsync(It.IsAny<Expression<Func<Brand, bool>>>()))
-                .ReturnsAsync(new Brand())
+                .ReturnsAsync(brand2)
                 .Verifiable();
             var handler = new UpdateBrandCommandHandler(_brandRepository.Object, MockHelper.CreateMapper());
 
@@ -84,6 +106,7 @@ namespace Catalog.UnitTests.Handlers.BrandTests
                 Name = "Test",
                 IsActive = true
             };
+        
             _brandRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
                 .ReturnsAsync(()=>null)
                 .Verifiable();
