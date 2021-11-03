@@ -1,13 +1,10 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Catalog.Application.Constants;
 using Catalog.Application.Interfaces.Repositories;
 using MediatR;
-using MongoDB.Driver;
 using Olcsan.Boilerplate.Aspects.Autofac.Exception;
 using Olcsan.Boilerplate.Aspects.Autofac.Logger;
-using Olcsan.Boilerplate.Aspects.Autofac.TransactionScopeAspect;
 using Olcsan.Boilerplate.Aspects.Autofac.Validation;
 using Olcsan.Boilerplate.CrossCuttingConcerns.Logging.Serilog.Loggers;
 using Olcsan.Boilerplate.Utilities.Results;
