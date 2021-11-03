@@ -31,9 +31,9 @@ namespace Catalog.Application.Features.Commands.Options.CreateOptionCommand
         public async Task<IDataResult<Option>> Handle(CreateOptionCommand request, CancellationToken cancellationToken)
         {
             var isAlreadyExists =
-                await _optionRepository.GetAsync(x => x.NormalizedName.Equals(request.Name.ToLower()));
+                await _optionRepository.AnyAsync(x => x.NormalizedName.Equals(request.Name.ToLower()));
 
-            if (isAlreadyExists is not null)
+            if (isAlreadyExists)
             {
                 return new ErrorDataResult<Option>(Messages.DataAlreadyExist);
             }

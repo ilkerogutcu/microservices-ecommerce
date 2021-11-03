@@ -1,7 +1,5 @@
-﻿using Catalog.Application.Interfaces;
-using Catalog.Application.Interfaces.Repositories;
+﻿using Catalog.Application.Interfaces.Repositories;
 using Catalog.Domain.Common;
-using Catalog.Domain.Entities;
 using Catalog.Infrastructure.Persistence;
 using Catalog.Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,10 +13,12 @@ namespace Catalog.Infrastructure
         {
             serviceCollection.AddSingleton(typeof(ICatalogContext<>), typeof(CatalogContext<>));
             serviceCollection.AddSingleton(typeof(IDocumentDbRepository<>), typeof(MongoDbRepositoryBase<>));
-
+           
             serviceCollection.AddSingleton<IBrandRepository, BrandRepository>();
             serviceCollection.AddSingleton<IProductRepository, ProductRepository>();
             serviceCollection.AddSingleton<IOptionRepository, OptionRepository>();
+            serviceCollection.AddSingleton<IOptionValueRepository, OptionValueRepository>();
+
         }
     }
 }

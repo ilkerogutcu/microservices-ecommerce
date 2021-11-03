@@ -32,7 +32,7 @@ namespace Catalog.UnitTests.Handlers.BrandTests
         #region Get brand by id
 
         [Fact]
-        private async Task GetBrandById_WithExistingBrand_ReturnSuccessResult()
+        private async Task GetBrandById_WhenExistingBrand_ReturnSuccessResult()
         {
             // Arrange
             var query = new GetBrandByIdQuery();
@@ -64,7 +64,7 @@ namespace Catalog.UnitTests.Handlers.BrandTests
 
 
         [Fact]
-        private async Task GetBrandById_WithNonexistentBrand_ReturnErrorResult()
+        private async Task GetBrandById_WhenNonexistentBrand_ReturnErrorResult()
         {
             // Arrange
             var query = new GetBrandByIdQuery();
@@ -90,7 +90,7 @@ namespace Catalog.UnitTests.Handlers.BrandTests
         #region Get all brands
 
         [Fact]
-        private async Task GetAllBrands_WithExistingBrands_ReturnSuccessResult()
+        private async Task GetAllBrands_WhenExistingBrands_ReturnSuccessResult()
         {
             // Arrange
             var query = new GetAllBrandsQuery()
@@ -139,7 +139,7 @@ namespace Catalog.UnitTests.Handlers.BrandTests
         }
 
         [Fact]
-        private async Task GetAllBrands_WithNonexistentBrands_ReturnSuccessResult()
+        private async Task GetAllBrands_WhenNonexistentBrands_ReturnSuccessResult()
         {
             // Arrange
             var query = new GetAllBrandsQuery();
@@ -167,7 +167,7 @@ namespace Catalog.UnitTests.Handlers.BrandTests
         #region Get active brands
 
         [Fact]
-        private async Task GetActiveBrands_WithExistingBrands_ReturnSuccessResult()
+        private async Task GetActiveBrands_WhenExistingBrands_ReturnSuccessResult()
         {
             // Arrange
             var query = new GetActiveBrandsQuery
@@ -207,7 +207,7 @@ namespace Catalog.UnitTests.Handlers.BrandTests
         }
 
         [Fact]
-        private async Task GetActiveBrands_WithNonexistentBrands_ReturnSuccessResult()
+        private async Task GetActiveBrands_WhenNonexistentBrands_ReturnSuccessResult()
         {
             // Arrange
             var query = new GetActiveBrandsQuery()
@@ -239,7 +239,7 @@ namespace Catalog.UnitTests.Handlers.BrandTests
         #region Get not active brands
 
         [Fact]
-        private async Task GetNotActiveBrands_WithExistingBrands_ReturnSuccessResult()
+        private async Task GetNotActiveBrands_WhenExistingBrands_ReturnSuccessResult()
         {
             // Arrange
             var query = new GetNotActiveBrandsQuery
@@ -279,7 +279,7 @@ namespace Catalog.UnitTests.Handlers.BrandTests
         }
 
         [Fact]
-        private async Task GetNotActiveBrands_WithNonexistentBrands_ReturnSuccessResult()
+        private async Task GetNotActiveBrands_WhenNonexistentBrands_ReturnSuccessResult()
         {
             // Arrange
             var query = new GetNotActiveBrandsQuery

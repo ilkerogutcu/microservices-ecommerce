@@ -38,6 +38,9 @@ namespace Catalog.UnitTests.Handlers.OptionTests
             _optionRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
                 .ReturnsAsync(new Option())
                 .Verifiable();
+            _optionRepository.Setup(x => x.AnyAsync(It.IsAny<Expression<Func<Option, bool>>>()))
+                .ReturnsAsync(() => false)
+                .Verifiable();
             var handler = new UpdateOptionCommandHandler(MockHelper.CreateMapper(), _optionRepository.Object);
 
             // Act
@@ -73,23 +76,11 @@ namespace Catalog.UnitTests.Handlers.OptionTests
                 Varianter = true,
                 IsRequired = true
             };
-            var option2 = new Option
-            {
-                Id = command.Id,
-                Name = "Test2",
-                IsActive = true,
-                CreatedBy = "test user",
-                CreatedDate = DateTime.Now,
-                NormalizedName = "test2",
-                Varianter = true,
-                IsRequired = true
-            };
 
-            _optionRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
-                .ReturnsAsync(option)
+            _optionRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(option)
                 .Verifiable();
-            _optionRepository.Setup(x => x.GetAsync(It.IsAny<Expression<Func<Option, bool>>>()))
-                .ReturnsAsync(option2)
+            _optionRepository.Setup(x => x.AnyAsync(It.IsAny<Expression<Func<Option, bool>>>()))
+                .ReturnsAsync(() => true)
                 .Verifiable();
             var handler = new UpdateOptionCommandHandler(MockHelper.CreateMapper(), _optionRepository.Object);
 

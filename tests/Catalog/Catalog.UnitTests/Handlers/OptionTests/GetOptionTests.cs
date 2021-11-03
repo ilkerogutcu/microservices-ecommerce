@@ -26,7 +26,7 @@ namespace Catalog.UnitTests.Handlers.OptionTests
         }
 
         [Fact]
-        private async Task GetAllOptions_WithExistingOptions_ReturnSuccessResult()
+        private async Task GetAllOptions_WhenExistingOptions_ReturnSuccessResult()
         {
             // Arrange
             var query = new GetAllOptionsQuery
@@ -82,7 +82,7 @@ namespace Catalog.UnitTests.Handlers.OptionTests
         }
 
         [Fact]
-        private async Task GetAllOptions_WithNonexistentOptions_ReturnSuccessResult()
+        private async Task GetAllOptions_WhenNonexistentOptions_ReturnSuccessResult()
         {
             // Arrange
             var query = new GetAllOptionsQuery

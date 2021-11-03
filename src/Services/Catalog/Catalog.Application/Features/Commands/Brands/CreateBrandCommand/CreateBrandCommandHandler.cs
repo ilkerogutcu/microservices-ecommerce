@@ -30,8 +30,8 @@ namespace Catalog.Application.Features.Commands.Brands.CreateBrandCommand
         [ValidationAspect(typeof(CreateBrandCommandValidator))]
         public async Task<IDataResult<Brand>> Handle(CreateBrandCommand request, CancellationToken cancellationToken)
         {
-            var isAlreadyExist = await _brandRepository.GetAsync(x => x.NormalizedName.Equals(request.Name.ToLower()));
-            if (isAlreadyExist is not null)
+            var isAlreadyExist = await _brandRepository.AnyAsync(x => x.NormalizedName.Equals(request.Name.ToLower()));
+            if (isAlreadyExist)
             {
                 return new ErrorDataResult<Brand>(Messages.DataAlreadyExist);
             }

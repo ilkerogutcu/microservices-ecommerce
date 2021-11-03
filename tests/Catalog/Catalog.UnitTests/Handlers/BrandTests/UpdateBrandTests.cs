@@ -37,6 +37,10 @@ namespace Catalog.UnitTests.Handlers.BrandTests
             _brandRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
                 .ReturnsAsync(new Brand())
                 .Verifiable();
+
+            _brandRepository.Setup(x => x.AnyAsync(It.IsAny<Expression<Func<Brand, bool>>>()))
+                .ReturnsAsync(() => false)
+                .Verifiable();
             var handler = new UpdateBrandCommandHandler(_brandRepository.Object, MockHelper.CreateMapper());
 
             // Act
@@ -48,7 +52,7 @@ namespace Catalog.UnitTests.Handlers.BrandTests
             result.Data.Should().BeEquivalentTo(command, options =>
                 options.ExcludingMissingMembers());
         }
-        
+
         [Fact]
         private async Task UpdateBrand_WithBrandToUpdate_WhenBrandNameAlreadyExists_ReturnsErrorResult()
         {
@@ -68,21 +72,12 @@ namespace Catalog.UnitTests.Handlers.BrandTests
                 CreatedDate = DateTime.Now,
                 NormalizedName = "test",
             };
-            var brand2 = new Brand
-            {
-                Id = ObjectId.GenerateNewId().ToString(),
-                Name = "Test2",
-                IsActive = true,
-                CreatedBy = "test user",
-                CreatedDate = DateTime.Now,
-                NormalizedName = "test2",
-            };
 
             _brandRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
                 .ReturnsAsync(brand)
                 .Verifiable();
-            _brandRepository.Setup(x => x.GetAsync(It.IsAny<Expression<Func<Brand, bool>>>()))
-                .ReturnsAsync(brand2)
+            _brandRepository.Setup(x => x.AnyAsync(It.IsAny<Expression<Func<Brand, bool>>>()))
+                .ReturnsAsync(() => true)
                 .Verifiable();
             var handler = new UpdateBrandCommandHandler(_brandRepository.Object, MockHelper.CreateMapper());
 
@@ -95,7 +90,7 @@ namespace Catalog.UnitTests.Handlers.BrandTests
             result.Data.Should().BeNull();
             result.Success.Should().BeFalse();
         }
-        
+
         [Fact]
         private async Task UpdateBrand_WithBrandToUpdate_WhenDataNotFound_ReturnsErrorResult()
         {
@@ -106,9 +101,9 @@ namespace Catalog.UnitTests.Handlers.BrandTests
                 Name = "Test",
                 IsActive = true
             };
-        
+
             _brandRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>()))
-                .ReturnsAsync(()=>null)
+                .ReturnsAsync(() => null)
                 .Verifiable();
             var handler = new UpdateBrandCommandHandler(_brandRepository.Object, MockHelper.CreateMapper());
 

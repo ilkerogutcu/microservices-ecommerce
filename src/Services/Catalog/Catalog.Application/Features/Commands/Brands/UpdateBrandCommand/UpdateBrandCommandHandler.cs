@@ -37,8 +37,9 @@ namespace Catalog.Application.Features.Commands.Brands.UpdateBrandCommand
                 return new ErrorDataResult<Brand>(Messages.DataNotFound);
             }
 
-            var isAlreadyExist = await _brandRepository.GetAsync(x => x.NormalizedName.Equals(request.Name.ToLower()));
-            if (isAlreadyExist is not null && !isAlreadyExist.Name.Equals(brand.Name))
+            var isAlreadyExist =  await _brandRepository.AnyAsync(x =>
+                x.NormalizedName.Equals(request.Name.ToLower()) && !x.NormalizedName.Equals(brand.NormalizedName));
+            if (isAlreadyExist)
             {
                 return new ErrorDataResult<Brand>(Messages.DataAlreadyExist);
             }

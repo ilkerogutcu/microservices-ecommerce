@@ -4,7 +4,8 @@ namespace Catalog.Domain.Entities
 {
     public class OptionValue : BaseEntity
     {
-        public Option Option { get; set; }
+        public string OptionId { get; set; }
         public string Name { get; set; }
+        public string NormalizedName { get; set; }
     }
 }

@@ -31,6 +31,9 @@ namespace Catalog.UnitTests.Handlers.BrandTests
                 Name = "Test",
                 IsActive = true
             };
+            _brandRepository.Setup(x => x.AnyAsync(It.IsAny<Expression<Func<Brand, bool>>>()))
+                .ReturnsAsync(() => false)
+                .Verifiable();
             _brandRepository.Setup(x => x.AddAsync(It.IsAny<Brand>()))
                 .ReturnsAsync(new Brand())
                 .Verifiable();
@@ -55,12 +58,12 @@ namespace Catalog.UnitTests.Handlers.BrandTests
                 Name = "Test",
                 IsActive = true
             };
-            _brandRepository.Setup(x => x.GetAsync(It.IsAny<Expression<Func<Brand, bool>>>()))
-                .ReturnsAsync(new Brand())
+            _brandRepository.Setup(x => x.AnyAsync(It.IsAny<Expression<Func<Brand, bool>>>()))
+                .ReturnsAsync(() => true)
                 .Verifiable();
-            
+
             var handler = new CreateBrandCommandHandler(MockHelper.CreateMapper(), _brandRepository.Object);
-            
+
             // Act
             var result = await handler.Handle(command,
                 new CancellationToken());

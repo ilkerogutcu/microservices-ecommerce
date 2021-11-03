@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Catalog.Domain.Common;
 using Catalog.Infrastructure.Persistence;
 using MongoDB.Driver;
+using MongoDB.Driver.Linq;
 
 namespace Catalog.Infrastructure.Repositories
 {
@@ -79,6 +81,13 @@ namespace Catalog.Infrastructure.Repositories
             return data;
         }
 
+        public async Task<bool> AnyAsync(Expression<Func<T, bool>> predicate = null)
+        {
+            return await Task.Run(() => predicate == null
+                ? Collection.AsQueryable().AnyAsync()
+                : Collection.AsQueryable().AnyAsync(predicate));
+        }
+
         public async Task<IQueryable<T>> GetListAsync(Expression<Func<T, bool>> predicate = null)
         {
             return await Task.Run(() => predicate == null
@@ -104,7 +113,7 @@ namespace Catalog.Infrastructure.Repositories
             return entity;
         }
 
-        public async Task<IEnumerable<T> > AddManyAsync(IEnumerable<T> entities)
+        public async Task<IEnumerable<T>> AddManyAsync(IEnumerable<T> entities)
         {
             var options = new BulkWriteOptions {IsOrdered = false, BypassDocumentValidation = false};
             await Collection.BulkWriteAsync((IEnumerable<WriteModel<T>>) entities, options);
