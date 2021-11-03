@@ -45,6 +45,7 @@ namespace Catalog.API.Controllers
             var result = await _mediator.Send(command);
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
+
         // DELETE api/v1/[controller]/{id}
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -69,5 +70,6 @@ namespace Catalog.API.Controllers
             var result = await _mediator.Send(query);
             return result.Success ? Ok(result) : BadRequest(result.Message);
         }
+       
     }
 }

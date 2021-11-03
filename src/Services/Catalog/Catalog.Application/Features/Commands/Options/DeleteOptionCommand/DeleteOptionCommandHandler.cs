@@ -35,7 +35,7 @@ namespace Catalog.Application.Features.Commands.Options.DeleteOptionCommand
             }
 
             await _optionRepository.DeleteAsync(option);
-            await _optionValueRepository.DeleteManyByOptionId(option.Id);
+            await _optionValueRepository.DeleteManyByOptionIdAsync(option.Id);
             return new SuccessResult();
         }
     }
