@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Catalog.Application.Features.Commands.OptionValues.CreateOptionValueCommand;
+using Catalog.Application.Features.Commands.OptionValues.DeleteOptionValueCommand;
 using Catalog.Application.Features.Commands.OptionValues.UpdateOptionValueCommand;
 using Catalog.Domain.Entities;
 using MediatR;
@@ -39,6 +40,20 @@ namespace Catalog.API.Controllers
         {
             var result = await _mediator.Send(command);
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
+        }
+        
+        // DELETE api/v1/[controller]/{id}
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var result = await _mediator.Send(new DeleteOptionValueCommand()
+            {
+                Id = id
+            });
+            return result.Success ? Ok() : BadRequest(result.Message);
         }
     }
 }
