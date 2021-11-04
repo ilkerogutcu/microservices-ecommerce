@@ -49,7 +49,7 @@ namespace Catalog.Application.Features.Commands.Categories.CreateCategoryCommand
 
             //Todo refactor
             var mainCategory = await _categoryRepository.GetByIdAsync(request.MainCategoryId);
-
+            if (mainCategory is null) return new ErrorDataResult<Category>(Messages.DataNotFound);
             if (string.IsNullOrEmpty(request.SubCategoryId))
             {
                 mainCategory.AddSubCategory(new Category
@@ -79,6 +79,7 @@ namespace Catalog.Application.Features.Commands.Categories.CreateCategoryCommand
             }
 
             return new ErrorDataResult<Category>(Messages.InvalidParameter);
+
         }
     }
 }
