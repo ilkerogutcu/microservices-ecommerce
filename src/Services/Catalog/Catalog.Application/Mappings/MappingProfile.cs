@@ -2,6 +2,7 @@
 using Catalog.Application.Dtos;
 using Catalog.Application.Features.Commands.Brands.CreateBrandCommand;
 using Catalog.Application.Features.Commands.Brands.UpdateBrandCommand;
+using Catalog.Application.Features.Commands.Categories.CreateCategoryCommand;
 using Catalog.Application.Features.Commands.Options.CreateOptionCommand;
 using Catalog.Application.Features.Commands.Options.UpdateOptionCommand;
 using Catalog.Application.Features.Commands.OptionValues.CreateOptionValueCommand;
@@ -24,7 +25,8 @@ namespace Catalog.Application.Mappings
 
             CreateMap<OptionValue, CreateOptionValueCommand>().ReverseMap();
             CreateMap<OptionValue, UpdateOptionValueCommand>().ReverseMap();
-
+            
+            CreateMap<Category, CreateCategoryCommand>().ReverseMap();
         }
     }
 }

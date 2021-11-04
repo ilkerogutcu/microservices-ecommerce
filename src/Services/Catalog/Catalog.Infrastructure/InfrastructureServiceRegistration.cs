@@ -18,7 +18,7 @@ namespace Catalog.Infrastructure
             serviceCollection.AddSingleton<IProductRepository, ProductRepository>();
             serviceCollection.AddSingleton<IOptionRepository, OptionRepository>();
             serviceCollection.AddSingleton<IOptionValueRepository, OptionValueRepository>();
-
+            serviceCollection.AddSingleton<ICategoryRepository, CategoryRepository>();
         }
     }
 }
