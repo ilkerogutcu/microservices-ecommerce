@@ -30,12 +30,15 @@ namespace Catalog.Application.Features.Commands.Categories.UpdateCategoryCommand
 
         [LogAspect(typeof(FileLogger), "Catalog-Application")]
         [ExceptionLogAspect(typeof(FileLogger), "Catalog-Application")]
+        [ValidationAspect(typeof(UpdateCategoryCommandValidator))]
         public async Task<IDataResult<Category>> Handle(UpdateCategoryCommand request,
             CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(request.SubCategoryId) && !string.IsNullOrEmpty(request.MainCategoryId))
+            var mainCategory = await _categoryRepository.GetByIdAsync(request.MainCategoryId);
+            if (mainCategory is null) return new ErrorDataResult<Category>(Messages.DataNotFound);
+
+            if (string.IsNullOrEmpty(request.SubCategoryId))
             {
-                var mainCategory = await _categoryRepository.GetByIdAsync(request.MainCategoryId);
                 mainCategory = _mapper.Map(request, mainCategory);
                 mainCategory.LastUpdatedBy = "admin";
                 mainCategory.LastUpdatedDate = DateTime.Now;
@@ -43,19 +46,13 @@ namespace Catalog.Application.Features.Commands.Categories.UpdateCategoryCommand
                 return new SuccessDataResult<Category>(mainCategory);
             }
 
-            if (!string.IsNullOrEmpty(request.SubCategoryId) && !string.IsNullOrEmpty(request.MainCategoryId))
-            {
-                var mainCategory = await _categoryRepository.GetByIdAsync(request.MainCategoryId);
-                if (mainCategory is null) return new ErrorDataResult<Category>(Messages.DataNotFound);
-                mainCategory.SubCategories
-                    .Map(p => p.Id.Equals(request.SubCategoryId), n => n.SubCategories)
-                    .FirstOrDefault()
-                    ?.Update(request.Name, request.IsActive);
-                var result = await _categoryRepository.UpdateAsync(mainCategory.Id, mainCategory);
-                return new SuccessDataResult<Category>(result);
-            }
 
-            return null;
+            mainCategory.SubCategories
+                .Map(p => p.Id.Equals(request.SubCategoryId), n => n.SubCategories)
+                .FirstOrDefault()
+                ?.Update(request.Name, request.IsActive);
+            var result = await _categoryRepository.UpdateAsync(mainCategory.Id, mainCategory);
+            return new SuccessDataResult<Category>(result);
         }
     }
 }
