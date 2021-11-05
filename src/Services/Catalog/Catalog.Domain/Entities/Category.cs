@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Catalog.Domain.Common;
 using MongoDB.Bson;
 
@@ -9,7 +10,7 @@ namespace Catalog.Domain.Entities
         public string ParentId { get; set; }
         public string Name { get; set; }
         public bool IsActive { get; set; }
-        public List<Category> SubCategories { get; set; } = new();
+        public IList<Category> SubCategories { get; set; } = new List<Category>();
 
         public void AddSubCategory(Category category)
         {
@@ -18,21 +19,12 @@ namespace Catalog.Domain.Entities
             SubCategories.Add(category);
         }
 
-        public Category GetCategoryByIdFromSubCategories(List<Category> subCategories, string id)
+        public Category Update(string name, bool isActive)
         {
-            var returnValue = new Category();
-            foreach (var category in subCategories)
-            {
-                if (category.Id.Equals(id))
-                {
-                    returnValue = category;
-                    break;
-                }
-
-                returnValue = GetCategoryByIdFromSubCategories(subCategories, id);
-            }
-
-            return returnValue;
+            Name = name;
+            IsActive = isActive;
+            LastUpdatedDate = DateTime.Now;
+            return this;
         }
     }
 }

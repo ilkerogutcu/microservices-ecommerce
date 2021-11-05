@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Catalog.Application.Constants;
+using Catalog.Application.Extensions;
 using Catalog.Application.Interfaces.Repositories;
 using Catalog.Domain.Entities;
 using MediatR;
@@ -49,7 +51,7 @@ namespace Catalog.Application.Features.Commands.Categories.CreateCategoryCommand
 
             //Todo refactor
             var mainCategory = await _categoryRepository.GetByIdAsync(request.MainCategoryId);
-            if (mainCategory is null) return new ErrorDataResult<Category>(Messages.DataNotFound);
+
             if (string.IsNullOrEmpty(request.SubCategoryId))
             {
                 mainCategory.AddSubCategory(new Category
@@ -65,21 +67,21 @@ namespace Catalog.Application.Features.Commands.Categories.CreateCategoryCommand
 
             if (!string.IsNullOrEmpty(request.SubCategoryId) && !string.IsNullOrEmpty(request.MainCategoryId))
             {
-                mainCategory.GetCategoryByIdFromSubCategories(mainCategory.SubCategories,
-                    request.SubCategoryId).AddSubCategory(new Category
-                {
-                    Name = request.Name,
-                    IsActive = true,
-                    CreatedDate = DateTime.Now,
-                    CreatedBy = "admin"
-                });
-
-                return new SuccessDataResult<Category>(
+                 mainCategory.SubCategories
+                    .Map(p => p.Id.Equals(request.SubCategoryId), n => n.SubCategories)
+                    .FirstOrDefault()
+                    ?.AddSubCategory(new Category
+                    {
+                        Name = request.Name,
+                        IsActive = true,
+                        CreatedDate = DateTime.Now,
+                        CreatedBy = "admin"
+                    });
+                 return new SuccessDataResult<Category>(
                     await _categoryRepository.UpdateAsync(request.MainCategoryId, mainCategory));
             }
 
             return new ErrorDataResult<Category>(Messages.InvalidParameter);
-
         }
     }
 }
