@@ -14,7 +14,8 @@ namespace Catalog.Domain.Entities
         public string ModelCode { get; set; }
         public int ReviewsCount { get; set; }
         public double? RatingAverage { get; set; }
-        
+        public int RatingCount { get; set; }
+
         public IList<Media> Medias { get; set; } = new List<Media>();
         public IList<Comment> Comments { get; set; } = new List<Comment>();
         public IList<Sku> Skus { get; set; } = new List<Sku>();

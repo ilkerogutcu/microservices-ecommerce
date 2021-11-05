@@ -19,11 +19,19 @@ namespace Catalog.Domain.Entities
             SubCategories.Add(category);
         }
 
-        public Category Update(string name, bool isActive)
+        public void DeleteSubCategory(Category category, string lastUpdatedBy)
+        {
+            LastUpdatedDate = DateTime.Now;
+            LastUpdatedBy = lastUpdatedBy;
+            SubCategories.Remove(category);
+        }
+
+        public Category Update(string name, bool isActive, string lastUpdatedBy)
         {
             Name = name;
             IsActive = isActive;
             LastUpdatedDate = DateTime.Now;
+            LastUpdatedBy = lastUpdatedBy;
             return this;
         }
     }

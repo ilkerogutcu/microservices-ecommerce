@@ -8,7 +8,6 @@ using Catalog.Application.Extensions;
 using Catalog.Application.Interfaces.Repositories;
 using Catalog.Domain.Entities;
 using MediatR;
-using MongoDB.Bson;
 using Olcsan.Boilerplate.Aspects.Autofac.Exception;
 using Olcsan.Boilerplate.Aspects.Autofac.Logger;
 using Olcsan.Boilerplate.Aspects.Autofac.Validation;
@@ -51,6 +50,7 @@ namespace Catalog.Application.Features.Commands.Categories.CreateCategoryCommand
 
             //Todo refactor
             var mainCategory = await _categoryRepository.GetByIdAsync(request.MainCategoryId);
+            if (mainCategory is null) return new ErrorDataResult<Category>(Messages.DataNotFound);
 
             if (string.IsNullOrEmpty(request.SubCategoryId))
             {

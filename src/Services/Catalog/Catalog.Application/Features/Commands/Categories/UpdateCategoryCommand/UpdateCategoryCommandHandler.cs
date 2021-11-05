@@ -50,7 +50,7 @@ namespace Catalog.Application.Features.Commands.Categories.UpdateCategoryCommand
             mainCategory.SubCategories
                 .Map(p => p.Id.Equals(request.SubCategoryId), n => n.SubCategories)
                 .FirstOrDefault()
-                ?.Update(request.Name, request.IsActive);
+                ?.Update(request.Name, request.IsActive,"admin");
             var result = await _categoryRepository.UpdateAsync(mainCategory.Id, mainCategory);
             return new SuccessDataResult<Category>(result);
         }

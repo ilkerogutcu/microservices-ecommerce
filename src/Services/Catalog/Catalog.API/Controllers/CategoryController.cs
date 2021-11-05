@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Catalog.Application.Features.Commands.Categories.CreateCategoryCommand;
+using Catalog.Application.Features.Commands.Categories.DeleteCategoryCommand;
 using Catalog.Application.Features.Commands.Categories.UpdateCategoryCommand;
 using Catalog.Domain.Entities;
 using MediatR;
@@ -29,7 +30,7 @@ namespace Catalog.API.Controllers
             var result = await _mediator.Send(command);
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
-        
+
         // PUT api/v1/[controller]/
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Category))]
@@ -39,6 +40,17 @@ namespace Catalog.API.Controllers
         {
             var result = await _mediator.Send(command);
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
+        }
+
+        // DELETE api/v1/[controller]/
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpDelete]
+        public async Task<IActionResult> Update([FromBody] DeleteCategoryCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return result.Success ? Ok() : BadRequest(result.Message);
         }
     }
 }
