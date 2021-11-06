@@ -1,11 +1,15 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Catalog.Application.Dtos;
 using Catalog.Application.Features.Commands.Categories.CreateCategoryCommand;
 using Catalog.Application.Features.Commands.Categories.DeleteCategoryCommand;
 using Catalog.Application.Features.Commands.Categories.UpdateCategoryCommand;
+using Catalog.Application.Features.Queries.Categories.GetAllCategoriesQuery;
 using Catalog.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Olcsan.Boilerplate.Utilities.Results;
 
 namespace Catalog.API.Controllers
 {
@@ -51,6 +55,20 @@ namespace Catalog.API.Controllers
         {
             var result = await _mediator.Send(command);
             return result.Success ? Ok() : BadRequest(result.Message);
+        }
+
+        // GET api/v1/[controller]?pageSize=null&pageIndex=null&isActive=null
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<CategoryDto>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpGet]
+        public async Task<IActionResult> GetAll([FromQuery] bool? isActive = null)
+        {
+            var result = await _mediator.Send(new GetAllCategoriesQuery
+            {
+                IsActive = isActive
+            });
+            return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
     }
 }

@@ -26,6 +26,8 @@ namespace Catalog.Application.Mappings
             CreateMap<OptionValue, CreateOptionValueCommand>().ReverseMap();
             CreateMap<OptionValue, UpdateOptionValueCommand>().ReverseMap();
             
+            
+            CreateMap<Category, CategoryDto>().ReverseMap();
             CreateMap<Category, CreateCategoryCommand>().ReverseMap();
         }
     }

@@ -37,15 +37,17 @@ namespace Catalog.Application.Features.Commands.Categories.UpdateCategoryCommand
             var mainCategory = await _categoryRepository.GetByIdAsync(request.MainCategoryId);
             if (mainCategory is null) return new ErrorDataResult<Category>(Messages.DataNotFound);
 
+            var mainCategoryAlreadyExists = await _categoryRepository.AnyAsync(x => x.Name.Equals(request.Name) && !x.Id.Equals(mainCategory.Id));
+            if (mainCategoryAlreadyExists)
+            {
+                return new ErrorDataResult<Category>(Messages.DataAlreadyExist);
+            }
             if (string.IsNullOrEmpty(request.SubCategoryId))
             {
-                mainCategory = _mapper.Map(request, mainCategory);
-                mainCategory.LastUpdatedBy = "admin";
-                mainCategory.LastUpdatedDate = DateTime.Now;
+                mainCategory = _mapper.Map(request, mainCategory).Update(request.Name,request.IsActive,"admin");
                 await _categoryRepository.UpdateAsync(mainCategory.Id, mainCategory);
                 return new SuccessDataResult<Category>(mainCategory);
             }
-
 
             mainCategory.SubCategories
                 .Map(p => p.Id.Equals(request.SubCategoryId), n => n.SubCategories)

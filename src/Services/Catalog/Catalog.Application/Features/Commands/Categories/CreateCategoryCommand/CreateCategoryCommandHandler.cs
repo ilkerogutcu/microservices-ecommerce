@@ -35,8 +35,8 @@ namespace Catalog.Application.Features.Commands.Categories.CreateCategoryCommand
         {
             if (string.IsNullOrEmpty(request.SubCategoryId) && string.IsNullOrEmpty(request.MainCategoryId))
             {
-                var isAlreadyExist = await _categoryRepository.AnyAsync(x => x.Name.Equals(request.Name));
-                if (isAlreadyExist)
+                var mainCategoryAlreadyExists = await _categoryRepository.AnyAsync(x => x.Name.Equals(request.Name));
+                if (mainCategoryAlreadyExists)
                 {
                     return new ErrorDataResult<Category>(Messages.DataAlreadyExist);
                 }
@@ -51,6 +51,13 @@ namespace Catalog.Application.Features.Commands.Categories.CreateCategoryCommand
             //Todo refactor
             var mainCategory = await _categoryRepository.GetByIdAsync(request.MainCategoryId);
             if (mainCategory is null) return new ErrorDataResult<Category>(Messages.DataNotFound);
+
+            var subCategoryAlreadyExists = mainCategory.SubCategories
+                .Map(p => p.Name.Equals(request.Name), n => n.SubCategories).Any();
+            if (subCategoryAlreadyExists)
+            {
+                return new ErrorDataResult<Category>(Messages.DataAlreadyExist);
+            }
 
             if (string.IsNullOrEmpty(request.SubCategoryId))
             {
@@ -67,7 +74,7 @@ namespace Catalog.Application.Features.Commands.Categories.CreateCategoryCommand
 
             if (!string.IsNullOrEmpty(request.SubCategoryId) && !string.IsNullOrEmpty(request.MainCategoryId))
             {
-                 mainCategory.SubCategories
+                mainCategory.SubCategories
                     .Map(p => p.Id.Equals(request.SubCategoryId), n => n.SubCategories)
                     .FirstOrDefault()
                     ?.AddSubCategory(new Category
@@ -77,7 +84,7 @@ namespace Catalog.Application.Features.Commands.Categories.CreateCategoryCommand
                         CreatedDate = DateTime.Now,
                         CreatedBy = "admin"
                     });
-                 return new SuccessDataResult<Category>(
+                return new SuccessDataResult<Category>(
                     await _categoryRepository.UpdateAsync(request.MainCategoryId, mainCategory));
             }
 
