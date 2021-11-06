@@ -5,6 +5,7 @@ using Catalog.Application.Features.Commands.Categories.CreateCategoryCommand;
 using Catalog.Application.Features.Commands.Categories.DeleteCategoryCommand;
 using Catalog.Application.Features.Commands.Categories.UpdateCategoryCommand;
 using Catalog.Application.Features.Queries.Categories.GetAllCategoriesQuery;
+using Catalog.Application.Features.Queries.Categories.GetCategoryByIdQuery;
 using Catalog.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -67,6 +68,20 @@ namespace Catalog.API.Controllers
             var result = await _mediator.Send(new GetAllCategoriesQuery
             {
                 IsActive = isActive
+            });
+            return result.Success ? Ok(result.Data) : BadRequest(result.Message);
+        }
+
+        // GET api/v1/[controller]/{id}
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryDto))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(string id)
+        {
+            var result = await _mediator.Send(new GetCategoryByIdQuery()
+            {
+                Id = id
             });
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }

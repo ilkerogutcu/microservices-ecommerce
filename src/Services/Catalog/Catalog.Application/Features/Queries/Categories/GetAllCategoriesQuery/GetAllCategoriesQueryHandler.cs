@@ -5,9 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Catalog.Application.Dtos;
 using Catalog.Application.Interfaces.Repositories;
-using Catalog.Application.Wrappers;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Olcsan.Boilerplate.Aspects.Autofac.Exception;
 using Olcsan.Boilerplate.Aspects.Autofac.Logger;
 using Olcsan.Boilerplate.CrossCuttingConcerns.Logging.Serilog.Loggers;
@@ -28,6 +26,7 @@ namespace Catalog.Application.Features.Queries.Categories.GetAllCategoriesQuery
 
         [LogAspect(typeof(FileLogger), "Catalog-Application")]
         [ExceptionLogAspect(typeof(FileLogger), "Catalog-Application")]
+        
         public async Task<IDataResult<List<CategoryDto>>> Handle(GetAllCategoriesQuery request,
             CancellationToken cancellationToken)
         {
