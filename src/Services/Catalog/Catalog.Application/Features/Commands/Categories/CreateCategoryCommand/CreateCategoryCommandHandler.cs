@@ -33,14 +33,16 @@ namespace Catalog.Application.Features.Commands.Categories.CreateCategoryCommand
         public async Task<IDataResult<Category>> Handle(CreateCategoryCommand request,
             CancellationToken cancellationToken)
         {
+            var isAlreadyExists = (await _categoryRepository.GetListAsync()).AsEnumerable().Map(p => p.Name.Equals(request.Name), n => n.SubCategories)
+                .Any();
+            
+            if (isAlreadyExists)
+            {
+                return new ErrorDataResult<Category>(Messages.DataAlreadyExist);
+            }
+
             if (string.IsNullOrEmpty(request.SubCategoryId) && string.IsNullOrEmpty(request.MainCategoryId))
             {
-                var mainCategoryAlreadyExists = await _categoryRepository.AnyAsync(x => x.Name.Equals(request.Name));
-                if (mainCategoryAlreadyExists)
-                {
-                    return new ErrorDataResult<Category>(Messages.DataAlreadyExist);
-                }
-
                 var category = _mapper.Map<Category>(request);
                 category.CreatedBy = "admin";
                 category.CreatedDate = DateTime.Now;
@@ -48,15 +50,20 @@ namespace Catalog.Application.Features.Commands.Categories.CreateCategoryCommand
                 return new SuccessDataResult<Category>(category);
             }
 
-            //Todo refactor
             var mainCategory = await _categoryRepository.GetByIdAsync(request.MainCategoryId);
             if (mainCategory is null) return new ErrorDataResult<Category>(Messages.DataNotFound);
 
-            var subCategoryAlreadyExists = mainCategory.SubCategories
-                .Map(p => p.Name.Equals(request.Name), n => n.SubCategories).Any();
-            if (subCategoryAlreadyExists)
+            if (string.IsNullOrEmpty(request.SubCategoryId))
             {
-                return new ErrorDataResult<Category>(Messages.DataAlreadyExist);
+                mainCategory.AddSubCategory(new Category
+                {
+                    Name = request.Name,
+                    IsActive = request.IsActive,
+                    CreatedBy = "admin",
+                    CreatedDate = DateTime.Now
+                });
+                return new SuccessDataResult<Category>(
+                    await _categoryRepository.UpdateAsync(request.MainCategoryId, mainCategory));
             }
 
             if (string.IsNullOrEmpty(request.SubCategoryId))
@@ -72,23 +79,18 @@ namespace Catalog.Application.Features.Commands.Categories.CreateCategoryCommand
                     await _categoryRepository.UpdateAsync(request.MainCategoryId, mainCategory));
             }
 
-            if (!string.IsNullOrEmpty(request.SubCategoryId) && !string.IsNullOrEmpty(request.MainCategoryId))
-            {
-                mainCategory.SubCategories
-                    .Map(p => p.Id.Equals(request.SubCategoryId), n => n.SubCategories)
-                    .FirstOrDefault()
-                    ?.AddSubCategory(new Category
-                    {
-                        Name = request.Name,
-                        IsActive = true,
-                        CreatedDate = DateTime.Now,
-                        CreatedBy = "admin"
-                    });
-                return new SuccessDataResult<Category>(
-                    await _categoryRepository.UpdateAsync(request.MainCategoryId, mainCategory));
-            }
-
-            return new ErrorDataResult<Category>(Messages.InvalidParameter);
+            mainCategory.SubCategories
+                .Map(p => p.Id.Equals(request.SubCategoryId), n => n.SubCategories)
+                .FirstOrDefault()
+                ?.AddSubCategory(new Category
+                {
+                    Name = request.Name,
+                    IsActive = true,
+                    CreatedDate = DateTime.Now,
+                    CreatedBy = "admin"
+                });
+            return new SuccessDataResult<Category>(
+                await _categoryRepository.UpdateAsync(request.MainCategoryId, mainCategory));
         }
     }
 }
