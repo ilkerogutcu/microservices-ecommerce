@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Catalog.Application.Dtos;
 using Catalog.Application.Features.Commands.Categories.CreateCategoryCommand;
-using Catalog.Application.Features.Commands.Categories.CreateCategoryOptionValueCommand;
+using Catalog.Application.Features.Commands.Categories.CreateOrUpdateCategoryOptionValueCommand;
 using Catalog.Application.Features.Commands.Categories.DeleteCategoryCommand;
 using Catalog.Application.Features.Commands.Categories.UpdateCategoryCommand;
 using Catalog.Application.Features.Queries.Categories.GetAllCategoriesQuery;
@@ -41,10 +41,10 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryOptionValue))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPost("{categoryId}/optionValues")]
-        public async Task<IActionResult> Create(string categoryId,
+        public async Task<IActionResult> CreateOrUpdateCategoryOptionValue(string categoryId,
             [FromBody] List<string> optionValueIds)
         {
-            var result = await _mediator.Send(new CreateCategoryOptionValueCommand
+            var result = await _mediator.Send(new CreateOrUpdateCategoryOptionValueCommand
             {
                 CategoryId = categoryId,
                 OptionValueIds = optionValueIds
@@ -69,7 +69,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpDelete]
-        public async Task<IActionResult> Update([FromBody] DeleteCategoryCommand command)
+        public async Task<IActionResult> Delete([FromBody] DeleteCategoryCommand command)
         {
             var result = await _mediator.Send(command);
             return result.Success ? Ok() : BadRequest(result.Message);
