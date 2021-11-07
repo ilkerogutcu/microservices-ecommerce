@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Catalog.Application.Dtos;
 using Catalog.Application.Features.Commands.Categories.CreateCategoryCommand;
+using Catalog.Application.Features.Commands.Categories.CreateCategoryOptionValueCommand;
 using Catalog.Application.Features.Commands.Categories.DeleteCategoryCommand;
 using Catalog.Application.Features.Commands.Categories.UpdateCategoryCommand;
 using Catalog.Application.Features.Queries.Categories.GetAllCategoriesQuery;
@@ -10,7 +11,6 @@ using Catalog.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Olcsan.Boilerplate.Utilities.Results;
 
 namespace Catalog.API.Controllers
 {
@@ -35,6 +35,23 @@ namespace Catalog.API.Controllers
             var result = await _mediator.Send(command);
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
+
+        // POST api/v1/[controller]/categoryId
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryOptionValue))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpPost("{categoryId}/optionValues")]
+        public async Task<IActionResult> Create(string categoryId,
+            [FromBody] List<string> optionValueIds)
+        {
+            var result = await _mediator.Send(new CreateCategoryOptionValueCommand
+            {
+                CategoryId = categoryId,
+                OptionValueIds = optionValueIds
+            });
+            return result.Success ? Ok(result.Data) : BadRequest(result.Message);
+        }
+
 
         // PUT api/v1/[controller]/
         [Produces("application/json", "text/plain")]
