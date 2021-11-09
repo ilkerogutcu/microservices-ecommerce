@@ -34,8 +34,6 @@ namespace Catalog.UnitTests.Handlers.OptionTests
                 PageIndex = 0,
                 PageSize = 10,
                 IsActive = true,
-                IsRequired = true,
-                Varianter = true,
             };
 
             var optionList = new List<Option>()
@@ -44,23 +42,19 @@ namespace Catalog.UnitTests.Handlers.OptionTests
                 {
                     Id = ObjectId.GenerateNewId().ToString(),
                     Name = "Test",
-                    Varianter = true,
                     NormalizedName = "test",
                     CreatedBy = "admin",
                     CreatedDate = DateTime.Now,
                     IsActive = true,
-                    IsRequired = true,
                 },
                 new()
                 {
                     Id = ObjectId.GenerateNewId().ToString(),
                     Name = "Test",
-                    Varianter = true,
                     NormalizedName = "test",
                     CreatedBy = "admin",
                     CreatedDate = DateTime.Now,
                     IsActive = true,
-                    IsRequired = true
                 }
             }.AsQueryable();
 
@@ -89,9 +83,7 @@ namespace Catalog.UnitTests.Handlers.OptionTests
             {
                 PageIndex = 0,
                 PageSize = 10,
-                Varianter = true,
                 IsActive = true,
-                IsRequired = false
             };
             var optionList = new List<Option>().AsQueryable();
 

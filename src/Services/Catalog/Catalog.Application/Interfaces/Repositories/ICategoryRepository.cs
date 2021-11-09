@@ -5,6 +5,5 @@ namespace Catalog.Application.Interfaces.Repositories
 {
     public interface ICategoryRepository: IDocumentDbRepository<Category>
     {
-        
     }
 }

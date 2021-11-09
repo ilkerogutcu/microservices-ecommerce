@@ -8,6 +8,7 @@ using Catalog.Application.Interfaces.Repositories;
 using Catalog.Application.Wrappers;
 using Catalog.Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Olcsan.Boilerplate.Aspects.Autofac.Exception;
 using Olcsan.Boilerplate.Aspects.Autofac.Logger;
 using Olcsan.Boilerplate.CrossCuttingConcerns.Logging.Serilog.Loggers;
@@ -32,21 +33,12 @@ namespace Catalog.Application.Features.Queries.Options.GetAllOptionsQuery
             CancellationToken cancellationToken)
         {
             var options = await _optionRepository.GetListAsync();
-            if (request.Varianter is not null)
-            {
-                options = options.Where(x => x.Varianter == request.Varianter);
-            }
-
+            
             if (request.IsActive is not null)
             {
                 options = options.Where(x => x.IsActive == request.IsActive);
             }
-
-            if (request.IsRequired is not null)
-            {
-                options = options.Where(x => x.IsRequired == request.IsRequired);
-            }
-
+            
             var result = _mapper.Map<IEnumerable<OptionDto>>(options)
                 .OrderBy(x => x.Name)
                 .Skip(request.PageSize * request.PageIndex)

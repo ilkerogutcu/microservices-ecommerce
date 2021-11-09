@@ -73,8 +73,6 @@ namespace Catalog.UnitTests.Handlers.OptionTests
                 CreatedBy = "test user",
                 CreatedDate = DateTime.Now,
                 NormalizedName = "test",
-                Varianter = true,
-                IsRequired = true
             };
 
             _optionRepository.Setup(x => x.GetByIdAsync(It.IsAny<string>())).ReturnsAsync(option)

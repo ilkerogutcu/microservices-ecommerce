@@ -4,7 +4,8 @@ using Catalog.Infrastructure.Persistence;
 
 namespace Catalog.Infrastructure.Repositories
 {
-    public class CategoryOptionValueRepository : MongoDbRepositoryBase<CategoryOptionValue>, ICategoryOptionValueRepository
+    public class CategoryOptionValueRepository : MongoDbRepositoryBase<CategoryOptionValue>,
+        ICategoryOptionValueRepository
     {
         public CategoryOptionValueRepository(ICatalogContext<CategoryOptionValue> context) : base(context)
         {
