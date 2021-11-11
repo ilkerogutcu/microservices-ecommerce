@@ -8,6 +8,7 @@ using Catalog.Application.Features.Commands.Categories.UpdateCategoryCommand;
 using Catalog.Application.Features.Queries.Categories.GetAllCategoriesQuery;
 using Catalog.Application.Features.Queries.Categories.GetCategoryByIdQuery;
 using Catalog.Application.Features.Queries.Categories.GetCategoryOptionValuesByIdQuery;
+using Catalog.Application.Models.Requests;
 using Catalog.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -41,14 +42,21 @@ namespace Catalog.API.Controllers
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryOptionValue))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
-        [HttpPost("optionValues")]
-        public async Task<IActionResult> CreateOrUpdateCategoryOptionValue([FromBody] CreateOrUpdateCategoryOptionValueCommand command)
+        [HttpPost("{categoryId}/optionValues")]
+        public async Task<IActionResult> CreateOrUpdateCategoryOptionValue(string categoryId,
+            [FromBody] CreateOrUpdateCategoryOptionValueRequest request)
         {
-            
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(new CreateOrUpdateCategoryOptionValueCommand
+            {
+                CategoryId = categoryId,
+                Varianter = request.Varianter,
+                IsRequired = request.IsRequired,
+                OptionId = request.OptionId,
+                OptionValueIds = request.OptionValueIds
+            });
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
-        
+
         // GET api/v1/[controller]/categoryId/OptionValues
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryOptionValueDto))]
@@ -56,7 +64,6 @@ namespace Catalog.API.Controllers
         [HttpGet("{categoryId}/optionValues")]
         public async Task<IActionResult> GetCategoryOptionValues(string categoryId)
         {
-            
             var result = await _mediator.Send(new GetCategoryOptionValuesByIdQuery()
             {
                 Id = categoryId
