@@ -60,7 +60,7 @@ namespace Catalog.API.Controllers
             return result.Success ? Ok() : BadRequest(result.Message);
         }
 
-        // GET api/v1/[controller]?pageSize=10&pageIndex=1&isActive=null&isRequired=null&varianter=null
+        // GET api/v1/[controller]?pageSize=10&pageIndex=1&varianter=null
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResult<List<OptionDto>>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
