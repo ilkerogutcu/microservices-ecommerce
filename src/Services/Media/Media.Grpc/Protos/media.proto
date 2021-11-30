@@ -1,0 +1,18 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "Media.Grpc.Protos";
+
+service MediaProtoService{
+  rpc UploadImage(UploadMediaRequest) returns (MediaModelResponse);
+}
+
+message UploadMediaRequest{
+  repeated bytes mediaList = 1;
+}
+message MediaModel{
+  string url = 1;
+  string publicId = 2;
+}
+message MediaModelResponse{
+  repeated MediaModel mediaModels = 1;
+}

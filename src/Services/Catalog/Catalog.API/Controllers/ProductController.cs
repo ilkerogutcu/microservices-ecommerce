@@ -1,29 +1,37 @@
 ﻿using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using Catalog.Application.Features.Commands.Products.CreateProductCommand;
 using Catalog.Application.Interfaces;
 using Catalog.Application.Interfaces.Repositories;
 using Catalog.Domain.Entities;
+using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Catalog.API.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class ProductController: ControllerBase
+    public class ProductController : ControllerBase
     {
-        private readonly IProductRepository _repository;
+        private readonly IMediator _mediator;
 
-        public ProductController(IProductRepository repository)
+        public ProductController(IMediator mediator)
         {
-            _repository = repository;
+            _mediator = mediator;
         }
-        [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<Product>), (int)HttpStatusCode.OK)]
-        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
+
+        [HttpPost]
+        public void asdas(IFormFile file)
         {
-            var products = await _repository.GetListAsync();
-            return Ok(products);
+            _mediator.Send(new CreateProductCommand()
+            {
+                FileList = new List<IFormFile>()
+                {
+                    file
+                }
+            });
         }
     }
 }

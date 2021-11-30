@@ -7,7 +7,9 @@ using Catalog.Application.Features.Commands.Options.CreateOptionCommand;
 using Catalog.Application.Features.Commands.Options.UpdateOptionCommand;
 using Catalog.Application.Features.Commands.OptionValues.CreateOptionValueCommand;
 using Catalog.Application.Features.Commands.OptionValues.UpdateOptionValueCommand;
+using Catalog.Application.Features.Commands.Products.CreateProductCommand;
 using Catalog.Domain.Entities;
+using Media.Grpc.Protos;
 
 namespace Catalog.Application.Mappings
 {
@@ -35,8 +37,13 @@ namespace Catalog.Application.Mappings
                 .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.Category.Id))
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
                 .ForMember(dest => dest.Option, opt => opt.MapFrom(src => src.Option))
-
                 .ReverseMap();
+            
+            CreateMap<Sku, SkuDto>().ReverseMap();
+
+            CreateMap<Product, CreateProductCommand>().ReverseMap();
+            CreateMap<Domain.Entities.Media, MediaModel>().ReverseMap();
+
         }
     }
 }

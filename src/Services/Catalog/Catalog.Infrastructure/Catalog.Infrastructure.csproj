@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="CloudinaryDotNet" Version="1.15.2" />
       <PackageReference Include="Olcsan.Boilerplate" Version="1.0.5" />
     </ItemGroup>
 

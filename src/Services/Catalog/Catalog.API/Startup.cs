@@ -41,7 +41,7 @@ namespace Catalog.API
             services.AddDependencyResolvers(new ICoreModule[]
             {
                 new CoreModule(),
-                new InfrastructureServiceRegistration()
+                new InfrastructureServiceRegistration(Configuration)
             });
             services.AddSwaggerGen(c =>
             {

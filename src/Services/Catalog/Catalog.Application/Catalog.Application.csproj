@@ -16,6 +16,12 @@
       <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
       <PackageReference Include="FluentValidation" Version="9.5.2" />
       <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="9.5.2" />
+      <PackageReference Include="Google.Protobuf" Version="3.13.0" />
+      <PackageReference Include="Grpc.Net.ClientFactory" Version="2.32.0" />
+      <PackageReference Include="Grpc.Tools" Version="2.32.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
       <PackageReference Include="MediatR" Version="9.0.0" />
       <PackageReference Include="MediatR.Extensions.Autofac.DependencyInjection" Version="7.3.0" />
       <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="9.0.0" />
@@ -25,6 +31,12 @@
 
     <ItemGroup>
       <Folder Include="Features\Commands\Brands" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Protobuf Include="..\..\Media\Media.Grpc\Protos\media.proto" GrpcServices="Client">
+        <Link>Protos\media.proto</Link>
+      </Protobuf>
     </ItemGroup>
 
 </Project>

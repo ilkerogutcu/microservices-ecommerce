@@ -15,15 +15,16 @@ namespace Catalog.Domain.Entities
         public int ReviewsCount { get; set; }
         public double? RatingAverage { get; set; }
         public int RatingCount { get; set; }
-
-        public IList<Media> Medias { get; set; } = new List<Media>();
+        public bool Locked { get; set; }
+        public bool IsActive { get; set; }
+        public IList<Media> MediaList { get; set; } = new List<Media>();
         public IList<Comment> Comments { get; set; } = new List<Comment>();
         public IList<Sku> Skus { get; set; } = new List<Sku>();
 
 
         public void AddMedia(Media media)
         {
-            Medias.Add(media);
+            MediaList.Add(media);
         }
 
         public void AddComment(Comment comment)

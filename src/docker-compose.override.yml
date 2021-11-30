@@ -1,0 +1,30 @@
+version: '3.4'
+
+services:
+  catalogdb:
+    container_name: catalogdb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  rabbitmq:
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  catalog.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "DatabaseSettings:ConnectionString=mongodb://CatalogDb:27017"
+      - MongoDatabaseConfig__ConnectionString=mongodb://localhost:27017
+      - MongoDatabaseConfig__DatabaseName=CatalogDb
+      - SeriLogConfigurations__ProjectName=CatalogService
+      - SeriLogConfigurations__FileLogConfiguration__FolderPath=C:\\Logs\\ECommerce
+      - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672"
+    depends_on:
+      - catalogdb
+      - rabbitmq
+    ports:
+      - "8000:80"
