@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Catalog.Application.Dtos;
 using Catalog.Application.Features.Commands.Products.CreateManyProductsCommand;
+using Catalog.Application.Features.Commands.Products.UpdateProductCommand;
 using Catalog.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -27,6 +28,18 @@ namespace Catalog.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateProduct(CreateManyProductsCommand command)
         {
+            var result = await _mediator.Send(command);
+            return result.Success ? Ok(result) : BadRequest(result.Message);
+        }
+
+        // Put api/v1/[controller]/{productId}
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Product))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpPut("{productId}")]
+        public async Task<IActionResult> UpdateProduct([FromRoute] string productId, UpdateProductCommand command)
+        {
+            command.ProductId = productId;
             var result = await _mediator.Send(command);
             return result.Success ? Ok(result) : BadRequest(result.Message);
         }

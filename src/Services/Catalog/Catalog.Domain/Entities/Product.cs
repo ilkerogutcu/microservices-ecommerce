@@ -6,8 +6,9 @@ namespace Catalog.Domain.Entities
     public class Product : BaseEntity
     {
         public Category Category { get; set; }
-        public string ThumbnailImageUrl { get; set; }
         public Brand Brand { get; set; }
+
+        public string ThumbnailImageUrl { get; set; }
         public string Name { get; set; }
         public string ShortDescription { get; set; }
         public string LongDescription { get; set; }

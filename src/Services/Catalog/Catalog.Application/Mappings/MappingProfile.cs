@@ -11,6 +11,7 @@ using Catalog.Application.Features.Commands.Options.UpdateOptionCommand;
 using Catalog.Application.Features.Commands.OptionValues.CreateOptionValueCommand;
 using Catalog.Application.Features.Commands.OptionValues.UpdateOptionValueCommand;
 using Catalog.Application.Features.Commands.Products.CreateManyProductsCommand;
+using Catalog.Application.Features.Commands.Products.UpdateProductCommand;
 using Catalog.Domain.Entities;
 using Google.Protobuf.WellKnownTypes;
 using Media.Grpc.Protos;
@@ -42,10 +43,13 @@ namespace Catalog.Application.Mappings
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
                 .ForMember(dest => dest.Option, opt => opt.MapFrom(src => src.Option))
                 .ReverseMap();
+            
             CreateMap<Product, CreateProductDto>().ReverseMap();
             CreateMap<Domain.Entities.Media, MediaModel>()
                 .Ignore(dest => dest.CreatedTimestamp)
                 .ReverseMap();
+            CreateMap<Product, UpdateProductCommand>().ReverseMap();
+
         }
     }
 }
