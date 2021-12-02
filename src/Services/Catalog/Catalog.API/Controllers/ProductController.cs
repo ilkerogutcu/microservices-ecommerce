@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Net;
 using System.Threading.Tasks;
-using Catalog.Application.Features.Commands.Products.CreateProductCommand;
-using Catalog.Application.Interfaces;
-using Catalog.Application.Interfaces.Repositories;
+using Catalog.Application.Dtos;
+using Catalog.Application.Features.Commands.Products.CreateManyProductsCommand;
 using Catalog.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -22,16 +20,15 @@ namespace Catalog.API.Controllers
             _mediator = mediator;
         }
 
+        // POST api/v1/[controller]/
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Product>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPost]
-        public void asdas(IFormFile file)
+        public async Task<IActionResult> CreateProduct(CreateManyProductsCommand command)
         {
-            _mediator.Send(new CreateProductCommand()
-            {
-                FileList = new List<IFormFile>()
-                {
-                    file
-                }
-            });
+            var result = await _mediator.Send(command);
+            return result.Success ? Ok(result) : BadRequest(result.Message);
         }
     }
 }

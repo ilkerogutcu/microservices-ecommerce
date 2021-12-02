@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace Catalog.Application.Features.Commands.Categories.CreateOrUpdateCategoryOptionValueCommand
+namespace Catalog.Application.Features.Commands.Categories.CreateCategoryOptionValueCommand
 {
-    public class CreateOrUpdateCategoryOptionValueCommandValidator: AbstractValidator<CreateOrUpdateCategoryOptionValueCommand>
+    public class CreateCategoryOptionValueCommandValidator : AbstractValidator<CreateCategoryOptionValueCommand>
     {
-        public CreateOrUpdateCategoryOptionValueCommandValidator()
+        public CreateCategoryOptionValueCommandValidator()
         {
             RuleFor(x => x.CategoryId).NotEmpty().WithMessage("Category id cannot be empty!");
             RuleFor(x => x.OptionId).NotEmpty().WithMessage("Option id cannot be empty!");

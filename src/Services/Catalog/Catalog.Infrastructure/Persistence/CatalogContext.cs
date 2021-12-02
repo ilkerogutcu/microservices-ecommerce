@@ -1,5 +1,5 @@
 ﻿using System;
-using Catalog.Application.Models.Configs;
+using Catalog.Application.Configs;
 using Catalog.Domain.Common;
 using Catalog.Domain.Entities;
 using Catalog.Domain.Utilities.Messages;
@@ -29,7 +29,6 @@ namespace Catalog.Infrastructure.Persistence
             Options = _database.GetCollection<Option>("Option");
             OptionValues = _database.GetCollection<OptionValue>("OptionValue");
             Products = _database.GetCollection<Product>("Product");
-            Skus = _database.GetCollection<Sku>("Sku");
             //
             // CatalogContextSeed.SeedBrandData(Brands);
             // CatalogContextSeed.SeedOptionData(Options);
@@ -53,7 +52,6 @@ namespace Catalog.Infrastructure.Persistence
         public IMongoCollection<Option> Options { get; set; }
         public IMongoCollection<OptionValue> OptionValues { get; set; }
         public IMongoCollection<Product> Products { get; set; }
-        public IMongoCollection<Sku> Skus { get; set; }
         public IMongoCollection<T> GetCollection()
         {
             return _database.GetCollection<T>(typeof(T).Name);

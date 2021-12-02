@@ -6,6 +6,6 @@ namespace Catalog.Application.Interfaces
 {
     public interface IMediaGrpcService
     {
-        Task<List<Domain.Entities.Media>> UploadImage(List<IFormFile> mediaList);
+        Task<Domain.Entities.Media> UploadImage(IFormFile file);
     }
 }

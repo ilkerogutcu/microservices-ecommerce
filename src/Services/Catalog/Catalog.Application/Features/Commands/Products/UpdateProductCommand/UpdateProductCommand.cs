@@ -17,6 +17,5 @@ namespace Catalog.Application.Features.Commands.Products.UpdateProductCommand
         public string LongDescription { get; set; }
         public string ModelCode { get; set; }
         public List<IFormFile> FileList { get; set; }
-        public List<SkuDto> Skus { get; set; }
     }
 }

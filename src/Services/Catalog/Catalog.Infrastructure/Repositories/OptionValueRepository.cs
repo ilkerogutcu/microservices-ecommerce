@@ -53,7 +53,7 @@ namespace Catalog.Infrastructure.Repositories
                     OptionName = option.Name,
                     OptionValues = (from optionValue in optionValues
                         where optionValue.OptionId.Equals(option.Id)
-                        select new OptionValueDto()
+                        select new OptionValueDto
                         {
                             Id = optionValue.Id,
                             Name = optionValue.Name

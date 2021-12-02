@@ -14,6 +14,7 @@ namespace Media.Grpc.Implements
     {
         private readonly Cloudinary _cloudinary;
         private readonly IConfiguration _configuration;
+
         public CloudinaryService(IConfiguration configuration)
         {
             _configuration = configuration;

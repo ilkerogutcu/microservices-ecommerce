@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Threading.Tasks;
 using AutoMapper;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Media.Grpc.Interfaces;
 using Media.Grpc.Protos;
@@ -23,17 +24,17 @@ namespace Media.Grpc.Services
         public override async Task<MediaModelResponse> UploadImage(UploadMediaRequest request,
             ServerCallContext context)
         {
-            var result = new MediaModelResponse();
-            foreach (var mediaByteString in request.MediaList)
+            var byteStringToArray = request.Media.ToByteArray();
+            var stream = new MemoryStream(byteStringToArray);
+            var file = new FormFile(stream, 0, byteStringToArray.Length, "name", "fileName");
+            var media = await _cloudinaryService.UploadImageAsync(file);
+            var mediaModel = _mapper.Map<MediaModel>(media);
+            mediaModel.CreatedTimestamp = Timestamp.FromDateTime(DateTime.UtcNow);
+            mediaModel.CreatedBy = "admin";
+            return new MediaModelResponse
             {
-                var byteStringToArray = mediaByteString.ToByteArray();
-                var stream = new MemoryStream(byteStringToArray);
-                var file = new FormFile(stream, 0, byteStringToArray.Length, "name", "fileName");
-                var media = await _cloudinaryService.UploadImageAsync(file);
-                result.MediaModels.Add(_mapper.Map<MediaModel>(media));
-            }
-
-            return result;
+                MediaModel = mediaModel
+            };
         }
     }
 }

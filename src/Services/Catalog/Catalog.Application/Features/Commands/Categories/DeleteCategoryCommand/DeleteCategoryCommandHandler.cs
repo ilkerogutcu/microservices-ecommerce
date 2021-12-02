@@ -17,13 +17,14 @@ namespace Catalog.Application.Features.Commands.Categories.DeleteCategoryCommand
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IProductRepository _productRepository;
-
+        private readonly ICategoryOptionValueRepository _categoryOptionValueRepository;
 
         public DeleteCategoryCommandHandler(ICategoryRepository categoryRepository,
-            IProductRepository productRepository)
+            IProductRepository productRepository, ICategoryOptionValueRepository categoryOptionValueRepository)
         {
             _categoryRepository = categoryRepository;
             _productRepository = productRepository;
+            _categoryOptionValueRepository = categoryOptionValueRepository;
         }
 
 
@@ -53,15 +54,33 @@ namespace Catalog.Application.Features.Commands.Categories.DeleteCategoryCommand
                 return new SuccessResult();
             }
 
-            var deleteCategory = mainCategory.SubCategories
+            var categoryToDelete = mainCategory.SubCategories
                 .Map(p => p.ParentId.Equals(request.ParentId), n => n.SubCategories)
                 .Map(p => p.Id.Equals(request.SubCategoryId), n => n.SubCategories).FirstOrDefault();
 
+            if (categoryToDelete is null)
+            {
+                return new ErrorResult(Messages.DataNotFound);
+            }
+
             mainCategory.SubCategories
                 .Map(p => p.Id.Equals(request.ParentId), n => n.SubCategories).FirstOrDefault()
-                ?.DeleteSubCategory(deleteCategory, "admin");
+                ?.DeleteSubCategory(categoryToDelete, "admin");
             await _categoryRepository.UpdateAsync(mainCategory.Id, mainCategory);
+
+            await DeleteCategoryOptionValuesByCategoryId(categoryToDelete.Id);
+
             return new SuccessResult();
+        }
+
+        private async Task DeleteCategoryOptionValuesByCategoryId(string categoryId)
+        {
+            var categoryOptionValues =
+                await _categoryOptionValueRepository.GetListAsync(x => x.Category.Id.Equals(categoryId));
+            foreach (var categoryOptionValue in categoryOptionValues)
+            {
+                await _categoryOptionValueRepository.DeleteByIdAsync(categoryOptionValue.Id);
+            }
         }
     }
 }

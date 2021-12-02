@@ -13,18 +13,17 @@ using Olcsan.Boilerplate.Aspects.Autofac.Validation;
 using Olcsan.Boilerplate.CrossCuttingConcerns.Logging.Serilog.Loggers;
 using Olcsan.Boilerplate.Utilities.Results;
 
-namespace Catalog.Application.Features.Commands.Categories.CreateOrUpdateCategoryOptionValueCommand
+namespace Catalog.Application.Features.Commands.Categories.CreateCategoryOptionValueCommand
 {
     public class CreateOrUpdateCategoryOptionValueCommandHandler : IRequestHandler<
-        CreateOrUpdateCategoryOptionValueCommand,
+        CreateCategoryOptionValueCommand,
         IDataResult<CategoryOptionValue>>
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IOptionValueRepository _optionValueRepository;
         private readonly IOptionRepository _optionRepository;
         private readonly ICategoryOptionValueRepository _categoryOptionValueRepository;
-
-
+        
         public CreateOrUpdateCategoryOptionValueCommandHandler(ICategoryRepository categoryRepository,
             IOptionValueRepository optionValueRepository, ICategoryOptionValueRepository categoryOptionValueRepository,
             IOptionRepository optionRepository)
@@ -34,15 +33,14 @@ namespace Catalog.Application.Features.Commands.Categories.CreateOrUpdateCategor
             _categoryOptionValueRepository = categoryOptionValueRepository;
             _optionRepository = optionRepository;
         }
-
+        
         [LogAspect(typeof(FileLogger), "Catalog-Application")]
         [ExceptionLogAspect(typeof(FileLogger), "Catalog-Application")]
-        [ValidationAspect(typeof(CreateOrUpdateCategoryOptionValueCommandValidator))]
-        public async Task<IDataResult<CategoryOptionValue>> Handle(CreateOrUpdateCategoryOptionValueCommand request,
+        [ValidationAspect(typeof(CreateCategoryOptionValueCommandValidator))]
+        public async Task<IDataResult<CategoryOptionValue>> Handle(CreateCategoryOptionValueCommand request,
             CancellationToken cancellationToken)
         {
-            var categoryOptionValue =
-                await _categoryOptionValueRepository.GetAsync(x => x.Category.Id.Equals(request.CategoryId));
+          
             var category = (await _categoryRepository.GetListAsync()).AsEnumerable()
                 .Map(p => p.Id.Equals(request.CategoryId), n => n.SubCategories)
                 .FirstOrDefault();
@@ -52,34 +50,7 @@ namespace Catalog.Application.Features.Commands.Categories.CreateOrUpdateCategor
                 return new ErrorDataResult<CategoryOptionValue>(Messages.DataNotFound);
             }
 
-            if (categoryOptionValue is null)
-            {
-                categoryOptionValue = new CategoryOptionValue();
-            
-                foreach (var optionValueId in request.OptionValueIds)
-                {
-                    var optionValue = await _optionValueRepository.GetByIdAsync(optionValueId);
-                    if (optionValue is not null)
-                    {
-                        categoryOptionValue.OptionValues.Add(optionValue);
-                    }
-                }
-
-                if (categoryOptionValue.OptionValues.Count <= 0)
-                    return new ErrorDataResult<CategoryOptionValue>(Messages.DataNotFound);
-                
-                categoryOptionValue.Option = option;
-                categoryOptionValue.Category = category;
-                categoryOptionValue.CreatedDate = DateTime.Now;
-                categoryOptionValue.CreatedBy = "admin";
-                categoryOptionValue.Varianter = request.Varianter;
-                categoryOptionValue.IsRequired = request.IsRequired;
-                await _categoryOptionValueRepository.AddAsync(categoryOptionValue);
-
-                return new SuccessDataResult<CategoryOptionValue>(categoryOptionValue);
-            }
-
-            categoryOptionValue.OptionValues.Clear();
+            var categoryOptionValue = new CategoryOptionValue();
             foreach (var optionValueId in request.OptionValueIds)
             {
                 var optionValue = await _optionValueRepository.GetByIdAsync(optionValueId);
@@ -91,7 +62,7 @@ namespace Catalog.Application.Features.Commands.Categories.CreateOrUpdateCategor
 
             if (categoryOptionValue.OptionValues.Count <= 0)
                 return new ErrorDataResult<CategoryOptionValue>(Messages.DataNotFound);
-            
+
             categoryOptionValue.Option = option;
             categoryOptionValue.LastUpdatedBy = "admin";
             categoryOptionValue.LastUpdatedDate = DateTime.Now;

@@ -1,4 +1,4 @@
-﻿namespace Catalog.Application.Models.Configs
+﻿namespace Catalog.Application.Configs
 {
     public class MongoDatabaseConfig
     {

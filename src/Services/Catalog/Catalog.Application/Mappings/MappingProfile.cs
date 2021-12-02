@@ -1,5 +1,8 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Linq.Expressions;
+using AutoMapper;
 using Catalog.Application.Dtos;
+using Catalog.Application.Extensions;
 using Catalog.Application.Features.Commands.Brands.CreateBrandCommand;
 using Catalog.Application.Features.Commands.Brands.UpdateBrandCommand;
 using Catalog.Application.Features.Commands.Categories.CreateCategoryCommand;
@@ -7,9 +10,11 @@ using Catalog.Application.Features.Commands.Options.CreateOptionCommand;
 using Catalog.Application.Features.Commands.Options.UpdateOptionCommand;
 using Catalog.Application.Features.Commands.OptionValues.CreateOptionValueCommand;
 using Catalog.Application.Features.Commands.OptionValues.UpdateOptionValueCommand;
-using Catalog.Application.Features.Commands.Products.CreateProductCommand;
+using Catalog.Application.Features.Commands.Products.CreateManyProductsCommand;
 using Catalog.Domain.Entities;
+using Google.Protobuf.WellKnownTypes;
 using Media.Grpc.Protos;
+using Option = Catalog.Domain.Entities.Option;
 
 namespace Catalog.Application.Mappings
 {
@@ -29,7 +34,6 @@ namespace Catalog.Application.Mappings
             CreateMap<OptionValue, CreateOptionValueCommand>().ReverseMap();
             CreateMap<OptionValue, UpdateOptionValueCommand>().ReverseMap();
 
-            
 
             CreateMap<Category, CategoryDto>().ReverseMap();
             CreateMap<Category, CreateCategoryCommand>().ReverseMap();
@@ -38,12 +42,10 @@ namespace Catalog.Application.Mappings
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
                 .ForMember(dest => dest.Option, opt => opt.MapFrom(src => src.Option))
                 .ReverseMap();
-            
-            CreateMap<Sku, SkuDto>().ReverseMap();
-
-            CreateMap<Product, CreateProductCommand>().ReverseMap();
-            CreateMap<Domain.Entities.Media, MediaModel>().ReverseMap();
-
+            CreateMap<Product, CreateProductDto>().ReverseMap();
+            CreateMap<Domain.Entities.Media, MediaModel>()
+                .Ignore(dest => dest.CreatedTimestamp)
+                .ReverseMap();
         }
     }
 }

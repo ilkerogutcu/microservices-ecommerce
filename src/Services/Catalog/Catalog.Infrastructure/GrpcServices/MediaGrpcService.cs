@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using AutoMapper;
 using Catalog.Application.Extensions;
 using Catalog.Application.Interfaces;
@@ -21,16 +19,18 @@ namespace Catalog.Infrastructure.GrpcServices
             _mapper = mapper;
         }
 
-        public async Task<List<Domain.Entities.Media>> UploadImage(List<IFormFile> mediaList)
+        public async Task<Domain.Entities.Media> UploadImage(IFormFile file)
         {
-            var uploadMediaRequest = new UploadMediaRequest();
-            foreach (var media in mediaList)
+            var uploadMediaRequest = new UploadMediaRequest()
             {
-                uploadMediaRequest.MediaList.Add(ByteString.CopyFrom(await media.GetBytesAsync()));
-            }
+                Media = ByteString.CopyFrom(await file.GetBytesAsync())
+            };
 
-            var mediaModel =  _mediaProtoService.UploadImage(uploadMediaRequest);
-            return _mapper.Map<List<Domain.Entities.Media>>(mediaModel.MediaModels.ToList());
+            var mediaModel = _mediaProtoService.UploadImage(uploadMediaRequest);
+            var media = _mapper.Map<Domain.Entities.Media>(mediaModel.MediaModel);
+            media.CreatedDate = mediaModel.MediaModel.CreatedTimestamp.ToDateTime();
+
+            return media;
         }
     }
 }
