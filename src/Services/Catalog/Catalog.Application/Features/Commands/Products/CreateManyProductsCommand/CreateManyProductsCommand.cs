@@ -2,7 +2,6 @@
 using Catalog.Application.Dtos;
 using Catalog.Domain.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Mvc;
 using Olcsan.Boilerplate.Utilities.Results;
 
 namespace Catalog.Application.Features.Commands.Products.CreateManyProductsCommand
