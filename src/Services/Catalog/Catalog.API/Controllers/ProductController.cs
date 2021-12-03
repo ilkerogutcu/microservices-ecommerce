@@ -55,7 +55,19 @@ namespace Catalog.API.Controllers
         {
             command.Id = productId;
             var result = await _mediator.Send(command);
-            return result.Success ? Ok(result) : BadRequest(result.Message);
+            return result.Success ? Ok() : BadRequest(result.Message);
+        }
+        // PATCH api/v1/[controller]/{productId}
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpPatch("{productId}/approval")]
+        public async Task<IActionResult> UpdateProduct([FromRoute] string productId,
+            UpdateProductActivationCommand command)
+        {
+            command.Id = productId;
+            var result = await _mediator.Send(command);
+            return result.Success ? Ok() : BadRequest(result.Message);
         }
     }
 }
