@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Catalog.API.Controllers
 {
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/media")]
     public class MediaController : ControllerBase
     {
         private readonly IMediator _mediator;

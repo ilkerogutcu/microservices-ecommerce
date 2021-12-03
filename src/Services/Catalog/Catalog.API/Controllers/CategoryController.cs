@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Catalog.API.Controllers
 {
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/category")]
     public class CategoryController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -38,11 +38,11 @@ namespace Catalog.API.Controllers
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
 
-        // POST api/v1/[controller]/{categoryId}/optionValues
+        // POST api/v1/[controller]/{categoryId}/option-values
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryOptionValue))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
-        [HttpPost("{categoryId}/optionValue")]
+        [HttpPost("{categoryId}/option-value")]
         public async Task<IActionResult> CreateCategoryOptionValue(string categoryId,
             [FromBody] CreateCategoryOptionValueCommand request)
         {
@@ -57,11 +57,11 @@ namespace Catalog.API.Controllers
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
 
-        // DELETE api/v1/[controller]/optionValue/{categoryOptionValueId}
+        // DELETE api/v1/[controller]/option-value/{categoryOptionValueId}
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryOptionValue))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
-        [HttpDelete("optionValue/{categoryOptionValueId}")]
+        [HttpDelete("option-value/{categoryOptionValueId}")]
         public async Task<IActionResult> DeleteCategoryOptionValue(string categoryOptionValueId)
         {
             var result = await _mediator.Send(new DeleteCategoryOptionValueCommand
@@ -71,11 +71,11 @@ namespace Catalog.API.Controllers
             return result.Success ? Ok() : BadRequest(result.Message);
         }
 
-        // GET api/v1/[controller]/{categoryId}/OptionValues
+        // GET api/v1/[controller]/{categoryId}/option-values
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryOptionValueDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
-        [HttpGet("{categoryId}/optionValue")]
+        [HttpGet("{categoryId}/option-values")]
         public async Task<IActionResult> GetCategoryOptionValues(string categoryId)
         {
             var result = await _mediator.Send(new GetCategoryOptionValuesByIdQuery
@@ -108,7 +108,7 @@ namespace Catalog.API.Controllers
             return result.Success ? Ok() : BadRequest(result.Message);
         }
 
-        // GET api/v1/[controller]?pageSize=null&pageIndex=null&isActive=null
+        // GET api/v1/[controller]?isActive=null
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<CategoryDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]

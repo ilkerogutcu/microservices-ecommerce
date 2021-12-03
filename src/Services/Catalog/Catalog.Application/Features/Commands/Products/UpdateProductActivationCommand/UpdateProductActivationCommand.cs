@@ -7,6 +7,6 @@ namespace Catalog.Application.Features.Commands.Products.UpdateProductActivation
     public class UpdateProductActivationCommand : IRequest<IResult>
     {
         [JsonIgnore] public string Id { get; set; }
-        public bool IsActive { get; set; }
+        public bool Activate { get; set; }
     }
 }

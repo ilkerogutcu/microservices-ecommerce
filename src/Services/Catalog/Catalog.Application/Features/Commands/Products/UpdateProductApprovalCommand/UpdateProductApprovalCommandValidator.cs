@@ -7,7 +7,7 @@ namespace Catalog.Application.Features.Commands.Products.UpdateProductApprovalCo
         public UpdateProductApprovalCommandValidator()
         {
             RuleFor(x => x.Id).NotEmpty().WithMessage("Id cannot be empty");
-            RuleFor(x => x.Approve).NotNull().WithMessage("Is active cannot be null");
+            RuleFor(x => x.Approve).NotNull().WithMessage("Approve cannot be null");
         }
     }
 }

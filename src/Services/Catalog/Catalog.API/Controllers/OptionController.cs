@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Catalog.API.Controllers
 {
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/option")]
     public class OptionController : ControllerBase
     {
         private readonly IMediator _mediator;

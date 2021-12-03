@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Catalog.API.Controllers
 {
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/option-value")]
     public class OptionValueController : ControllerBase
     {
         private readonly IMediator _mediator;

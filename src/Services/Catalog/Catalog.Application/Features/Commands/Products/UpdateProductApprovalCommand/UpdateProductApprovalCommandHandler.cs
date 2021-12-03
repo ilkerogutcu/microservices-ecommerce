@@ -27,10 +27,7 @@ namespace Catalog.Application.Features.Commands.Products.UpdateProductApprovalCo
         public async Task<IResult> Handle(UpdateProductApprovalCommand request, CancellationToken cancellationToken)
         {
             var product = await _productRepository.GetByIdAsync(request.Id);
-            if (product is null)
-            {
-                return new ErrorResult(Messages.DataNotFound);
-            }
+            if (product is null) return new ErrorResult(Messages.DataNotFound);
 
             product.Approved = request.Approve;
             product.LastUpdatedBy = "admin";

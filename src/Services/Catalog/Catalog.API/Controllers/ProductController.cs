@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Catalog.Application.Dtos;
 using Catalog.Application.Features.Commands.Products.CreateManyProductsCommand;
 using Catalog.Application.Features.Commands.Products.UpdateProductActivationCommand;
+using Catalog.Application.Features.Commands.Products.UpdateProductApprovalCommand;
 using Catalog.Application.Features.Commands.Products.UpdateProductCommand;
+using Catalog.Application.Features.Commands.Products.UpdateProductLockStatusCommand;
 using Catalog.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -12,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Catalog.API.Controllers
 {
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/product")]
     public class ProductController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -45,7 +46,7 @@ namespace Catalog.API.Controllers
             return result.Success ? Ok(result) : BadRequest(result.Message);
         }
 
-        // PATCH api/v1/[controller]/{productId}
+        // PATCH api/v1/[controller]/{productId}/activation
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
@@ -57,13 +58,27 @@ namespace Catalog.API.Controllers
             var result = await _mediator.Send(command);
             return result.Success ? Ok() : BadRequest(result.Message);
         }
-        // PATCH api/v1/[controller]/{productId}
+
+        // PATCH api/v1/[controller]/{productId}/approval
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPatch("{productId}/approval")]
-        public async Task<IActionResult> UpdateProduct([FromRoute] string productId,
-            UpdateProductActivationCommand command)
+        public async Task<IActionResult> UpdateProductApproval([FromRoute] string productId,
+            UpdateProductApprovalCommand command)
+        {
+            command.Id = productId;
+            var result = await _mediator.Send(command);
+            return result.Success ? Ok() : BadRequest(result.Message);
+        }
+        
+        // PATCH api/v1/[controller]/{productId}/lock-status
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpPatch("{productId}/lock-status")]
+        public async Task<IActionResult> UpdateProductLockStatus([FromRoute] string productId,
+            UpdateProductLockStatusCommand command)
         {
             command.Id = productId;
             var result = await _mediator.Send(command);
