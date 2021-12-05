@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Catalog.Application.Dtos;
+using Catalog.Application.Features.Commands.Products.AddCommentToProductCommand;
 using Catalog.Application.Features.Commands.Products.CreateManyProductsCommand;
 using Catalog.Application.Features.Commands.Products.UpdateProductActivationCommand;
 using Catalog.Application.Features.Commands.Products.UpdateProductApprovalCommand;
@@ -35,6 +36,20 @@ namespace Catalog.API.Controllers
             var result = await _mediator.Send(command);
             return result.Success ? Ok(result) : BadRequest(result.Message);
         }
+
+        // POST api/v1/[controller]/{productId}/comment
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpPost("{productId}/comment")]
+        public async Task<IActionResult> AddCommentToProduct([FromRoute] string productId,
+            [FromBody] AddCommentToProductCommand command)
+        {
+            command.ProductId = productId;
+            var result = await _mediator.Send(command);
+            return result.Success ? Ok() : BadRequest(result.Message);
+        }
+
 
         // PUT api/v1/[controller]/{productId}
         [Produces("application/json", "text/plain")]
@@ -73,7 +88,7 @@ namespace Catalog.API.Controllers
             var result = await _mediator.Send(command);
             return result.Success ? Ok() : BadRequest(result.Message);
         }
-        
+
         // PATCH api/v1/[controller]/{productId}/lock-status
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -86,10 +101,10 @@ namespace Catalog.API.Controllers
             var result = await _mediator.Send(command);
             return result.Success ? Ok() : BadRequest(result.Message);
         }
-        
+
         // PATCH api/v1/[controller]/{productId}/lock-status
         [Produces("application/json", "text/plain")]
-        [ProducesResponseType(StatusCodes.Status200OK,Type=typeof(List<ProductDto>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ProductDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpGet]
         public async Task<IActionResult> GetAllProducts([FromQuery] GetAllProductsQuery query)
