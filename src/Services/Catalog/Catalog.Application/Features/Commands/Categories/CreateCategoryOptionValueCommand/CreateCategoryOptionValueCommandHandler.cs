@@ -63,12 +63,13 @@ namespace Catalog.Application.Features.Commands.Categories.CreateCategoryOptionV
             if (categoryOptionValue.OptionValues.Count <= 0)
                 return new ErrorDataResult<CategoryOptionValue>(Messages.DataNotFound);
 
+            categoryOptionValue.Category = category;
             categoryOptionValue.Option = option;
-            categoryOptionValue.LastUpdatedBy = "admin";
-            categoryOptionValue.LastUpdatedDate = DateTime.Now;
+            categoryOptionValue.CreatedBy = "admin";
+            categoryOptionValue.CreatedDate = DateTime.Now;
             categoryOptionValue.Varianter = request.Varianter;
             categoryOptionValue.IsRequired = request.IsRequired;
-            await _categoryOptionValueRepository.UpdateAsync(categoryOptionValue.Id, categoryOptionValue);
+            await _categoryOptionValueRepository.AddAsync(categoryOptionValue);
             return new SuccessDataResult<CategoryOptionValue>(categoryOptionValue);
         }
     }

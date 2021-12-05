@@ -6,7 +6,7 @@ using Olcsan.Boilerplate.Utilities.Results;
 
 namespace Catalog.Application.Features.Queries.OptionValues.GetAllOptionValuesQuery
 {
-    public class GetAllOptionValuesQuery : IRequest<IDataResult<List<OptionValueDetailsDto>>>
+    public class GetAllOptionsWithValuesQuery : IRequest<IDataResult<List<OptionWithValuesDto>>>
     {
     }
 }

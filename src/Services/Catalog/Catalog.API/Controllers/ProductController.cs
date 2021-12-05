@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Catalog.Application.Dtos;
 using Catalog.Application.Features.Commands.Products.CreateManyProductsCommand;
 using Catalog.Application.Features.Commands.Products.UpdateProductActivationCommand;
 using Catalog.Application.Features.Commands.Products.UpdateProductApprovalCommand;
 using Catalog.Application.Features.Commands.Products.UpdateProductCommand;
 using Catalog.Application.Features.Commands.Products.UpdateProductLockStatusCommand;
+using Catalog.Application.Features.Queries.Products.GetAllProductsQuery;
 using Catalog.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -83,6 +85,17 @@ namespace Catalog.API.Controllers
             command.Id = productId;
             var result = await _mediator.Send(command);
             return result.Success ? Ok() : BadRequest(result.Message);
+        }
+        
+        // PATCH api/v1/[controller]/{productId}/lock-status
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK,Type=typeof(List<ProductDto>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpGet]
+        public async Task<IActionResult> GetAllProducts([FromQuery] GetAllProductsQuery query)
+        {
+            var result = await _mediator.Send(query);
+            return result.Success ? Ok(result) : BadRequest(result.Message);
         }
     }
 }

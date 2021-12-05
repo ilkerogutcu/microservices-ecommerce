@@ -61,12 +61,12 @@ namespace Catalog.API.Controllers
 
         // GET api/v1/[controller]
         [Produces("application/json", "text/plain")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<OptionValueDetailsDto>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<OptionWithValuesDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpGet]
-        public async Task<IActionResult> GetAllDetails()
+        public async Task<IActionResult> GetAllOptionsWithValues()
         {
-            var result = await _mediator.Send(new GetAllOptionValuesQuery());
+            var result = await _mediator.Send(new GetAllOptionsWithValuesQuery());
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
     }

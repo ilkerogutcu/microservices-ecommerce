@@ -29,9 +29,7 @@ namespace Catalog.UnitTests.Handlers.OptionTests
             var command = new CreateOptionCommand
             {
                 Name = "Test",
-                Varianter = false,
                 IsActive = true,
-                IsRequired = true
             };
             _optionRepository.Setup(x => x.AnyAsync(It.IsAny<Expression<Func<Option, bool>>>()))
                 .ReturnsAsync(() => false)
@@ -58,9 +56,7 @@ namespace Catalog.UnitTests.Handlers.OptionTests
             var command = new CreateOptionCommand
             {
                 Name = "Test",
-                Varianter = false,
                 IsActive = true,
-                IsRequired = true
             };
             _optionRepository.Setup(x => x.AnyAsync(It.IsAny<Expression<Func<Option, bool>>>()))
                 .ReturnsAsync(() => true)

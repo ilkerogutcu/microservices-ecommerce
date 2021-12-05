@@ -1,5 +1,5 @@
-﻿using MediatR;
-using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
+using MediatR;
 using Olcsan.Boilerplate.Utilities.Results;
 
 namespace Catalog.Application.Features.Commands.Products.UpdateProductApprovalCommand

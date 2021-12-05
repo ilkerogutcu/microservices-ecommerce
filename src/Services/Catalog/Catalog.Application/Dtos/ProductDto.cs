@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
-using Catalog.Domain.Common;
 
-namespace Catalog.Domain.Entities
+namespace Catalog.Application.Dtos
 {
-    public class Product : BaseEntity
+    public class ProductDto
     {
-        public Category Category { get; set; }
-        public Brand Brand { get; set; }
-
+        public string ProductId { get; set; }
+        public string CategoryName { get; set; }
+        public string CategoryId { get; set; }
+        public string BrandName { get; set; }
+        public string BrandId { get; set; }
         public string ThumbnailImageUrl { get; set; }
         public string Name { get; set; }
         public string NormalizedName { get; set; }
@@ -18,7 +19,6 @@ namespace Catalog.Domain.Entities
         public double? RatingAverage { get; set; }
         public int RatingCount { get; set; }
         public bool IsActive { get; set; }
-
         public string Barcode { get; set; }
         public string StockCode { get; set; }
         public int StockQuantity { get; set; }
@@ -27,28 +27,12 @@ namespace Catalog.Domain.Entities
         public bool IsFreeShipping { get; set; }
         public bool Approved { get; set; }
         public bool Locked { get; set; }
-        public List<OptionValue> OptionValues { get; set; } = new();
-        public IList<string> ImageUrls { get; set; } = new List<string>();
-        public IList<Comment> Comments { get; set; } = new List<Comment>();
-
-        public void AddOptionValue(OptionValue optionValue)
-        {
-            OptionValues.Add(optionValue);
-        }
-
-        public void AddOptionValues(List<OptionValue> optionValues)
-        {
-            OptionValues.AddRange(optionValues);
-        }
-
-        public void AddImageUrl(string imageUrl)
-        {
-            ImageUrls.Add(imageUrl);
-        }
-
-        public void AddComment(Comment comment)
-        {
-            Comments.Add(comment);
-        }
+        public string Color { get; set; }
+        public string Size { get; set; }
+        public string CreatedBy { get; set; }
+        public long CreatedDate { get; set; }
+        public string LastUpdatedBy { get; set; }
+        public long? LastUpdatedTime { get; set; }
+        public List<OptionValueDetailsDto> OptionValues { get; set; }
     }
 }

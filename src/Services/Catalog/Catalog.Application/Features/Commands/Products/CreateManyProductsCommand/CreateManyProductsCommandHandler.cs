@@ -92,7 +92,6 @@ namespace Catalog.Application.Features.Commands.Products.CreateManyProductsComma
                     messages.Add($"{product.Name} cannot be added because the option value is not found.");
                     continue;
                 }
-
                 product.IsFreeShipping = product.SalePrice > 100;
                 product.ThumbnailImageUrl = product.ImageUrls[0];
                 product.Brand = brand;
@@ -101,7 +100,7 @@ namespace Catalog.Application.Features.Commands.Products.CreateManyProductsComma
                 product.CreatedBy = "admin";
                 await _productRepository.AddAsync(product);
                 productList.Add(product);
-                messages.Add($"Product Name:{product.Name} Model Code:{product.ModelCode} Barcode:{product.Barcode} added successfully.");
+                messages.Add($"Product Name: {product.Name} Model Code: {product.ModelCode} Barcode: {product.Barcode} added successfully.");
             }
 
             return new SuccessDataResult<List<Product>>(productList, string.Join("///", messages));
@@ -111,19 +110,27 @@ namespace Catalog.Application.Features.Commands.Products.CreateManyProductsComma
             ref List<string> messages)
         {
             var messagesCountTemp = messages.Count;
-            if (_categoryOptionValueRepository.Any(x => x.Category.Id.Equals(category.Id) && x.IsRequired))
-            {
-                var categoryOptionValues =
-                    _categoryOptionValueRepository.GetList(x => x.Category.Id.Equals(category.Id));
+            var remainingRequiredOptionValues = _categoryOptionValueRepository.GetList(
+                x => x.Category.Id.Equals(category.Id) && x.IsRequired).ToList();
 
-                foreach (var categoryOptionValue in categoryOptionValues)
+            if (remainingRequiredOptionValues.Count is 0)
+            {
+                return true;
+            }
+
+            foreach (var optionValueId in createProductDto.OptionValueIds)
+            {
+                var requiredCategoryOptionValue = remainingRequiredOptionValues.FirstOrDefault(
+                    x => x.OptionValues.Any(x => x.Id.Equals(optionValueId)));
+
+                if (requiredCategoryOptionValue is not null)
                 {
-                    messages.AddRange(from optionValueId in createProductDto.OptionValueIds
-                        where categoryOptionValue.IsRequired &&
-                              !categoryOptionValue.OptionValues.Any(x => x.Id.Equals(optionValueId))
-                        select $"{categoryOptionValue.Option.Name} is required!");
+                    remainingRequiredOptionValues.Remove(requiredCategoryOptionValue);
                 }
             }
+
+            messages.AddRange(remainingRequiredOptionValues.Select(remainingRequiredOptionValue =>
+                $"{remainingRequiredOptionValue.Option.Name} is required!"));
 
             return messagesCountTemp == messages.Count;
         }

@@ -24,9 +24,9 @@ namespace Catalog.UnitTests.Handlers.OptionValueTests
         private async Task GetAllOptionValues_WhenExistingOptionValues_ReturnSuccessResult()
         {
             // Arrange
-            var query = new GetAllOptionValuesQuery();
+            var query = new GetAllOptionsWithValuesQuery();
 
-            var optionValueDetails = new List<OptionValueDetailsDto>()
+            var optionValueDetails = new List<OptionWithValuesDto>()
             {
                 new()
                 {
@@ -46,7 +46,7 @@ namespace Catalog.UnitTests.Handlers.OptionValueTests
             _optionValueRepository.Setup(x => x.GetAllDetailsAsync())
                 .ReturnsAsync(optionValueDetails)
                 .Verifiable();
-            var handler = new GetAllOptionValuesQueryHandler(_optionValueRepository.Object);
+            var handler = new GetAllOptionsWithValuesQueryHandler(_optionValueRepository.Object);
 
             // Act
             var result = await handler.Handle(query,
@@ -63,13 +63,13 @@ namespace Catalog.UnitTests.Handlers.OptionValueTests
         private async Task GetAllOptionValues_WhenNonexistentOptionValues_ReturnSuccessResult()
         {
             // Arrange
-            var query = new GetAllOptionValuesQuery();
-            var optionValueDetails = new List<OptionValueDetailsDto>();
+            var query = new GetAllOptionsWithValuesQuery();
+            var optionValueDetails = new List<OptionWithValuesDto>();
 
             _optionValueRepository.Setup(x => x.GetAllDetailsAsync())
                 .ReturnsAsync(optionValueDetails)
                 .Verifiable();
-            var handler = new GetAllOptionValuesQueryHandler(_optionValueRepository.Object);
+            var handler = new GetAllOptionsWithValuesQueryHandler(_optionValueRepository.Object);
 
             // Act
             var result = await handler.Handle(query,
