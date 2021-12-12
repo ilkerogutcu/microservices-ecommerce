@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Catalog.Application.Dtos;
-using Catalog.Application.Features.Commands.OptionValues.CreateOptionValueCommand;
-using Catalog.Application.Features.Commands.OptionValues.DeleteOptionValueCommand;
-using Catalog.Application.Features.Commands.OptionValues.UpdateOptionValueCommand;
-using Catalog.Application.Features.Queries.OptionValues.GetAllOptionValuesQuery;
+using Catalog.Application.Features.Commands.Options.CreateOptionCommand;
+using Catalog.Application.Features.Commands.Options.DeleteOptionCommand;
+using Catalog.Application.Features.Commands.Options.UpdateOptionCommand;
+using Catalog.Application.Features.Queries.Options.GetAllOptionsQuery;
+using Catalog.Application.Wrappers;
 using Catalog.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -13,22 +14,22 @@ using Microsoft.AspNetCore.Mvc;
 namespace Catalog.API.Controllers
 {
     [ApiController]
-    [Route("api/v1/option-value")]
-    public class OptionValueController : ControllerBase
+    [Route("api/v1/options")]
+    public class OptionController : ControllerBase
     {
         private readonly IMediator _mediator;
 
-        public OptionValueController(IMediator mediator)
+        public OptionController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         // POST api/v1/[controller]/
         [Produces("application/json", "text/plain")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OptionValue))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Option))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateOptionValueCommand command)
+        public async Task<IActionResult> Create([FromBody] CreateOptionCommand command)
         {
             var result = await _mediator.Send(command);
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
@@ -36,10 +37,10 @@ namespace Catalog.API.Controllers
 
         // PUT api/v1/[controller]/
         [Produces("application/json", "text/plain")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OptionValue))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Option))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] UpdateOptionValueCommand command)
+        public async Task<IActionResult> Update([FromBody] UpdateOptionCommand command)
         {
             var result = await _mediator.Send(command);
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
@@ -52,22 +53,23 @@ namespace Catalog.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
-            var result = await _mediator.Send(new DeleteOptionValueCommand()
+            var result = await _mediator.Send(new DeleteOptionCommand()
             {
                 Id = id
             });
             return result.Success ? Ok() : BadRequest(result.Message);
         }
 
-        // GET api/v1/[controller]
+        // GET api/v1/[controller]?pageSize=10&pageIndex=1&varianter=null
         [Produces("application/json", "text/plain")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<OptionWithValuesDto>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResult<List<OptionDto>>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpGet]
-        public async Task<IActionResult> GetAllOptionsWithValues()
+        public async Task<IActionResult> GetAll([FromQuery] GetAllOptionsQuery query)
         {
-            var result = await _mediator.Send(new GetAllOptionsWithValuesQuery());
-            return result.Success ? Ok(result.Data) : BadRequest(result.Message);
+            var result = await _mediator.Send(query);
+            return result.Success ? Ok(result) : BadRequest(result.Message);
         }
+       
     }
 }

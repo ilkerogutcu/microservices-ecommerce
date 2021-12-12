@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Catalog.API.Controllers
 {
     [ApiController]
-    [Route("api/v1/brand")]
+    [Route("api/v1/brands")]
     public class BrandController : ControllerBase
     {
         private readonly IMediator _mediator;

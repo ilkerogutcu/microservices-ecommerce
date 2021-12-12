@@ -1,0 +1,21 @@
+﻿using System;
+using System.Collections.Generic;
+using Identity.Domain.Common;
+using Microsoft.AspNetCore.Identity;
+
+namespace Identity.Domain.Entities
+{
+    public class User : IdentityUser, IEntity
+    {
+        public bool IsActive { get; set; }
+        public string LastLoginIp { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime LastUpdatedDate { get; set; }
+        public DateTime LastLoginDate { get; set; }
+        public DateTime BirthDate { get; set; }
+        public List<Address> Addresses { get; set; } = new List<Address>();
+        public List<Notification> Notifications { get; set; } = new List<Notification>();
+    }
+}

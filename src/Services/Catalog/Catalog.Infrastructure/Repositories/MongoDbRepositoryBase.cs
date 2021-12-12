@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading;
 using System.Threading.Tasks;
+using Catalog.Application.Interfaces.Repositories;
 using Catalog.Domain.Common;
 using Catalog.Infrastructure.Persistence;
 using MongoDB.Driver;
