@@ -1,22 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using Catalog.Application.DependencyResolvers;
+
 using Catalog.Application.Mappings;
 using Catalog.Infrastructure;
-using Catalog.Infrastructure.Persistence;
-using Catalog.Infrastructure.Repositories;
-using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Olcsan.Boilerplate.DependencyResolvers;
 using Olcsan.Boilerplate.Extensions;

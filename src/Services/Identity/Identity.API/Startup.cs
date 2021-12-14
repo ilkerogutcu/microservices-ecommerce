@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Identity.Application.Mappings;
 using Identity.Application.Utilities.Encryption;
 using Identity.Domain.Entities;
 using Identity.Infrastructure;
@@ -38,6 +39,8 @@ namespace Identity.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(MappingProfile));
+
             services.AddDbContext<IdentityContext>((options) =>
                 options.UseSqlServer(Configuration.GetConnectionString("IdentityDbConnectionString")));
             services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<IdentityContext>()

@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Identity.Grpc.Services;
+﻿using Mail.Grpc.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Identity.Grpc
+namespace Mail.Grpc
 {
     public class Startup
     {
@@ -32,8 +28,7 @@ namespace Identity.Grpc
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGrpcService<GreeterService>();
-
+                endpoints.MapGrpcService<MailService>();
                 endpoints.MapGet("/",
                     async context =>
                     {
