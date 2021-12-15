@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Identity.Application.Features.Commands.Users.SignInCommand;
+using Identity.Application.Features.Commands.Users.SignInWithTwoFactorCommand;
 using Identity.Application.Features.Commands.Users.SignUpCommand;
+using Identity.Application.Features.Commands.Users.ViewModels;
 using Identity.Application.Features.Events.Users.SendEmailConfirmationTokenEvent;
 using Identity.Domain.Enums;
 using MediatR;
@@ -8,7 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Olcsan.Boilerplate.Utilities.Results;
-using Microsoft.AspNetCore.HttpOverrides;
+
 namespace Identity.API.Controllers
 {
     [ApiController]
@@ -48,6 +50,7 @@ namespace Identity.API.Controllers
             await _mediator.Publish(new SendEmailConfirmationTokenEvent(userId));
             return Ok();
         }
+
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IDataResult<SignInResponse>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
@@ -57,6 +60,21 @@ namespace Identity.API.Controllers
             command.IpAddress = (HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress)?.ToString();
 
             var result = await _mediator.Send(command);
+            return result.Success ? Ok(result) : BadRequest(result.Message);
+        }
+
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SignInResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpPost("sign-in/2FA")]
+        public async Task<IActionResult> SignInWithTwoFactorSecurity(SignInWithTwoFactorCommand command)
+        {
+            var ipAddress = HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress?.ToString();
+            var result = await _mediator.Send(new SignInWithTwoFactorCommand()
+            {
+                Code = command.Code,
+                IpAddress = ipAddress
+            });
             return result.Success ? Ok(result) : BadRequest(result.Message);
         }
     }

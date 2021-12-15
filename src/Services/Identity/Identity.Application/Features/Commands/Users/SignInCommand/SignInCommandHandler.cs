@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Identity.Application.Constants;
+using Identity.Application.Features.Commands.Users.ViewModels;
 using Identity.Application.Features.Events.Users.SendEmailConfirmationTokenEvent;
 using Identity.Application.Features.Events.Users.SendEmailTwoFactorTokenEvent;
 using Identity.Application.Features.Events.Users.UserSignedInEvent;
@@ -63,7 +64,7 @@ namespace Identity.Application.Features.Commands.Users.SignInCommand
             if (result.RequiresTwoFactor)
             {
                 _mediator.Publish(new SendEmailTwoFactorTokenEvent(user.Id));
-                return new SuccessDataResult<SignInResponse>(Messages.Sent2FaCodeEmailSuccessfully);
+                return new ErrorDataResult<SignInResponse>(Messages.Sent2FaCodeEmailSuccessfully);
             }
 
             if (!result.Succeeded)

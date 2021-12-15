@@ -22,6 +22,7 @@ namespace Identity.Application.Features.Events.Users.SendEmailTwoFactorTokenEven
             _userManager = userManager;
             _mailService = mailService;
         }
+
         [ExceptionLogAspect(typeof(FileLogger), "Identity-Service")]
         [LogAspect(typeof(FileLogger), "Identity-Service")]
         public async Task Handle(SendEmailTwoFactorTokenEvent notification, CancellationToken cancellationToken)
