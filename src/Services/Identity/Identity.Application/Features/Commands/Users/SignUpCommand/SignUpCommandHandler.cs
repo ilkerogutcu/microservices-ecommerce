@@ -4,13 +4,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Identity.Application.Constants;
-using Identity.Application.Features.Events.Users.SendVerificationEmailEvent;
-using Identity.Application.Interfaces;
+using Identity.Application.Features.Events.Users.SendEmailConfirmationTokenEvent;
 using Identity.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Olcsan.Boilerplate.Aspects.Autofac.Exception;
 using Olcsan.Boilerplate.Aspects.Autofac.Logger;
+using Olcsan.Boilerplate.Aspects.Autofac.Validation;
 using Olcsan.Boilerplate.CrossCuttingConcerns.Logging.Serilog.Loggers;
 using Olcsan.Boilerplate.Utilities.Results;
 
@@ -31,9 +31,10 @@ namespace Identity.Application.Features.Commands.Users.SignUpCommand
             _mapper = mapper;
             _mediator = mediator;
         }
-
-        [LogAspect(typeof(FileLogger), "Identity-Service")]
+        
         [ExceptionLogAspect(typeof(FileLogger), "Identity-Service")]
+        [LogAspect(typeof(FileLogger), "Identity-Service")]
+        [ValidationAspect(typeof(SignUpCommandValidator))]
         public async Task<IDataResult<SignUpResponse>> Handle(SignUpCommand request,
             CancellationToken cancellationToken)
         {
@@ -70,8 +71,7 @@ namespace Identity.Application.Features.Commands.Users.SignUpCommand
                 return new ErrorDataResult<SignUpResponse>(Messages.SignUpFailed);
             }
             
-            var verificationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            _mediator.Publish(new SendVerificationEmailEvent(user, verificationToken));
+            _mediator.Publish(new SendEmailConfirmationTokenEvent(user.Id));
             return new SuccessDataResult<SignUpResponse>(new SignUpResponse()
             {
                 Email = user.Email,

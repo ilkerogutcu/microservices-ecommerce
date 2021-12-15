@@ -56,7 +56,7 @@ namespace Mail.Grpc.Services
             using var smtp = new SmtpClient();
             await smtp.ConnectAsync(_mailConfigs.Host, _mailConfigs.Port, SecureSocketOptions.StartTls);
             await smtp.AuthenticateAsync(_mailConfigs.Mail, _mailConfigs.Password);
-            await smtp.SendAsync(email);
+            var result=await smtp.SendAsync(email);
             await smtp.DisconnectAsync(true);
             return new Empty();
         }

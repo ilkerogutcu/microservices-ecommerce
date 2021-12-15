@@ -17,7 +17,7 @@ namespace Identity.Infrastructure.GrpcServices
             _mailServiceClient = mailServiceClient;
         }
 
-        public async Task SendMail(string body, string subject, string toEmail, List<IFormFile> attachments)
+        public async Task SendMail(string body, string subject, string toEmail, List<IFormFile> attachments = null)
         {
             var sendEmailRequest = new SendEmailRequest
             {
@@ -25,9 +25,12 @@ namespace Identity.Infrastructure.GrpcServices
                 Subject = subject,
                 ToEmail = toEmail
             };
-            foreach (var attachment in attachments)
+            if (attachments is not null)
             {
-                sendEmailRequest.Attachments.Add(ByteString.CopyFrom(await attachment.GetBytesAsync()));
+                foreach (var attachment in attachments)
+                {
+                    sendEmailRequest.Attachments.Add(ByteString.CopyFrom(await attachment.GetBytesAsync()));
+                }
             }
 
             _mailServiceClient.SendEmail(sendEmailRequest);

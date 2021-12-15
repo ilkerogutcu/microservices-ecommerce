@@ -6,6 +6,6 @@ namespace Identity.Application.Interfaces
 {
     public interface IMailService
     {
-        Task SendMail(string body, string subject, string toEmail, List<IFormFile> attachments);
+        Task SendMail(string body, string subject, string toEmail, List<IFormFile> attachments = null);
     }
 }
