@@ -10,6 +10,7 @@ using Identity.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -89,28 +90,43 @@ namespace Identity.API
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);
                 options.Lockout.MaxFailedAccessAttempts = 5;
             });
-            services.AddAuthentication(options =>
+            // services.AddAuthentication(options =>
+            // {
+            //     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            //     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            // })
+            //    .AddJwtBearer(options =>
+            //    {
+            //        options.SaveToken = true;
+            //        options.RequireHttpsMetadata = false;
+            //        options.TokenValidationParameters = new TokenValidationParameters
+            //        {
+            //            ValidateIssuer = true,
+            //            ValidateAudience = true,
+            //            ValidateLifetime = true,
+            //            ValidIssuer = Configuration["TokenOptions:Issuer"],
+            //            ValidAudience = Configuration["TokenOptions:Audience"],
+            //            ValidateIssuerSigningKey = true,
+            //            IssuerSigningKey =
+            //                SecurityKeyHelper.CreateSecurityKey(Configuration["TokenOptions:SecurityKey"])
+            //        };
+            //    });
+            services.AddSession();
+
+            services.ConfigureApplicationCookie(options =>
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-               .AddJwtBearer(options =>
-               {
-                   options.SaveToken = true;
-                   options.RequireHttpsMetadata = false;
-                   options.TokenValidationParameters = new TokenValidationParameters
-                   {
-                       ValidateIssuer = true,
-                       ValidateAudience = true,
-                       ValidateLifetime = true,
-                       ValidIssuer = Configuration["TokenOptions:Issuer"],
-                       ValidAudience = Configuration["TokenOptions:Audience"],
-                       ValidateIssuerSigningKey = true,
-                       IssuerSigningKey =
-                           SecurityKeyHelper.CreateSecurityKey(Configuration["TokenOptions:SecurityKey"])
-                   };
-               });
+              
+                options.Cookie = new CookieBuilder
+                {
+                    Name = "e-commerce",
+                    HttpOnly = true,
+                    SameSite = SameSiteMode.Strict,
+                    SecurePolicy = CookieSecurePolicy.SameAsRequest // Always
+                };
+                options.SlidingExpiration = true;
+                options.ExpireTimeSpan = System.TimeSpan.FromDays(1);
+            });
             services.AddDependencyResolvers(new ICoreModule[]
             {
                 new CoreModule(),
@@ -133,8 +149,8 @@ namespace Identity.API
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }

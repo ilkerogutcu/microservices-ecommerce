@@ -13,7 +13,6 @@ namespace Identity.Infrastructure.Persistence
 {
     public class IdentityContextSeed
     {
-        private static Object thisLock = new Object();
 
         public static async Task SeedAsync(IdentityContext identityContext, IServiceProvider services)
         {

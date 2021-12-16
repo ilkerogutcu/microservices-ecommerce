@@ -6,6 +6,7 @@ using Identity.Application.Features.Commands.Users.ViewModels;
 using Identity.Application.Features.Events.Users.SendEmailConfirmationTokenEvent;
 using Identity.Domain.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
@@ -36,6 +37,7 @@ namespace Identity.API.Controllers
             return result.Success ? Ok(result) : BadRequest(result.Message);
         }
 
+        // POST api/v1/[controller]/send-email-verification-token/{userId}
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
@@ -51,8 +53,9 @@ namespace Identity.API.Controllers
             return Ok();
         }
 
+        // POST api/v1/[controller]/sign-in
         [Produces("application/json", "text/plain")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IDataResult<SignInResponse>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPost("sign-in")]
         public async Task<IActionResult> SignIn(SignInCommand command)
@@ -60,11 +63,12 @@ namespace Identity.API.Controllers
             command.IpAddress = (HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress)?.ToString();
 
             var result = await _mediator.Send(command);
-            return result.Success ? Ok(result) : BadRequest(result.Message);
+            return result.Success ? Ok(result.Message) : BadRequest(result.Message);
         }
 
+        // POST api/v1/[controller]/sign-in/2FA
         [Produces("application/json", "text/plain")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SignInResponse))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPost("sign-in/2FA")]
         public async Task<IActionResult> SignInWithTwoFactorSecurity(SignInWithTwoFactorCommand command)
@@ -75,7 +79,7 @@ namespace Identity.API.Controllers
                 Code = command.Code,
                 IpAddress = ipAddress
             });
-            return result.Success ? Ok(result) : BadRequest(result.Message);
+            return result.Success ? Ok(result.Message) : BadRequest(result.Message);
         }
     }
 }
