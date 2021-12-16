@@ -1,4 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Identity.Application.Features.Commands.Users.ForgotPasswordCommand;
+using Identity.Application.Features.Commands.Users.ResetPasswordCommand;
 using Identity.Application.Features.Commands.Users.SignInCommand;
 using Identity.Application.Features.Commands.Users.SignInWithTwoFactorCommand;
 using Identity.Application.Features.Commands.Users.SignUpCommand;
@@ -55,7 +57,7 @@ namespace Identity.API.Controllers
 
         // POST api/v1/[controller]/sign-in
         [Produces("application/json", "text/plain")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SuccessDataResult<SignInResponseViewModel>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPost("sign-in")]
         public async Task<IActionResult> SignIn(SignInCommand command)
@@ -63,12 +65,12 @@ namespace Identity.API.Controllers
             command.IpAddress = (HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress)?.ToString();
 
             var result = await _mediator.Send(command);
-            return result.Success ? Ok(result.Message) : BadRequest(result.Message);
+            return result.Success ? Ok(result) : BadRequest(result.Message);
         }
 
         // POST api/v1/[controller]/sign-in/2FA
         [Produces("application/json", "text/plain")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SuccessDataResult<SignInResponseViewModel>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPost("sign-in/2FA")]
         public async Task<IActionResult> SignInWithTwoFactorSecurity(SignInWithTwoFactorCommand command)
@@ -79,6 +81,28 @@ namespace Identity.API.Controllers
                 Code = command.Code,
                 IpAddress = ipAddress
             });
+            return result.Success ? Ok(result) : BadRequest(result.Message);
+        }
+
+        // POST api/v1/[controller]/forgot-password
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPasswordAsync(ForgotPasswordCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return result.Success ? Ok(result.Message) : BadRequest(result.Message);
+        }
+
+        // POST api/v1/[controller]/reset-password
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPasswordAsync(ResetPasswordCommand command)
+        {
+            var result = await _mediator.Send(command);
             return result.Success ? Ok(result.Message) : BadRequest(result.Message);
         }
     }

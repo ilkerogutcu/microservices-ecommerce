@@ -5,7 +5,7 @@ using Olcsan.Boilerplate.Utilities.Results;
 
 namespace Identity.Application.Features.Commands.Users.SignInCommand
 {
-    public class SignInCommand : IRequest<IDataResult<SignInResponse>>
+    public class SignInCommand : IRequest<IDataResult<SignInResponseViewModel>>
     {
         public SignInCommand(string email, string password, string ipAddress)
         {

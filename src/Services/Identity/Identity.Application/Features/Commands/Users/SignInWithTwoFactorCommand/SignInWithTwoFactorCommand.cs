@@ -5,7 +5,7 @@ using Olcsan.Boilerplate.Utilities.Results;
 
 namespace Identity.Application.Features.Commands.Users.SignInWithTwoFactorCommand
 {
-    public class SignInWithTwoFactorCommand : IRequest<IDataResult<SignInResponse>>
+    public class SignInWithTwoFactorCommand : IRequest<IDataResult<SignInResponseViewModel>>
     {
         public string Code { get; set; }
         [JsonIgnore] public string IpAddress { get; set; }

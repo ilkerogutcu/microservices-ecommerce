@@ -16,5 +16,8 @@
         public const string Sent2FaCodeEmailSuccessfully = "2FA code has been sent to email successfully";
         public const string UserNotFound = "User not found!";
         public const string SignedInSuccessfully = "Signed in successfully.";
+        public const string ForgotPassword = "If the e-mail is exists, e-mail will be sent.";
+        public const string PasswordHasBeenResetSuccessfully = "Your password has been reset successfully.";
+        public const string PasswordResetFailed = "Error occured while reseting the password!";
     }
 }

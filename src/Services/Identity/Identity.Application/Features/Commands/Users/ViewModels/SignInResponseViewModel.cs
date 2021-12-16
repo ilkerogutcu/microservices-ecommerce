@@ -2,7 +2,7 @@
 
 namespace Identity.Application.Features.Commands.Users.ViewModels
 {
-    public class SignInResponse
+    public class SignInResponseViewModel
     {
         public string Id { get; set; }
         public string Email { get; set; }

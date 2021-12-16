@@ -14,7 +14,7 @@ using Olcsan.Boilerplate.Utilities.Results;
 
 namespace Identity.Application.Features.Commands.Users.SignInWithTwoFactorCommand
 {
-    public class SignInWithTwoFactorCommandHandler : IRequestHandler<SignInWithTwoFactorCommand, IDataResult<SignInResponse>>
+    public class SignInWithTwoFactorCommandHandler : IRequestHandler<SignInWithTwoFactorCommand, IDataResult<SignInResponseViewModel>>
     {
         private readonly SignInManager<User> _signInManager;
         private readonly UserManager<User> _userManager;
@@ -29,20 +29,20 @@ namespace Identity.Application.Features.Commands.Users.SignInWithTwoFactorComman
 
         [ExceptionLogAspect(typeof(FileLogger), "Identity-Service")]
         [LogAspect(typeof(FileLogger), "Identity-Service")]
-        public async Task<IDataResult<SignInResponse>> Handle(SignInWithTwoFactorCommand request,
+        public async Task<IDataResult<SignInResponseViewModel>> Handle(SignInWithTwoFactorCommand request,
             CancellationToken cancellationToken)
         {
             var result = await _signInManager.TwoFactorSignInAsync("Email", request.Code, true, false);
             if (!result.Succeeded)
             {
-                return new ErrorDataResult<SignInResponse>(Messages.SignInFailed);
+                return new ErrorDataResult<SignInResponseViewModel>(Messages.SignInFailed);
             }
 
             var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
 
             var userRoles = await _userManager.GetRolesAsync(user);
             _mediator.Publish(new UserSignedInEvent(request.IpAddress, user));
-            return new SuccessDataResult<SignInResponse>(new SignInResponse
+            return new SuccessDataResult<SignInResponseViewModel>(new SignInResponseViewModel
             {
                 Id = user.Id,
                 Email = user.Email,
