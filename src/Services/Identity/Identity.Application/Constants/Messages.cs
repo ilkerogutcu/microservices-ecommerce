@@ -8,6 +8,7 @@
         public const string InvalidParameter = "Invalid parameter!";
         public const string UserAlreadyExists = "User already exists!";
         public const string SignUpFailed = "Sign up failed!";
+        public const string SignInFirst = "Please sign in first.";
         public const string CreateUserFailed = "Create user failed!";
         public const string UserCreatedSuccessfully = "User created successfuly.";
         public const string SignInFailed = "Sign in failed!";

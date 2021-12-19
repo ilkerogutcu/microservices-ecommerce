@@ -21,10 +21,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Features\Queries" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Protobuf Include="..\..\Mail\Mail.Grpc\Protos\mail.proto" GrpcServices="Client">
         <Link>Protos\mail.proto</Link>
       </Protobuf>

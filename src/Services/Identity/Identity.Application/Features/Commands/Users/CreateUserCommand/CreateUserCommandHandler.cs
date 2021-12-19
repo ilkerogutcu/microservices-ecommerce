@@ -23,7 +23,6 @@ namespace Identity.Application.Features.Commands.Users.CreateUserCommand
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-
         public CreateUserCommandHandler(RoleManager<IdentityRole> roleManager, UserManager<User> userManager,
             IMapper mapper, IHttpContextAccessor httpContextAccessor)
         {
@@ -38,6 +37,13 @@ namespace Identity.Application.Features.Commands.Users.CreateUserCommand
         [ValidationAspect(typeof(CreateUserCommandValidator))]
         public async Task<IResult> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
+            var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+
+            if (currentUser is null)
+            {
+                return new ErrorResult(Messages.SignInFirst);
+            }
+
             var existingUser = await _userManager.FindByEmailAsync(request.Email);
             if (existingUser is not null)
             {
@@ -45,7 +51,7 @@ namespace Identity.Application.Features.Commands.Users.CreateUserCommand
             }
 
             var user = _mapper.Map<User>(request);
-            var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+
             user.UserName = user.Email;
             user.CreatedDate = DateTime.Now;
             user.IsActive = true;

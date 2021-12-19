@@ -5,8 +5,10 @@ using Identity.Application.Features.Commands.Users.ResetPasswordCommand;
 using Identity.Application.Features.Commands.Users.SignInCommand;
 using Identity.Application.Features.Commands.Users.SignInWithTwoFactorCommand;
 using Identity.Application.Features.Commands.Users.SignUpCommand;
-using Identity.Application.Features.Commands.Users.ViewModels;
+using Identity.Application.Features.Commands.ViewModels;
 using Identity.Application.Features.Events.Users.SendEmailConfirmationTokenEvent;
+using Identity.Application.Features.Queries.Users.GetCurrentUserQuery;
+using Identity.Application.Features.Queries.ViewModels;
 using Identity.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -27,7 +29,18 @@ namespace Identity.API.Controllers
         {
             _mediator = mediator;
         }
-        
+
+        // POST api/v1/[controller]/me
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SuccessDataResult<UserViewModel>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpGet("me")]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var result = await _mediator.Send(new GetCurrentUserQuery());
+            return result.Success ? Ok(result) : BadRequest(result.Message);
+        }
+
         // POST api/v1/[controller]/sign-up
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SuccessDataResult<SignUpResponse>))]
