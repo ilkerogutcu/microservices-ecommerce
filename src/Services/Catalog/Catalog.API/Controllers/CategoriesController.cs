@@ -11,6 +11,7 @@ using Catalog.Application.Features.Queries.Categories.GetCategoryByIdQuery;
 using Catalog.Application.Features.Queries.Categories.GetCategoryOptionValuesByIdQuery;
 using Catalog.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

@@ -6,6 +6,7 @@ using AutoMapper;
 using Identity.Application.Constants;
 using Identity.Application.Features.Events.Users.SendEmailConfirmationTokenEvent;
 using Identity.Domain.Entities;
+using Identity.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Olcsan.Boilerplate.Aspects.Autofac.Exception;
@@ -18,20 +19,18 @@ namespace Identity.Application.Features.Commands.Users.SignUpCommand
 {
     public class SignUpCommandHandler : IRequestHandler<SignUpCommand, IDataResult<SignUpResponse>>
     {
-        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
-        public SignUpCommandHandler(RoleManager<IdentityRole> roleManager, UserManager<User> userManager,
+        public SignUpCommandHandler(UserManager<User> userManager,
             IMapper mapper, IMediator mediator)
         {
-            _roleManager = roleManager;
             _userManager = userManager;
             _mapper = mapper;
             _mediator = mediator;
         }
-        
+
         [ExceptionLogAspect(typeof(FileLogger), "Identity-Service")]
         [LogAspect(typeof(FileLogger), "Identity-Service")]
         [ValidationAspect(typeof(SignUpCommandValidator))]
@@ -44,13 +43,6 @@ namespace Identity.Application.Features.Commands.Users.SignUpCommand
                 return new ErrorDataResult<SignUpResponse>(Messages.UserAlreadyExists);
             }
 
-            foreach (var role in request.Roles)
-            {
-                if (!await _roleManager.RoleExistsAsync(role))
-                {
-                    return new ErrorDataResult<SignUpResponse>(Messages.RoleNotFound);
-                }
-            }
 
             var user = _mapper.Map<User>(request);
             user.UserName = user.Email;
@@ -59,18 +51,19 @@ namespace Identity.Application.Features.Commands.Users.SignUpCommand
             var createUserResult = await _userManager.CreateAsync(user, request.Password);
             if (!createUserResult.Succeeded)
             {
-                return new ErrorDataResult<SignUpResponse>(Messages.SignUpFailed +
+                return new ErrorDataResult<SignUpResponse>(Messages.CreateUserFailed +
                                                            $":{createUserResult.Errors.ToList()[0].Description}");
             }
 
-            foreach (var role in request.Roles)
+
+            var result = await _userManager.AddToRoleAsync(user, nameof(Roles.Buyer));
+            if (!result.Succeeded)
             {
-                var result = await _userManager.AddToRoleAsync(user, role);
-                if (result.Succeeded) continue;
                 await _userManager.DeleteAsync(user);
                 return new ErrorDataResult<SignUpResponse>(Messages.SignUpFailed);
             }
-            
+
+
             _mediator.Publish(new SendEmailConfirmationTokenEvent(user.Id));
             return new SuccessDataResult<SignUpResponse>(new SignUpResponse()
             {

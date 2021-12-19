@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using MediatR;
 using Olcsan.Boilerplate.Utilities.Results;
 
-namespace Identity.Application.Features.Commands.Users.SignUpCommand
+namespace Identity.Application.Features.Commands.Users.CreateUserCommand
 {
-    public class SignUpCommand : IRequest<IDataResult<SignUpResponse>>
+    public class CreateUserCommand : IRequest<IResult>
     {
         /// <summary>
         ///     First name
@@ -25,6 +26,11 @@ namespace Identity.Application.Features.Commands.Users.SignUpCommand
         ///     Birth Date
         /// </summary>
         public DateTime BirthDate { get; set; }
+
+        /// <summary>
+        /// Roles
+        /// </summary>
+        public List<string> Roles { get; set; }
 
         /// <summary>
         ///     Password

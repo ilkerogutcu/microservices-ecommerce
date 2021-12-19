@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Identity.Application.Features.Commands.Users.CreateUserCommand;
 using Identity.Application.Features.Commands.Users.ForgotPasswordCommand;
 using Identity.Application.Features.Commands.Users.ResetPasswordCommand;
 using Identity.Application.Features.Commands.Users.SignInCommand;
@@ -26,17 +27,28 @@ namespace Identity.API.Controllers
         {
             _mediator = mediator;
         }
-
+        
         // POST api/v1/[controller]/sign-up
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SuccessDataResult<SignUpResponse>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPost("sign-up")]
-        public async Task<IActionResult> UserSignUp([FromBody] SignUpCommand command)
+        public async Task<IActionResult> SignUp([FromBody] SignUpCommand command)
         {
-            command.Roles.Add(Roles.Buyer.ToString());
             var result = await _mediator.Send(command);
             return result.Success ? Ok(result) : BadRequest(result.Message);
+        }
+
+        // POST api/v1/[controller]/create-user
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [Authorize(Roles = nameof(Roles.Administrator))]
+        [HttpPost("create-user")]
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return result.Success ? Ok(result.Message) : BadRequest(result.Message);
         }
 
         // POST api/v1/[controller]/send-email-verification-token/{userId}

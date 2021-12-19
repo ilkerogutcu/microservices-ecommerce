@@ -8,6 +8,8 @@
         public const string InvalidParameter = "Invalid parameter!";
         public const string UserAlreadyExists = "User already exists!";
         public const string SignUpFailed = "Sign up failed!";
+        public const string CreateUserFailed = "Create user failed!";
+        public const string UserCreatedSuccessfully = "User created successfuly.";
         public const string SignInFailed = "Sign in failed!";
         public const string RoleNotFound = "Role not found!";
         public const string SentConfirmationEmailSuccessfully = "Verification token has been sent to email successfully";

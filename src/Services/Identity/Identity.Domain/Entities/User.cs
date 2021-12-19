@@ -12,6 +12,7 @@ namespace Identity.Domain.Entities
         public bool IsActive { get; set; }
         public string LastLoginIp { get; set; }
         public DateTime CreatedDate { get; set; }
+        public string CreatedBy { get; set; }
         public DateTime? LastUpdatedDate { get; set; }
         public DateTime? LastLoginDate { get; set; }
         public DateTime BirthDate { get; set; }
