@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Identity.Application.Constants;
+using Identity.Application.Features.Queries.ViewModels;
 using Identity.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -37,11 +39,17 @@ namespace Identity.Application.Features.Commands.Users.CreateUserCommand
         [ValidationAspect(typeof(CreateUserCommandValidator))]
         public async Task<IResult> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {
-            var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+            if (string.IsNullOrEmpty(_httpContextAccessor?.HttpContext?.User?.FindFirst(ClaimTypes.Email)?.Value))
+            {
+                return new ErrorDataResult<UserViewModel>(Messages.SignInFirst);
+            }
 
+            var currentUser =
+                await _userManager.FindByEmailAsync(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email)
+                    ?.Value);
             if (currentUser is null)
             {
-                return new ErrorResult(Messages.SignInFirst);
+                return new ErrorDataResult<UserViewModel>(Messages.SignInFirst);
             }
 
             var existingUser = await _userManager.FindByEmailAsync(request.Email);

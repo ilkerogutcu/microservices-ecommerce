@@ -1,6 +1,8 @@
 ﻿using System;
 using Identity.Application.Interfaces;
+using Identity.Application.Interfaces.Repositories;
 using Identity.Infrastructure.GrpcServices;
+using Identity.Infrastructure.Repositories;
 using Mail.Grpc.Protos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,6 +22,9 @@ namespace Identity.Infrastructure
         public void Load(IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton<IMailService, MailService>();
+            serviceCollection.AddSingleton<IDistrictRepository, DistrictRepository>();
+            serviceCollection.AddSingleton<IAddressRepository, AddressRepository>();
+
             // Grpc Configuration
             serviceCollection.AddGrpcClient<MailProtoService.MailProtoServiceClient>
                 (o => o.Address = new Uri(Configuration["GrpcSettings:MailUrl"]));

@@ -2,7 +2,7 @@
 
 namespace Identity.Application.Features.Commands.Users.CreateUserCommand
 {
-    public class CreateUserCommandValidator: AbstractValidator<CreateUserCommand>
+    public class CreateUserCommandValidator : AbstractValidator<CreateUserCommand>
     {
         public CreateUserCommandValidator()
         {
@@ -11,7 +11,7 @@ namespace Identity.Application.Features.Commands.Users.CreateUserCommand
             RuleFor(x => x.Email).NotEmpty().WithMessage("Email cannot be empty!");
             RuleFor(x => x.Email).EmailAddress();
             RuleFor(x => x.Roles.Count).GreaterThanOrEqualTo(1).WithMessage("The user must have a role.");
-            RuleFor(x => x.Password).Equal(x=>x.ConfirmPassword).WithMessage("Passwords do not match");
+            RuleFor(x => x.Password).Equal(x => x.ConfirmPassword).WithMessage("Passwords do not match");
             RuleFor(x => x.BirthDate).NotNull().WithMessage("Birth date cannot be null!");
             RuleFor(x => x.Password).NotEmpty().WithMessage("Password cannot be empty!");
             RuleFor(x => x.ConfirmPassword).NotEmpty().WithMessage("Confirm Password cannot be empty!");

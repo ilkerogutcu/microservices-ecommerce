@@ -1,15 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Identity.Application.Constants;
 using Identity.Application.Features.Queries.ViewModels;
-using Identity.Application.Interfaces.Repositories;
 using Identity.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Olcsan.Boilerplate.Aspects.Autofac.Exception;
+using Olcsan.Boilerplate.Aspects.Autofac.Logger;
+using Olcsan.Boilerplate.CrossCuttingConcerns.Logging.Serilog.Loggers;
 using Olcsan.Boilerplate.Utilities.Results;
 
 namespace Identity.Application.Features.Queries.Users.GetCurrentUserQuery
@@ -28,15 +31,23 @@ namespace Identity.Application.Features.Queries.Users.GetCurrentUserQuery
             _mapper = mapper;
         }
 
+        [ExceptionLogAspect(typeof(FileLogger), "Identity-Service")]
+        [LogAspect(typeof(FileLogger), "Identity-Service")]
         public async Task<IDataResult<UserViewModel>> Handle(GetCurrentUserQuery request,
             CancellationToken cancellationToken)
         {
-            var currentUser = await _userManager.FindByEmailAsync(_httpContextAccessor?.HttpContext.User
-                .FindFirst(ClaimTypes.Email)?.Value);
-            if (currentUser is null)
+            var currentUserEmail = _httpContextAccessor?.HttpContext?.User?.FindFirst(ClaimTypes.Email)?.Value;
+            if (string.IsNullOrEmpty(currentUserEmail))
             {
                 return new ErrorDataResult<UserViewModel>(Messages.SignInFirst);
             }
+
+            var currentUser = await _userManager.Users
+                .Include(x => x.Addresses).ThenInclude(x => x.City)
+                .Include(x => x.Addresses).ThenInclude(x => x.District)
+                .SingleOrDefaultAsync(x => x.NormalizedEmail.Equals(currentUserEmail),
+                    cancellationToken: cancellationToken);
+            if (currentUser is null) return new ErrorDataResult<UserViewModel>(Messages.SignInFirst);
 
             var currentUserViewModel = _mapper.Map<UserViewModel>(currentUser);
             return new SuccessDataResult<UserViewModel>(currentUserViewModel);

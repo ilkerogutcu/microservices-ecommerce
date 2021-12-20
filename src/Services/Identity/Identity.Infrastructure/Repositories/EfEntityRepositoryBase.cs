@@ -9,141 +9,149 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Infrastructure.Repositories
 {
-   public class EfEntityRepositoryBase<TEntity, TContext>
-		: IEntityRepository<TEntity>
-		where TEntity : class, IEntity
-		where TContext : DbContext
-	{
-		public EfEntityRepositoryBase(TContext context)
-		{
-			Context = context;
-		}
+    public class EfEntityRepositoryBase<TEntity, TContext>
+        : IEntityRepository<TEntity>
+        where TEntity : class, IEntity
+        where TContext : DbContext
+    {
+        public EfEntityRepositoryBase(TContext context)
+        {
+            Context = context;
+        }
 
-		protected TContext Context { get; }
+        protected TContext Context { get; }
 
-		public TEntity Add(TEntity entity)
-		{
-			return Context.Add(entity).Entity;
-		}
+        public TEntity Add(TEntity entity)
+        {
+            return Context.Add(entity).Entity;
+        }
 
-		public TEntity Update(TEntity entity)
-		{
-			Context.Update(entity);
-			return entity;
-		}
+        public TEntity Update(TEntity entity)
+        {
+            Context.Update(entity);
+            return entity;
+        }
 
-		public void Delete(TEntity entity)
-		{
-			Context.Remove(entity);
-		}
+        public void Delete(TEntity entity)
+        {
+            Context.Remove(entity);
+        }
 
-		public TEntity Get(Expression<Func<TEntity, bool>> expression)
-		{
-			return Context.Set<TEntity>().FirstOrDefault(expression);
-		}
 
-		public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression)
-		{
-			return await Context.Set<TEntity>().AsQueryable().FirstOrDefaultAsync(expression);
-		}
+        public TEntity Get(Expression<Func<TEntity, bool>> expression)
+        {
+            return Context.Set<TEntity>().FirstOrDefault(expression);
+        }
 
-		public List<TEntity> GetList(Expression<Func<TEntity, bool>> expression = null)
-		{
-			return expression == null
-				? Context.Set<TEntity>().AsNoTracking().ToList()
-				: Context.Set<TEntity>().Where(expression).AsNoTracking().ToList();
-		}
+        public async Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expression = null)
+        {
+            return expression == null
+                ? await Context.Set<TEntity>().AnyAsync()
+                : await Context.Set<TEntity>().AnyAsync(expression);
+        }
 
-		public async Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> expression = null)
-		{
-			return expression == null
-				? await Context.Set<TEntity>().ToListAsync()
-				: await Context.Set<TEntity>().Where(expression).ToListAsync();
-		}
+        public async Task<TEntity> GetAsync(Expression<Func<TEntity, bool>> expression)
+        {
+            return await Context.Set<TEntity>().AsQueryable().FirstOrDefaultAsync(expression);
+        }
 
-		public int SaveChanges()
-		{
-			return Context.SaveChanges();
-		}
+        public List<TEntity> GetList(Expression<Func<TEntity, bool>> expression = null)
+        {
+            return expression == null
+                ? Context.Set<TEntity>().AsNoTracking().ToList()
+                : Context.Set<TEntity>().Where(expression).AsNoTracking().ToList();
+        }
 
-		public Task<int> SaveChangesAsync()
-		{
-			return Context.SaveChangesAsync();
-		}
+        public async Task<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> expression = null)
+        {
+            return expression == null
+                ? await Context.Set<TEntity>().ToListAsync()
+                : await Context.Set<TEntity>().Where(expression).ToListAsync();
+        }
 
-		public IQueryable<TEntity> Query()
-		{
-			return Context.Set<TEntity>();
-		}
+        public int SaveChanges()
+        {
+            return Context.SaveChanges();
+        }
 
-		public Task<int> Execute(FormattableString interpolatedQueryString)
-		{
-			return Context.Database.ExecuteSqlInterpolatedAsync(interpolatedQueryString);
-		}
+        public Task<int> SaveChangesAsync()
+        {
+            return Context.SaveChangesAsync();
+        }
 
-		/// <summary>
-		///     Transactional operations is prohibited when working with InMemoryDb!
-		/// </summary>
-		/// <typeparam name="TResult"></typeparam>
-		/// <param name="action"></param>
-		/// <param name="successAction"></param>
-		/// <param name="exceptionAction"></param>
-		/// <returns></returns>
-		public TResult InTransaction<TResult>(Func<TResult> action, Action successAction = null,
-			Action<Exception> exceptionAction = null)
-		{
-			var result = default(TResult);
-			try
-			{
-				if (Context.Database.ProviderName.EndsWith("InMemory"))
-				{
-					result = action();
-					SaveChanges();
-				}
-				else
-				{
-					using var tx = Context.Database.BeginTransaction();
-					try
-					{
-						result = action();
-						SaveChanges();
-						tx.Commit();
-					}
-					catch (Exception)
-					{
-						tx.Rollback();
-						throw;
-					}
-				}
+        public IQueryable<TEntity> Query()
+        {
+            return Context.Set<TEntity>();
+        }
 
-				successAction?.Invoke();
-			}
-			catch (Exception ex)
-			{
-				if (exceptionAction is null) throw;
+        public Task<int> Execute(FormattableString interpolatedQueryString)
+        {
+            return Context.Database.ExecuteSqlInterpolatedAsync(interpolatedQueryString);
+        }
 
-				exceptionAction(ex);
-			}
+        /// <summary>
+        ///     Transactional operations is prohibited when working with InMemoryDb!
+        /// </summary>
+        /// <typeparam name="TResult"></typeparam>
+        /// <param name="action"></param>
+        /// <param name="successAction"></param>
+        /// <param name="exceptionAction"></param>
+        /// <returns></returns>
+        public TResult InTransaction<TResult>(Func<TResult> action, Action successAction = null,
+            Action<Exception> exceptionAction = null)
+        {
+            var result = default(TResult);
+            try
+            {
+                if (Context.Database.ProviderName.EndsWith("InMemory"))
+                {
+                    result = action();
+                    SaveChanges();
+                }
+                else
+                {
+                    using var tx = Context.Database.BeginTransaction();
+                    try
+                    {
+                        result = action();
+                        SaveChanges();
+                        tx.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        tx.Rollback();
+                        throw;
+                    }
+                }
 
-			return result;
-		}
+                successAction?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                if (exceptionAction is null) throw;
 
-		public virtual async Task<TEntity> AddAsync(TEntity entity)
-		{
-			var result = await Context.AddAsync(entity);
-			return result.Entity;
-		}
+                exceptionAction(ex);
+            }
 
-		public async Task<int> GetCountAsync(Expression<Func<TEntity, bool>> expression = null)
-		{
-			if (expression is null)
-				return await Context.Set<TEntity>().CountAsync();
-			return await Context.Set<TEntity>().CountAsync(expression);
-		}
+            return result;
+        }
 
-		public int GetCount(Expression<Func<TEntity, bool>> expression = null)
-		{
-			return expression == null ? Context.Set<TEntity>().Count() : Context.Set<TEntity>().Count(expression);
-		}
-	}
+        public virtual async Task<TEntity> AddAsync(TEntity entity)
+        {
+            var result = await Context.AddAsync(entity);
+            return result.Entity;
+        }
+
+        public async Task<int> GetCountAsync(Expression<Func<TEntity, bool>> expression = null)
+        {
+            if (expression is null)
+                return await Context.Set<TEntity>().CountAsync();
+            return await Context.Set<TEntity>().CountAsync(expression);
+        }
+
+        public int GetCount(Expression<Func<TEntity, bool>> expression = null)
+        {
+            return expression == null ? Context.Set<TEntity>().Count() : Context.Set<TEntity>().Count(expression);
+        }
+    }
 }

@@ -1,5 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Identity.Application.Features.Commands.Users.AddAddressToUserCommand;
 using Identity.Application.Features.Commands.Users.CreateUserCommand;
+using Identity.Application.Features.Commands.Users.DeleteAddressFromUserCommand;
 using Identity.Application.Features.Commands.Users.ForgotPasswordCommand;
 using Identity.Application.Features.Commands.Users.ResetPasswordCommand;
 using Identity.Application.Features.Commands.Users.SignInCommand;
@@ -129,6 +132,28 @@ namespace Identity.API.Controllers
         {
             var result = await _mediator.Send(command);
             return result.Success ? Ok(result.Message) : BadRequest(result.Message);
+        }
+
+        // POST api/v1/[controller]/me/address
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpPost("me/address")]
+        public async Task<IActionResult> AddAddress(AddAddressToUserCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return result.Success ? Ok() : BadRequest(result.Message);
+        }
+
+        // POST api/v1/[controller]/me/address/{addressId}
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpDelete("me/address/{addressId:guid}")]
+        public async Task<IActionResult> DeleteAddress(Guid addressId)
+        {
+            var result = await _mediator.Send(new DeleteAddressFromUserCommand(addressId));
+            return result.Success ? Ok() : BadRequest(result.Message);
         }
     }
 }

@@ -57,7 +57,7 @@ namespace Identity.Application.Features.Commands.Users.SignInCommand
             if (result.IsLockedOut)
             {
                 return new ErrorDataResult<SignInResponseViewModel>(
-                    $"Your account is locked out. Please wait for {user.LockoutEnd} try again");
+                    $"Your account is locked out. Please wait until {user.LockoutEnd?.LocalDateTime} try again");
             }
 
             if (result.RequiresTwoFactor)

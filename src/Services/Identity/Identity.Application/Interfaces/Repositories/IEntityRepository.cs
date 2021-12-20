@@ -15,6 +15,8 @@ namespace Identity.Application.Interfaces.Repositories
         List<T> GetList(Expression<Func<T, bool>> expression = null);
         T Get(Expression<Func<T, bool>> expression);
         int SaveChanges();
+        Task<bool> AnyAsync(Expression<Func<T, bool>> expression = null);
+
         int GetCount(Expression<Func<T, bool>> expression = null);
         IQueryable<T> Query();
         Task<int> Execute(FormattableString interpolatedQueryString);
