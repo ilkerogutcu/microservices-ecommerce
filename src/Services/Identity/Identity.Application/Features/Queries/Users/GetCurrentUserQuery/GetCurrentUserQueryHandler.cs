@@ -42,11 +42,9 @@ namespace Identity.Application.Features.Queries.Users.GetCurrentUserQuery
                 return new ErrorDataResult<UserViewModel>(Messages.SignInFirst);
             }
 
-            var currentUser = await _userManager.Users
-                .Include(x => x.Addresses).ThenInclude(x => x.City)
-                .Include(x => x.Addresses).ThenInclude(x => x.District)
-                .SingleOrDefaultAsync(x => x.NormalizedEmail.Equals(currentUserEmail),
-                    cancellationToken: cancellationToken);
+            var currentUser = await _userManager.Users.Include(x => x.Addresses).ThenInclude(x => x.District)
+                .ThenInclude(x => x.City)
+                .SingleOrDefaultAsync(x => x.NormalizedEmail.Equals(currentUserEmail), cancellationToken);
             if (currentUser is null) return new ErrorDataResult<UserViewModel>(Messages.SignInFirst);
 
             var currentUserViewModel = _mapper.Map<UserViewModel>(currentUser);

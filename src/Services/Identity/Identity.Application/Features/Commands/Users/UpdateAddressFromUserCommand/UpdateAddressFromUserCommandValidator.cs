@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace Identity.Application.Features.Commands.Users.AddAddressToUserCommand
+namespace Identity.Application.Features.Commands.Users.UpdateAddressFromUserCommand
 {
-    public class AddAddressToUserCommandValidator : AbstractValidator<AddAddressToUserCommand>
+    public class UpdateAddressFromUserCommandValidator : AbstractValidator<UpdateAddressFromUserCommand>
     {
-        public AddAddressToUserCommandValidator()
+        public UpdateAddressFromUserCommandValidator()
         {
             RuleFor(x => x.FirstName).NotEmpty().NotNull().WithMessage("First name cannot be empty!");
             RuleFor(x => x.LastName).NotEmpty().NotNull().WithMessage("Last name cannot be empty!");

@@ -8,6 +8,7 @@ using Identity.Application.Features.Commands.Users.ResetPasswordCommand;
 using Identity.Application.Features.Commands.Users.SignInCommand;
 using Identity.Application.Features.Commands.Users.SignInWithTwoFactorCommand;
 using Identity.Application.Features.Commands.Users.SignUpCommand;
+using Identity.Application.Features.Commands.Users.UpdateAddressFromUserCommand;
 using Identity.Application.Features.Commands.ViewModels;
 using Identity.Application.Features.Events.Users.SendEmailConfirmationTokenEvent;
 using Identity.Application.Features.Queries.Users.GetCurrentUserQuery;
@@ -74,10 +75,7 @@ namespace Identity.API.Controllers
         [HttpPost("send-email-verification-token/{userId}")]
         public async Task<IActionResult> SendEmailConfirmationToken([FromRoute] string userId)
         {
-            if (string.IsNullOrEmpty(userId))
-            {
-                return BadRequest("User id cannot be empty!");
-            }
+            if (string.IsNullOrEmpty(userId)) return BadRequest("User id cannot be empty!");
 
             await _mediator.Publish(new SendEmailConfirmationTokenEvent(userId));
             return Ok();
@@ -90,7 +88,7 @@ namespace Identity.API.Controllers
         [HttpPost("sign-in")]
         public async Task<IActionResult> SignIn(SignInCommand command)
         {
-            command.IpAddress = (HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress)?.ToString();
+            command.IpAddress = HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress?.ToString();
 
             var result = await _mediator.Send(command);
             return result.Success ? Ok(result) : BadRequest(result.Message);
@@ -104,7 +102,7 @@ namespace Identity.API.Controllers
         public async Task<IActionResult> SignInWithTwoFactorSecurity(SignInWithTwoFactorCommand command)
         {
             var ipAddress = HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress?.ToString();
-            var result = await _mediator.Send(new SignInWithTwoFactorCommand()
+            var result = await _mediator.Send(new SignInWithTwoFactorCommand
             {
                 Code = command.Code,
                 IpAddress = ipAddress
@@ -141,6 +139,19 @@ namespace Identity.API.Controllers
         [HttpPost("me/address")]
         public async Task<IActionResult> AddAddress(AddAddressToUserCommand command)
         {
+            var result = await _mediator.Send(command);
+            return result.Success ? Ok() : BadRequest(result.Message);
+        }
+
+        // POST api/v1/[controller]/me/address/{addressId}
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpPut("me/address/{addressId:guid}")]
+        public async Task<IActionResult> UpdateAddress([FromRoute] Guid addressId,
+            [FromBody] UpdateAddressFromUserCommand command)
+        {
+            command.AddressId = addressId;
             var result = await _mediator.Send(command);
             return result.Success ? Ok() : BadRequest(result.Message);
         }

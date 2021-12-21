@@ -30,7 +30,7 @@ namespace Identity.Application.Features.Commands.Users.AddAddressToUserCommand
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
         }
-        
+
         [LogAspect(typeof(FileLogger), "Identity-Service")]
         [ExceptionLogAspect(typeof(FileLogger), "Identity-Service")]
         [ValidationAspect(typeof(AddAddressToUserCommandValidator))]
@@ -46,11 +46,13 @@ namespace Identity.Application.Features.Commands.Users.AddAddressToUserCommand
             {
                 return new ErrorDataResult<UserViewModel>(Messages.SignInFirst);
             }
-            var currentUser = await _userManager.FindByEmailAsync(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email)?.Value);
+
+            var currentUser =
+                await _userManager.FindByEmailAsync(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email)
+                    ?.Value);
             if (currentUser is null) return new ErrorDataResult<UserViewModel>(Messages.SignInFirst);
             var address = new Address
             {
-                CityId = district.CityId,
                 DistrictId = district.Id,
                 Zip = request.Zip,
                 FirstName = request.FirstName,
