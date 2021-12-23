@@ -30,7 +30,7 @@ namespace Identity.Application.Features.Events.Users.ForgotPasswordEvent
         public async Task Handle(ForgotPasswordEvent notification, CancellationToken cancellationToken)
         {
             var encodedResetToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(notification.ResetToken));
-            var endPointUrl = new Uri(string.Concat($"{_baseUrl}", "api/account/reset-password/"));
+            var endPointUrl = new Uri(string.Concat($"{_baseUrl}", "api/v1/accounts/reset-password/"));
           
             var resetTokenUrl = QueryHelpers.AddQueryString(endPointUrl.ToString(), "userId",  notification.UserId);
             resetTokenUrl = QueryHelpers.AddQueryString(resetTokenUrl, "token", encodedResetToken);

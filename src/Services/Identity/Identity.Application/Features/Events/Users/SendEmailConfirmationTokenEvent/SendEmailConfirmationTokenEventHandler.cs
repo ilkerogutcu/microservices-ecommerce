@@ -49,7 +49,7 @@ namespace Identity.Application.Features.Events.Users.SendEmailConfirmationTokenE
             var encodedVerificationToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(verificationToken));
 
             // Generate endpoint url for verification url
-            var endPointUrl = new Uri(string.Concat($"{_baseUrl}", "api/account/confirm-email/"));
+            var endPointUrl = new Uri(string.Concat($"{_baseUrl}", "api/v1/accounts/confirm-email/"));
             var verificationUrl = QueryHelpers.AddQueryString(endPointUrl.ToString(), "userId", notification.UserId);
             verificationUrl = QueryHelpers.AddQueryString(verificationUrl, "verificationToken", encodedVerificationToken);
             

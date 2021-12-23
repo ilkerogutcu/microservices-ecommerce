@@ -18,5 +18,10 @@ namespace Identity.Domain.Entities
         public DateTime BirthDate { get; set; }
         public List<Address> Addresses { get; set; } = new List<Address>();
         public List<Notification> Notifications { get; set; } = new List<Notification>();
+
+        public override string ToString()
+        {
+            return Id;
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Identity.Application.Features.Commands.Users.AddAddressToUserCommand;
+using Identity.Application.Features.Commands.Users.ConfirmEmailCommand;
 using Identity.Application.Features.Commands.Users.CreateUserCommand;
 using Identity.Application.Features.Commands.Users.DeleteAddressFromUserCommand;
 using Identity.Application.Features.Commands.Users.ForgotPasswordCommand;
@@ -164,6 +165,17 @@ namespace Identity.API.Controllers
         public async Task<IActionResult> DeleteAddress(Guid addressId)
         {
             var result = await _mediator.Send(new DeleteAddressFromUserCommand(addressId));
+            return result.Success ? Ok() : BadRequest(result.Message);
+        }
+
+        // POST api/v1/[controller]?userId={userId}&confirmationToken={confirmationToken}
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpGet("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail([FromQuery] ConfirmEmailCommand command)
+        {
+            var result = await _mediator.Send(command);
             return result.Success ? Ok() : BadRequest(result.Message);
         }
     }

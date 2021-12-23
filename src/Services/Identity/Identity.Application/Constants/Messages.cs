@@ -22,5 +22,7 @@
         public const string ForgotPassword = "If the e-mail is exists, e-mail will be sent.";
         public const string PasswordHasBeenResetSuccessfully = "Your password has been reset successfully.";
         public const string PasswordResetFailed = "Error occured while reseting the password!";
+        public const string ErrorVerifyingMail = "There was an error verifying email!";
+
     }
 }

@@ -22,7 +22,8 @@ namespace Identity.Application.Utilities
             var roleClaims = roles.Select(t => new Claim("roles", t)).ToList();
             var claims = new[]
                 {
-                    new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                    new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                    new Claim(JwtRegisteredClaimNames.Sid, user.SecurityStamp),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(JwtRegisteredClaimNames.Iss, "https://github.com/ilkerogutcu/.Net-Core-5-boilerplate"),
                     new Claim(JwtRegisteredClaimNames.Email, user.Email),
