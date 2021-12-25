@@ -87,7 +87,7 @@ namespace Identity.API
             services.Configure<IdentityOptions>(options =>
             {
                 options.User.RequireUniqueEmail = true;
-                options.Password.RequiredLength = 8;
+                options.Password.RequiredLength = 12;
                 options.SignIn.RequireConfirmedEmail = true;
                 options.Lockout.AllowedForNewUsers = true;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(10);

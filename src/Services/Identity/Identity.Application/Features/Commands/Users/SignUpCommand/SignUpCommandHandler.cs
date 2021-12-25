@@ -42,8 +42,7 @@ namespace Identity.Application.Features.Commands.Users.SignUpCommand
             {
                 return new ErrorDataResult<SignUpResponse>(Messages.UserAlreadyExists);
             }
-
-
+            
             var user = _mapper.Map<User>(request);
             user.UserName = user.Email;
             user.CreatedDate = DateTime.Now;
