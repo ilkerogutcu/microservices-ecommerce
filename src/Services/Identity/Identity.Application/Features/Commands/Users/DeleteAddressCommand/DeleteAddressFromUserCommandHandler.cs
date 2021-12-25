@@ -1,5 +1,4 @@
-﻿using System;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Identity.Application.Constants;
@@ -11,60 +10,54 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Olcsan.Boilerplate.Aspects.Autofac.Exception;
 using Olcsan.Boilerplate.Aspects.Autofac.Logger;
-using Olcsan.Boilerplate.Aspects.Autofac.Validation;
 using Olcsan.Boilerplate.CrossCuttingConcerns.Logging.Serilog.Loggers;
 using Olcsan.Boilerplate.Utilities.Results;
 
-namespace Identity.Application.Features.Commands.Users.AddAddressToUserCommand
+namespace Identity.Application.Features.Commands.Users.DeleteAddressCommand
 {
-    public class AddAddressToUserCommandHandler : IRequestHandler<AddAddressToUserCommand, IResult>
+    public class DeleteAddressFromUserCommandHandler : IRequestHandler<DeleteAddressFromUserCommand, IResult>
     {
-        private readonly IDistrictRepository _districtRepository;
         private readonly UserManager<User> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IAddressRepository _addressRepository;
 
-        public AddAddressToUserCommandHandler(IDistrictRepository districtRepository, UserManager<User> userManager,
-            IHttpContextAccessor httpContextAccessor)
+        public DeleteAddressFromUserCommandHandler(UserManager<User> userManager,
+            IHttpContextAccessor httpContextAccessor, IAddressRepository addressRepository)
         {
-            _districtRepository = districtRepository;
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
+            _addressRepository = addressRepository;
         }
 
         [LogAspect(typeof(FileLogger), "Identity-Service")]
         [ExceptionLogAspect(typeof(FileLogger), "Identity-Service")]
-        [ValidationAspect(typeof(AddAddressToUserCommandValidator))]
-        public async Task<IResult> Handle(AddAddressToUserCommand request, CancellationToken cancellationToken)
+        public async Task<IResult> Handle(DeleteAddressFromUserCommand request, CancellationToken cancellationToken)
         {
-            var district = await _districtRepository.GetAsync(x => x.Id.Equals(request.DistrictId));
-            if (district is null)
+            if (string.IsNullOrEmpty(request.AddressId.ToString()))
             {
                 return new ErrorResult(Messages.DataNotFound);
             }
 
             if (string.IsNullOrEmpty(_httpContextAccessor?.HttpContext?.User?.FindFirst(ClaimTypes.Email)?.Value))
             {
-                return new ErrorDataResult<UserViewModel>(Messages.SignInFirst);
+                return new ErrorResult(Messages.SignInFirst);
             }
 
             var currentUser =
                 await _userManager.FindByEmailAsync(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email)
                     ?.Value);
             if (currentUser is null) return new ErrorDataResult<UserViewModel>(Messages.SignInFirst);
-            var address = new Address
+            var deleteAddress = await _addressRepository.GetAsync(x =>
+                x.Id.Equals(request.AddressId) && x.CreatedBy.Equals(currentUser.Id));
+            if (deleteAddress is null)
             {
-                DistrictId = district.Id,
-                Zip = request.Zip,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                PhoneNumber = request.PhoneNumber,
-                AddressLine = request.AddressLine,
-                AddressTitle = request.AddressTitle,
-                CreatedBy = currentUser.Id,
-                CreatedDate = DateTime.Now
-            };
-            currentUser.Addresses.Add(address);
+                return new ErrorResult(Messages.DataNotFound);
+            }
+
+            currentUser.Addresses.Remove(deleteAddress);
             await _userManager.UpdateAsync(currentUser);
+            _addressRepository.Delete(deleteAddress);
+            await _addressRepository.SaveChangesAsync();
             return new SuccessResult();
         }
     }

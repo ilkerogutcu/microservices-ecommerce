@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Identity.Domain.Common;
+using Identity.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 
 namespace Identity.Domain.Entities
@@ -11,6 +12,8 @@ namespace Identity.Domain.Entities
         public string LastName { get; set; }
         public bool IsActive { get; set; }
         public string LastLoginIp { get; set; }
+        public Gender Gender { get; set; }
+
         public DateTime CreatedDate { get; set; }
         public string CreatedBy { get; set; }
         public DateTime? LastUpdatedDate { get; set; }

@@ -46,8 +46,8 @@ namespace Identity.Infrastructure.Persistence
             if (!identityContext.Users.Any())
             {
                 var userManager = services.GetService<UserManager<User>>();
-                 await userManager.CreateAsync(user, "Jrypb3;<(8atpHyZ");
-                 await userManager.AddToRoleAsync(user, "Administrator");
+                await userManager.CreateAsync(user, "Jrypb3;<(8atpHyZ");
+                await userManager.AddToRoleAsync(user, "Administrator");
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using System;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,54 +11,60 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Olcsan.Boilerplate.Aspects.Autofac.Exception;
 using Olcsan.Boilerplate.Aspects.Autofac.Logger;
+using Olcsan.Boilerplate.Aspects.Autofac.Validation;
 using Olcsan.Boilerplate.CrossCuttingConcerns.Logging.Serilog.Loggers;
 using Olcsan.Boilerplate.Utilities.Results;
 
-namespace Identity.Application.Features.Commands.Users.DeleteAddressFromUserCommand
+namespace Identity.Application.Features.Commands.Users.AddAddressCommand
 {
-    public class DeleteAddressFromUserCommandHandler : IRequestHandler<DeleteAddressFromUserCommand, IResult>
+    public class AddAddressToUserCommandHandler : IRequestHandler<AddAddressToUserCommand, IResult>
     {
+        private readonly IDistrictRepository _districtRepository;
         private readonly UserManager<User> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IAddressRepository _addressRepository;
 
-        public DeleteAddressFromUserCommandHandler(UserManager<User> userManager,
-            IHttpContextAccessor httpContextAccessor, IAddressRepository addressRepository)
+        public AddAddressToUserCommandHandler(IDistrictRepository districtRepository, UserManager<User> userManager,
+            IHttpContextAccessor httpContextAccessor)
         {
+            _districtRepository = districtRepository;
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
-            _addressRepository = addressRepository;
         }
 
         [LogAspect(typeof(FileLogger), "Identity-Service")]
         [ExceptionLogAspect(typeof(FileLogger), "Identity-Service")]
-        public async Task<IResult> Handle(DeleteAddressFromUserCommand request, CancellationToken cancellationToken)
+        [ValidationAspect(typeof(AddAddressToUserCommandValidator))]
+        public async Task<IResult> Handle(AddAddressToUserCommand request, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(request.AddressId.ToString()))
+            var district = await _districtRepository.GetAsync(x => x.Id.Equals(request.DistrictId));
+            if (district is null)
             {
                 return new ErrorResult(Messages.DataNotFound);
             }
 
             if (string.IsNullOrEmpty(_httpContextAccessor?.HttpContext?.User?.FindFirst(ClaimTypes.Email)?.Value))
             {
-                return new ErrorResult(Messages.SignInFirst);
+                return new ErrorDataResult<UserViewModel>(Messages.SignInFirst);
             }
 
             var currentUser =
                 await _userManager.FindByEmailAsync(_httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email)
                     ?.Value);
             if (currentUser is null) return new ErrorDataResult<UserViewModel>(Messages.SignInFirst);
-            var deleteAddress = await _addressRepository.GetAsync(x =>
-                x.Id.Equals(request.AddressId) && x.CreatedBy.Equals(currentUser.Id));
-            if (deleteAddress is null)
+            var address = new Address
             {
-                return new ErrorResult(Messages.DataNotFound);
-            }
-
-            currentUser.Addresses.Remove(deleteAddress);
+                DistrictId = district.Id,
+                Zip = request.Zip,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                PhoneNumber = request.PhoneNumber,
+                AddressLine = request.AddressLine,
+                AddressTitle = request.AddressTitle,
+                CreatedBy = currentUser.Id,
+                CreatedDate = DateTime.Now
+            };
+            currentUser.Addresses.Add(address);
             await _userManager.UpdateAsync(currentUser);
-            _addressRepository.Delete(deleteAddress);
-            await _addressRepository.SaveChangesAsync();
             return new SuccessResult();
         }
     }

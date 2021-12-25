@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Identity.Application.Constants;
-using Identity.Application.Features.Commands.ViewModels;
+using Identity.Application.Features.Commands.Users.ViewModels;
 using Identity.Application.Features.Events.Users.UserSignedInEvent;
 using Identity.Application.Utilities;
 using Identity.Domain.Entities;

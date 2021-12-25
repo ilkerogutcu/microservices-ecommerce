@@ -2,7 +2,7 @@
 using MediatR;
 using Olcsan.Boilerplate.Utilities.Results;
 
-namespace Identity.Application.Features.Commands.Users.DeleteAddressFromUserCommand
+namespace Identity.Application.Features.Commands.Users.DeleteAddressCommand
 {
     public class DeleteAddressFromUserCommand : IRequest<IResult>
     {

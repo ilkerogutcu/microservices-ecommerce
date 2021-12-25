@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Identity.Application.Features.Commands.Users.AddAddressToUserCommand;
+using Identity.Application.Features.Commands.Users.AddAddressCommand;
 using Identity.Application.Features.Commands.Users.ConfirmEmailCommand;
 using Identity.Application.Features.Commands.Users.CreateUserCommand;
-using Identity.Application.Features.Commands.Users.DeleteAddressFromUserCommand;
+using Identity.Application.Features.Commands.Users.DeleteAddressCommand;
 using Identity.Application.Features.Commands.Users.ForgotPasswordCommand;
 using Identity.Application.Features.Commands.Users.ResetPasswordCommand;
 using Identity.Application.Features.Commands.Users.SignInCommand;
 using Identity.Application.Features.Commands.Users.SignInWithTwoFactorCommand;
 using Identity.Application.Features.Commands.Users.SignUpCommand;
-using Identity.Application.Features.Commands.Users.UpdateAddressFromUserCommand;
-using Identity.Application.Features.Commands.ViewModels;
+using Identity.Application.Features.Commands.Users.UpdateAddressCommand;
+using Identity.Application.Features.Commands.Users.ViewModels;
 using Identity.Application.Features.Events.Users.SendEmailConfirmationTokenEvent;
 using Identity.Application.Features.Queries.Users.GetCurrentUserQuery;
 using Identity.Application.Features.Queries.ViewModels;
@@ -61,7 +61,7 @@ namespace Identity.API.Controllers
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
-        [Authorize(Roles = nameof(Roles.Administrator))]
+        [Authorize(Roles = nameof(Role.Administrator))]
         [HttpPost("create-user")]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command)
         {

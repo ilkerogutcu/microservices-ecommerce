@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Text.Json.Serialization;
 using MediatR;
 using Olcsan.Boilerplate.Utilities.Results;
 
-namespace Identity.Application.Features.Commands.Users.UpdateAddressFromUserCommand
+namespace Identity.Application.Features.Commands.Users.AddAddressCommand
 {
-    public class UpdateAddressFromUserCommand : IRequest<IResult>
+    public class AddAddressToUserCommand : IRequest<IResult>
     {
-        [JsonIgnore]
-        public Guid AddressId { get; set; }
         public Guid DistrictId { get; set; }
         public string Zip { get; set; }
         public string FirstName { get; set; }

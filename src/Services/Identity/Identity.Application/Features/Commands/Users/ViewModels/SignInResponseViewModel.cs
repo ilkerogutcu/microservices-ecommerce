@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Identity.Application.Features.Commands.ViewModels
+namespace Identity.Application.Features.Commands.Users.ViewModels
 {
     public class SignInResponseViewModel
     {

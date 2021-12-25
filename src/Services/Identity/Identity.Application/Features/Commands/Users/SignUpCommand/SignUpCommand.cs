@@ -27,6 +27,11 @@ namespace Identity.Application.Features.Commands.Users.SignUpCommand
         public DateTime BirthDate { get; set; }
 
         /// <summary>
+        ///     Gender
+        /// </summary>
+        public int Gender { get; set; }
+        
+        /// <summary>
         ///     Password
         /// </summary>
         public string Password { get; set; }

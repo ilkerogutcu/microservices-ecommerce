@@ -15,7 +15,7 @@ using Olcsan.Boilerplate.Aspects.Autofac.Validation;
 using Olcsan.Boilerplate.CrossCuttingConcerns.Logging.Serilog.Loggers;
 using Olcsan.Boilerplate.Utilities.Results;
 
-namespace Identity.Application.Features.Commands.Users.UpdateAddressFromUserCommand
+namespace Identity.Application.Features.Commands.Users.UpdateAddressCommand
 {
     public class UpdateAddressFromUserCommandHandler : IRequestHandler<UpdateAddressFromUserCommand, IResult>
     {

@@ -42,11 +42,28 @@ namespace Identity.Application.Features.Commands.Users.SignUpCommand
             {
                 return new ErrorDataResult<SignUpResponse>(Messages.UserAlreadyExists);
             }
-            
+
             var user = _mapper.Map<User>(request);
+            switch (request.Gender)
+            {
+                case 0:
+                    user.Gender = Gender.Male;
+                    break;
+                case 1:
+                    user.Gender = Gender.Female;
+                    break;
+                case 2:
+                    user.Gender = Gender.Other;
+                    break;
+                default:
+                    return new ErrorDataResult<SignUpResponse>(Messages.SignUpFailed);
+            }
+
             user.UserName = user.Email;
             user.CreatedDate = DateTime.Now;
             user.IsActive = true;
+            user.TwoFactorEnabled = true;
+
             var createUserResult = await _userManager.CreateAsync(user, request.Password);
             if (!createUserResult.Succeeded)
             {
@@ -55,7 +72,7 @@ namespace Identity.Application.Features.Commands.Users.SignUpCommand
             }
 
 
-            var result = await _userManager.AddToRoleAsync(user, nameof(Roles.Buyer));
+            var result = await _userManager.AddToRoleAsync(user, nameof(Role.Buyer));
             if (!result.Succeeded)
             {
                 await _userManager.DeleteAsync(user);

@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Identity.Application.Features.Commands.Users.UpdateAddressFromUserCommand
+namespace Identity.Application.Features.Commands.Users.UpdateAddressCommand
 {
     public class UpdateAddressFromUserCommandValidator : AbstractValidator<UpdateAddressFromUserCommand>
     {
