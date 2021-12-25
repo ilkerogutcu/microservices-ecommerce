@@ -40,7 +40,7 @@ namespace Catalog.Application.Mappings
                 .ReverseMap();
 
             CreateMap<Product, CreateProductDto>()
-                .ForMember(dest => dest.Name.ToLower(), opt => opt.MapFrom(src => src.NormalizedName))
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.NormalizedName))
                 .ReverseMap();
             CreateMap<Domain.Entities.Media, MediaModel>()
                 .Ignore(dest => dest.CreatedTimestamp)

@@ -33,7 +33,6 @@ namespace Catalog.Infrastructure
             serviceCollection.AddSingleton<ICategoryOptionValueRepository, CategoryOptionValueRepository>();
             serviceCollection.AddSingleton<IMediaGrpcService, MediaGrpcService>();
             // Grpc Configuration
-            var asdasd = Configuration["GrpcSettings:MediaUrl"];
             serviceCollection.AddGrpcClient<MediaProtoService.MediaProtoServiceClient>
                 (o => o.Address = new Uri(Configuration["GrpcSettings:MediaUrl"]));
         }

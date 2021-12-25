@@ -16,7 +16,9 @@ namespace Catalog.Infrastructure.Persistence
         public CatalogContext()
         {
             var configuration = ServiceTool.ServiceProvider.GetService<IConfiguration>();
-            var config = configuration?.GetSection("MongoDatabaseConfig").Get<MongoDatabaseConfig>();
+            var config = configuration?.GetSection("DatabaseSettings").Get<MongoDatabaseConfig>();
+            Console.WriteLine("Connection string:"+config.ConnectionString);
+            Console.WriteLine($"collection. {config.DatabaseName}");
             ConnectionSettingControl(config);
             var client = new MongoClient(config?.ConnectionString);
             _database = client.GetDatabase(config?.DatabaseName);
