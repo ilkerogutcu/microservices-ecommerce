@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Catalog.Application.Constants;
 using Catalog.Application.Interfaces.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Olcsan.Boilerplate.Aspects.Autofac.Exception;
 using Olcsan.Boilerplate.Aspects.Autofac.Logger;
 using Olcsan.Boilerplate.Aspects.Autofac.Validation;
@@ -15,10 +17,13 @@ namespace Catalog.Application.Features.Commands.Products.UpdateProductActivation
     public class UpdateProductActivationCommandHandler : IRequestHandler<UpdateProductActivationCommand, IResult>
     {
         private readonly IProductRepository _productRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UpdateProductActivationCommandHandler(IProductRepository productRepository)
+        public UpdateProductActivationCommandHandler(IProductRepository productRepository,
+            IHttpContextAccessor httpContextAccessor)
         {
             _productRepository = productRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [LogAspect(typeof(FileLogger), "Catalog-Application")]
@@ -26,11 +31,18 @@ namespace Catalog.Application.Features.Commands.Products.UpdateProductActivation
         [ValidationAspect(typeof(UpdateProductActivationCommandValidator))]
         public async Task<IResult> Handle(UpdateProductActivationCommand request, CancellationToken cancellationToken)
         {
+            var currentUserId = _httpContextAccessor?.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)
+                ?.Value;
+            if (string.IsNullOrEmpty(currentUserId))
+            {
+                return new ErrorResult(Messages.SignInFirst);
+            }
+
             var product = await _productRepository.GetByIdAsync(request.Id);
             if (product is null) return new ErrorResult(Messages.DataNotFound);
 
             product.IsActive = request.Activate;
-            product.LastUpdatedBy = "admin";
+            product.LastUpdatedBy = currentUserId;
             product.LastUpdatedDate = DateTime.Now;
             await _productRepository.UpdateAsync(product.Id, product);
             return new SuccessResult();

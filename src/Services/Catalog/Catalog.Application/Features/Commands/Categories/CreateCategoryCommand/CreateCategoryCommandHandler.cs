@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -8,6 +9,7 @@ using Catalog.Application.Extensions;
 using Catalog.Application.Interfaces.Repositories;
 using Catalog.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Olcsan.Boilerplate.Aspects.Autofac.Exception;
 using Olcsan.Boilerplate.Aspects.Autofac.Logger;
 using Olcsan.Boilerplate.Aspects.Autofac.Validation;
@@ -20,11 +22,13 @@ namespace Catalog.Application.Features.Commands.Categories.CreateCategoryCommand
     {
         private readonly IMapper _mapper;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CreateCategoryCommandHandler(IMapper mapper, ICategoryRepository categoryRepository)
+        public CreateCategoryCommandHandler(IMapper mapper, ICategoryRepository categoryRepository, IHttpContextAccessor httpContextAccessor)
         {
             _mapper = mapper;
             _categoryRepository = categoryRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [LogAspect(typeof(FileLogger), "Catalog-Application")]
@@ -33,6 +37,12 @@ namespace Catalog.Application.Features.Commands.Categories.CreateCategoryCommand
         public async Task<IDataResult<Category>> Handle(CreateCategoryCommand request,
             CancellationToken cancellationToken)
         {
+            var currentUserId = _httpContextAccessor?.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)
+                ?.Value;
+            if (string.IsNullOrEmpty(currentUserId))
+            {
+                return new ErrorDataResult<Category>(Messages.SignInFirst);
+            }
             var isAlreadyExists = (await _categoryRepository.GetListAsync()).AsEnumerable().Map(p => p.Name.Equals(request.Name), n => n.SubCategories)
                 .Any();
             

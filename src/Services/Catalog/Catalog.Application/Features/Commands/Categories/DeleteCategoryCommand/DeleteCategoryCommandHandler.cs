@@ -1,10 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Catalog.Application.Constants;
 using Catalog.Application.Extensions;
 using Catalog.Application.Interfaces.Repositories;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Olcsan.Boilerplate.Aspects.Autofac.Exception;
 using Olcsan.Boilerplate.Aspects.Autofac.Logger;
 using Olcsan.Boilerplate.Aspects.Autofac.Validation;
@@ -18,13 +21,16 @@ namespace Catalog.Application.Features.Commands.Categories.DeleteCategoryCommand
         private readonly ICategoryRepository _categoryRepository;
         private readonly IProductRepository _productRepository;
         private readonly ICategoryOptionValueRepository _categoryOptionValueRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public DeleteCategoryCommandHandler(ICategoryRepository categoryRepository,
-            IProductRepository productRepository, ICategoryOptionValueRepository categoryOptionValueRepository)
+            IProductRepository productRepository, ICategoryOptionValueRepository categoryOptionValueRepository,
+            IHttpContextAccessor httpContextAccessor)
         {
             _categoryRepository = categoryRepository;
             _productRepository = productRepository;
             _categoryOptionValueRepository = categoryOptionValueRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
 
@@ -33,6 +39,13 @@ namespace Catalog.Application.Features.Commands.Categories.DeleteCategoryCommand
         [ValidationAspect(typeof(DeleteCategoryCommandValidator))]
         public async Task<IResult> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
         {
+            var currentUserId = _httpContextAccessor?.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)
+                ?.Value;
+            if (string.IsNullOrEmpty(currentUserId))
+            {
+                return new ErrorResult(Messages.SignInFirst);
+            }
+
             var mainCategory = await _categoryRepository.GetByIdAsync(request.MainCategoryId);
             if (mainCategory is null) return new ErrorResult(Messages.DataNotFound);
 
@@ -65,7 +78,7 @@ namespace Catalog.Application.Features.Commands.Categories.DeleteCategoryCommand
 
             mainCategory.SubCategories
                 .Map(p => p.Id.Equals(request.ParentId), n => n.SubCategories).FirstOrDefault()
-                ?.DeleteSubCategory(categoryToDelete, "admin");
+                ?.DeleteSubCategory(categoryToDelete, currentUserId);
             await _categoryRepository.UpdateAsync(mainCategory.Id, mainCategory);
 
             await DeleteCategoryOptionValuesByCategoryId(categoryToDelete.Id);

@@ -11,5 +11,7 @@
         public const string CategoryNotFound  = "Category not found!";
         public const string MaxImage = "Maximum image count be 6";
         public const string ErrorWhileUploadingMedia = "An error occurred while uploading the media";
+        public const string SignInFirst = "Please sign in first.";
+
     }
 }

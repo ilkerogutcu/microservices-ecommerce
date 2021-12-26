@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -11,6 +12,7 @@ using Catalog.Application.Interfaces;
 using Catalog.Application.Interfaces.Repositories;
 using Catalog.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Olcsan.Boilerplate.Aspects.Autofac.Exception;
 using Olcsan.Boilerplate.Aspects.Autofac.Logger;
 using Olcsan.Boilerplate.Aspects.Autofac.Validation;
@@ -27,10 +29,12 @@ namespace Catalog.Application.Features.Commands.Products.CreateManyProductsComma
         private readonly IMapper _mapper;
         private readonly ICategoryOptionValueRepository _categoryOptionValueRepository;
         private readonly IOptionValueRepository _optionValueRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public CreateProductCommandHandler(IProductRepository productRepository, IMapper mapper,
             ICategoryRepository categoryRepository, IBrandRepository brandRepository,
-            ICategoryOptionValueRepository categoryOptionValueRepository, IOptionValueRepository optionValueRepository)
+            ICategoryOptionValueRepository categoryOptionValueRepository, IOptionValueRepository optionValueRepository,
+            IHttpContextAccessor httpContextAccessor)
         {
             _productRepository = productRepository;
             _mapper = mapper;
@@ -38,6 +42,7 @@ namespace Catalog.Application.Features.Commands.Products.CreateManyProductsComma
             _brandRepository = brandRepository;
             _categoryOptionValueRepository = categoryOptionValueRepository;
             _optionValueRepository = optionValueRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [LogAspect(typeof(FileLogger), "Catalog-Application")]
@@ -46,6 +51,13 @@ namespace Catalog.Application.Features.Commands.Products.CreateManyProductsComma
         public async Task<IDataResult<List<Product>>> Handle(CreateManyProductsCommand request,
             CancellationToken cancellationToken)
         {
+            var currentUserId = _httpContextAccessor?.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)
+                ?.Value;
+            if (string.IsNullOrEmpty(currentUserId))
+            {
+                return new ErrorDataResult<List<Product>>(Messages.SignInFirst);
+            }
+
             var messages = new List<string>();
             var productList = new List<Product>();
             foreach (var createProductDto in request.Products)
@@ -92,15 +104,17 @@ namespace Catalog.Application.Features.Commands.Products.CreateManyProductsComma
                     messages.Add($"{product.Name} cannot be added because the option value is not found.");
                     continue;
                 }
+
                 product.IsFreeShipping = product.SalePrice > 100;
                 product.ThumbnailImageUrl = product.ImageUrls[0];
                 product.Brand = brand;
                 product.Category = category;
                 product.CreatedDate = DateTime.Now;
-                product.CreatedBy = "admin";
+                product.CreatedBy = currentUserId;
                 await _productRepository.AddAsync(product);
                 productList.Add(product);
-                messages.Add($"Product Name: {product.Name} Model Code: {product.ModelCode} Barcode: {product.Barcode} added successfully.");
+                messages.Add(
+                    $"Product Name: {product.Name} Model Code: {product.ModelCode} Barcode: {product.Barcode} added successfully.");
             }
 
             return new SuccessDataResult<List<Product>>(productList, string.Join("///", messages));

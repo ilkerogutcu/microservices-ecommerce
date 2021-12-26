@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Catalog.Application.Constants;
@@ -7,6 +8,7 @@ using Catalog.Application.Extensions;
 using Catalog.Application.Interfaces.Repositories;
 using Catalog.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Olcsan.Boilerplate.Aspects.Autofac.Exception;
 using Olcsan.Boilerplate.Aspects.Autofac.Logger;
 using Olcsan.Boilerplate.Aspects.Autofac.Validation;
@@ -23,24 +25,32 @@ namespace Catalog.Application.Features.Commands.Categories.CreateCategoryOptionV
         private readonly IOptionValueRepository _optionValueRepository;
         private readonly IOptionRepository _optionRepository;
         private readonly ICategoryOptionValueRepository _categoryOptionValueRepository;
-        
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
         public CreateOrUpdateCategoryOptionValueCommandHandler(ICategoryRepository categoryRepository,
             IOptionValueRepository optionValueRepository, ICategoryOptionValueRepository categoryOptionValueRepository,
-            IOptionRepository optionRepository)
+            IOptionRepository optionRepository, IHttpContextAccessor httpContextAccessor)
         {
             _categoryRepository = categoryRepository;
             _optionValueRepository = optionValueRepository;
             _categoryOptionValueRepository = categoryOptionValueRepository;
             _optionRepository = optionRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
-        
+
         [LogAspect(typeof(FileLogger), "Catalog-Application")]
         [ExceptionLogAspect(typeof(FileLogger), "Catalog-Application")]
         [ValidationAspect(typeof(CreateCategoryOptionValueCommandValidator))]
         public async Task<IDataResult<CategoryOptionValue>> Handle(CreateCategoryOptionValueCommand request,
             CancellationToken cancellationToken)
         {
-          
+            var currentUserId = _httpContextAccessor?.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)
+                ?.Value;
+            if (string.IsNullOrEmpty(currentUserId))
+            {
+                return new ErrorDataResult<CategoryOptionValue>(Messages.SignInFirst);
+            }
+
             var category = (await _categoryRepository.GetListAsync()).AsEnumerable()
                 .Map(p => p.Id.Equals(request.CategoryId), n => n.SubCategories)
                 .FirstOrDefault();
@@ -65,7 +75,7 @@ namespace Catalog.Application.Features.Commands.Categories.CreateCategoryOptionV
 
             categoryOptionValue.Category = category;
             categoryOptionValue.Option = option;
-            categoryOptionValue.CreatedBy = "admin";
+            categoryOptionValue.CreatedBy = currentUserId;
             categoryOptionValue.CreatedDate = DateTime.Now;
             categoryOptionValue.Varianter = request.Varianter;
             categoryOptionValue.IsRequired = request.IsRequired;

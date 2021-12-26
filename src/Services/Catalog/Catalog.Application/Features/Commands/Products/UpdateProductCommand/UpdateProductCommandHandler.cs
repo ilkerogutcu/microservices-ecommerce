@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -8,6 +9,7 @@ using Catalog.Application.Extensions;
 using Catalog.Application.Interfaces.Repositories;
 using Catalog.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Olcsan.Boilerplate.Aspects.Autofac.Exception;
 using Olcsan.Boilerplate.Aspects.Autofac.Logger;
 using Olcsan.Boilerplate.Aspects.Autofac.Validation;
@@ -24,10 +26,12 @@ namespace Catalog.Application.Features.Commands.Products.UpdateProductCommand
         private readonly IMapper _mapper;
         private readonly ICategoryOptionValueRepository _categoryOptionValueRepository;
         private readonly IOptionValueRepository _optionValueRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public UpdateProductCommandHandler(ICategoryRepository categoryRepository, IBrandRepository brandRepository,
             IProductRepository productRepository, IMapper mapper,
-            ICategoryOptionValueRepository categoryOptionValueRepository, IOptionValueRepository optionValueRepository)
+            ICategoryOptionValueRepository categoryOptionValueRepository, IOptionValueRepository optionValueRepository,
+            IHttpContextAccessor httpContextAccessor)
         {
             _categoryRepository = categoryRepository;
             _brandRepository = brandRepository;
@@ -35,6 +39,7 @@ namespace Catalog.Application.Features.Commands.Products.UpdateProductCommand
             _mapper = mapper;
             _categoryOptionValueRepository = categoryOptionValueRepository;
             _optionValueRepository = optionValueRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [LogAspect(typeof(FileLogger), "Catalog-Application")]
@@ -43,6 +48,13 @@ namespace Catalog.Application.Features.Commands.Products.UpdateProductCommand
         public async Task<IDataResult<Product>> Handle(UpdateProductCommand request,
             CancellationToken cancellationToken)
         {
+            var currentUserId = _httpContextAccessor?.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)
+                ?.Value;
+            if (string.IsNullOrEmpty(currentUserId))
+            {
+                return new ErrorDataResult<Product>(Messages.SignInFirst);
+            }
+
             var product = await _productRepository.GetByIdAsync(request.ProductId);
             if (product is null)
             {
@@ -73,7 +85,7 @@ namespace Catalog.Application.Features.Commands.Products.UpdateProductCommand
             }
 
             product.ThumbnailImageUrl = product.ImageUrls[0];
-            product.LastUpdatedBy = "admin";
+            product.LastUpdatedBy = currentUserId;
             product.LastUpdatedDate = DateTime.Now;
             await _productRepository.UpdateAsync(product.Id, product);
             return new SuccessDataResult<Product>(product);
