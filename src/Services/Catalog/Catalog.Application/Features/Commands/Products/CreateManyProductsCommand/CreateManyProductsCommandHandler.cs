@@ -105,6 +105,7 @@ namespace Catalog.Application.Features.Commands.Products.CreateManyProductsComma
                     continue;
                 }
 
+                product.NormalizedName = product.Name.ToLower();
                 product.IsFreeShipping = product.SalePrice > 100;
                 product.ThumbnailImageUrl = product.ImageUrls[0];
                 product.Brand = brand;

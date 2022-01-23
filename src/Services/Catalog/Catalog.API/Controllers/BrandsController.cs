@@ -11,6 +11,7 @@ using Catalog.Application.Features.Queries.Brands.GetNotActiveBrandsQuery;
 using Catalog.Application.Wrappers;
 using Catalog.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -97,6 +98,7 @@ namespace Catalog.API.Controllers
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Brand))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+      //  [Authorize(Roles = "Administrator")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateBrandCommand command)
         {
@@ -110,6 +112,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(string id)
         {
             var result = await _mediator.Send(new DeleteBrandCommand

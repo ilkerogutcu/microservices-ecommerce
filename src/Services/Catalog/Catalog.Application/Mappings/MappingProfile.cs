@@ -36,11 +36,9 @@ namespace Catalog.Application.Mappings
             CreateMap<CategoryOptionValue, CategoryOptionValueDto>()
                 .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.Category.Id))
                 .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
-                .ForMember(dest => dest.Option, opt => opt.MapFrom(src => src.Option))
                 .ReverseMap();
 
             CreateMap<Product, CreateProductDto>()
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.NormalizedName))
                 .ReverseMap();
             CreateMap<Domain.Entities.Media, MediaModel>()
                 .Ignore(dest => dest.CreatedTimestamp)

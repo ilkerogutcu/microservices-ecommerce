@@ -33,6 +33,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Category))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create([FromBody] CreateCategoryCommand command)
         {
             var result = await _mediator.Send(command);
@@ -44,6 +45,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryOptionValue))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPost("{categoryId}/option-value")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> CreateCategoryOptionValue(string categoryId,
             [FromBody] CreateCategoryOptionValueCommand request)
         {
@@ -63,6 +65,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryOptionValue))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpDelete("option-value/{categoryOptionValueId}")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteCategoryOptionValue(string categoryOptionValueId)
         {
             var result = await _mediator.Send(new DeleteCategoryOptionValueCommand
@@ -77,11 +80,12 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CategoryOptionValueDto))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpGet("{categoryId}/option-values")]
+        //[Authorize(Roles = "Administrator")]
         public async Task<IActionResult> GetCategoryOptionValues(string categoryId)
         {
             var result = await _mediator.Send(new GetCategoryOptionValuesByIdQuery
             {
-                Id = categoryId
+                CategoryId = categoryId
             });
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
@@ -92,6 +96,8 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Category))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPut]
+        [Authorize(Roles = "Administrator")]
+
         public async Task<IActionResult> Update([FromBody] UpdateCategoryCommand command)
         {
             var result = await _mediator.Send(command);
@@ -103,6 +109,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpDelete]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete([FromBody] DeleteCategoryCommand command)
         {
             var result = await _mediator.Send(command);

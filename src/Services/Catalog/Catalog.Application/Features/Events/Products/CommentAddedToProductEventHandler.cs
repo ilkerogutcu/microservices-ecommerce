@@ -29,13 +29,9 @@ namespace Catalog.Application.Features.Events.Products
                 return;
             }
 
-            double newRating = 0;
             var starCounts = product.Comments.GroupBy(x => x.Rating)
                 .Select(x => new {Value = x.Key, Count = x.Count()});
-            foreach (var starCount in starCounts)
-            {
-                newRating += starCount.Value * starCount.Count;
-            }
+            double newRating = starCounts.Aggregate(0, (current, starCount) => current + starCount.Value * starCount.Count);
 
             newRating /= product.RatingCount + 1;
             product.RatingAverage = newRating;

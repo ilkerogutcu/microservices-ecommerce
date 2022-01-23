@@ -51,6 +51,7 @@ namespace Catalog.Infrastructure.Repositories
                 {
                     OptionId = option.Id,
                     OptionName = option.Name,
+                    IsActive = option.IsActive,
                     OptionValues = (from optionValue in optionValues
                         where optionValue.OptionId.Equals(option.Id)
                         select new OptionValueDto

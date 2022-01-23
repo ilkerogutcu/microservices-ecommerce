@@ -45,8 +45,8 @@ namespace Catalog.API
                 swagger.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Identity Service WEB API",
-                    Description = "Identity Service WEB API"
+                    Title = "Catalog Service WEB API",
+                    Description = "Catalog Service WEB API"
                 });
                 // To Enable authorization using Swagger (JWT)  
                 swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()

@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Catalog.Application.Features.Commands.Medias.UploadMediaCommand;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +23,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Domain.Entities.Media))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Upload([FromForm] UploadMediaCommand command)
         {
             var result = await _mediator.Send(command);

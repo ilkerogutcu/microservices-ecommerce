@@ -10,6 +10,7 @@ using Catalog.Application.Features.Commands.Products.UpdateProductLockStatusComm
 using Catalog.Application.Features.Queries.Products.GetAllProductsQuery;
 using Catalog.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,6 +32,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Product>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPost]
+        //[Authorize(Roles = "Administrator")]
         public async Task<IActionResult> CreateProduct(CreateManyProductsCommand command)
         {
             var result = await _mediator.Send(command);
@@ -42,6 +44,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPost("{productId}/comment")]
+        //[Authorize(Roles = "Buyer")]
         public async Task<IActionResult> AddCommentToProduct([FromRoute] string productId,
             [FromBody] AddCommentToProductCommand command)
         {
@@ -56,6 +59,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Product))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPut("{productId}")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> UpdateProduct([FromRoute] string productId, UpdateProductCommand command)
         {
             command.ProductId = productId;
@@ -68,6 +72,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPatch("{productId}/activation")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> UpdateProductActivation([FromRoute] string productId,
             UpdateProductActivationCommand command)
         {
@@ -81,6 +86,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPatch("{productId}/approval")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> UpdateProductApproval([FromRoute] string productId,
             UpdateProductApprovalCommand command)
         {
@@ -94,6 +100,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPatch("{productId}/lock-status")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> UpdateProductLockStatus([FromRoute] string productId,
             UpdateProductLockStatusCommand command)
         {
@@ -107,6 +114,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ProductDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpGet]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> GetAllProducts([FromQuery] GetAllProductsQuery query)
         {
             var result = await _mediator.Send(query);

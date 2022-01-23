@@ -19,12 +19,10 @@ namespace Catalog.Application.DependencyResolvers
                 .AsClosedTypesOf(typeof(IRequestHandler<,>));
             builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces()
                 .AsClosedTypesOf(typeof(IValidator<>));
-            builder.RegisterAssemblyTypes(assembly).AsImplementedInterfaces()
-                .AsClosedTypesOf(typeof(INotificationHandler<>));
             builder
                 .RegisterType<Mediator>()
                 .As<IMediator>()
-                .InstancePerLifetimeScope();
+                .SingleInstance();
             builder.Register<ServiceFactory>(context =>
             {
                 var c = context.Resolve<IComponentContext>();

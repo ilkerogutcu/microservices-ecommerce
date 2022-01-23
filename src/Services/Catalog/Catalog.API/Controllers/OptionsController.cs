@@ -8,6 +8,7 @@ using Catalog.Application.Features.Queries.Options.GetAllOptionsQuery;
 using Catalog.Application.Wrappers;
 using Catalog.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,6 +30,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Option))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPost]
+      //  [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create([FromBody] CreateOptionCommand command)
         {
             var result = await _mediator.Send(command);
@@ -40,6 +42,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Option))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPut]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Update([FromBody] UpdateOptionCommand command)
         {
             var result = await _mediator.Send(command);
@@ -51,6 +54,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(string id)
         {
             var result = await _mediator.Send(new DeleteOptionCommand()
@@ -65,6 +69,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResult<List<OptionDto>>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpGet]
+        //[Authorize(Roles = "Administrator")]
         public async Task<IActionResult> GetAll([FromQuery] GetAllOptionsQuery query)
         {
             var result = await _mediator.Send(query);

@@ -6,7 +6,7 @@ namespace Catalog.Application.Features.Queries.Categories.GetCategoryOptionValue
     {
         public GetCategoryOptionValuesByIdQueryValidator()
         {
-            RuleFor(x => x.Id).NotEmpty().WithMessage("Category id cannot be empty!");
+            RuleFor(x => x.CategoryId).NotEmpty().WithMessage("Category id cannot be empty!");
         }
     }
 }

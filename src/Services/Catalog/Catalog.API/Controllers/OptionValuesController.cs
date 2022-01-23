@@ -7,6 +7,7 @@ using Catalog.Application.Features.Commands.OptionValues.UpdateOptionValueComman
 using Catalog.Application.Features.Queries.OptionValues.GetAllOptionValuesQuery;
 using Catalog.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,6 +29,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OptionValue))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPost]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create([FromBody] CreateOptionValueCommand command)
         {
             var result = await _mediator.Send(command);
@@ -39,6 +41,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(OptionValue))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPut]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Update([FromBody] UpdateOptionValueCommand command)
         {
             var result = await _mediator.Send(command);
@@ -50,6 +53,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(string id)
         {
             var result = await _mediator.Send(new DeleteOptionValueCommand()
@@ -64,6 +68,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<OptionWithValuesDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpGet]
+       // [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> GetAllOptionsWithValues()
         {
             var result = await _mediator.Send(new GetAllOptionsWithValuesQuery());

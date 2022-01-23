@@ -15,6 +15,7 @@ namespace Identity.Application.Mappings
             CreateMap<User, CreateUserCommand>().ReverseMap();
             CreateMap<User, UserViewModel>().ReverseMap();
             CreateMap<Address, AddressViewModel>()
+                .ForMember(dest => dest.CityId, opt => opt.MapFrom(src => src.District.City.Id))
                 .ForMember(dest => dest.City, opt => opt.MapFrom(src => src.District.City.Name))
                 .ForMember(dest => dest.District, opt => opt.MapFrom(src => src.District.Name))
                 .ReverseMap();

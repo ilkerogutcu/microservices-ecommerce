@@ -6,6 +6,7 @@ namespace Catalog.Application.Dtos
     {
         public string OptionId { get; set; }
         public string OptionName { get; set; }
+        public bool IsActive { get; set; }
         public List<OptionValueDto> OptionValues { get; set; }
     }
 }
