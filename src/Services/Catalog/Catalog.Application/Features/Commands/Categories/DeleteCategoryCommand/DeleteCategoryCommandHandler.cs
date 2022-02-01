@@ -76,9 +76,16 @@ namespace Catalog.Application.Features.Commands.Categories.DeleteCategoryCommand
                 return new ErrorResult(Messages.DataNotFound);
             }
 
-            mainCategory.SubCategories
-                .Map(p => p.Id.Equals(request.ParentId), n => n.SubCategories).FirstOrDefault()
-                ?.DeleteSubCategory(categoryToDelete, currentUserId);
+            var categoryToUpdate = mainCategory.SubCategories
+                .Map(p => p.Id.Equals(request.ParentId), n => n.SubCategories).FirstOrDefault();
+
+            if (categoryToUpdate != null)
+            {
+                categoryToUpdate.SubCategories.Remove(categoryToDelete);
+                categoryToUpdate.LastUpdatedBy = currentUserId;
+                categoryToUpdate.LastUpdatedDate = DateTime.Now;
+            }
+
             await _categoryRepository.UpdateAsync(mainCategory.Id, mainCategory);
 
             await DeleteCategoryOptionValuesByCategoryId(categoryToDelete.Id);
