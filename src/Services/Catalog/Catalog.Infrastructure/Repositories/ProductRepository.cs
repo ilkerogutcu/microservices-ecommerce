@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Catalog.Application.Dtos;
+using Catalog.Application.Features.Queries.Catalog.ViewModels;
 using Catalog.Application.Features.Queries.Products.GetAllProductsQuery;
 using Catalog.Application.Helpers;
 using Catalog.Application.Interfaces.Repositories;
@@ -18,7 +19,7 @@ namespace Catalog.Infrastructure.Repositories
         {
         }
 
-        public async Task<List<ProductDto>> GetAllProducts(GetAllProductsQuery query)
+        public async Task<List<ProductDto>> GetAllProductsAsync(GetAllProductsQuery query)
         {
             var startDate = query.StartDate == 0
                 ? DateTime.MinValue
@@ -95,6 +96,29 @@ namespace Catalog.Infrastructure.Repositories
                 result = result.Where(x => x.NormalizedName.Contains(query.ProductName.ToLower()));
 
             return await Task.FromResult(result.ToList());
+        }
+
+        public async Task<List<ProductCardViewModel>> GetTopProductsAsync(int count)
+        {
+            var result=(from product in  (await Collection.FindAsync(x=>true)).ToList().OrderBy(x=>x.ReviewsCount).Take(count)
+                        select new ProductCardViewModel
+                        {
+                            Id = product.Id,
+                            Name = product.Name,
+                            Brand = product.Brand.Name,
+                            BrandId = product.Brand.Id,
+                            ThumbnailImageUrl = product.ThumbnailImageUrl,
+                            ShortDescription = product.ShortDescription,
+                            ReviewsCount = product.ReviewsCount,
+                            RatingAverage = product.RatingAverage,
+                            Barcode = product.Barcode,
+                            StockQuantity = product.StockQuantity,
+                            SalePrice = product.SalePrice,
+                            ListPrice = product.ListPrice,
+                            IsFreeShipping = product.IsFreeShipping,
+                            DiscountRate = Convert.ToInt32((product.SalePrice - product.ListPrice) / product.ListPrice * 100),
+                        }).ToList();
+            return result;
         }
     }
 }

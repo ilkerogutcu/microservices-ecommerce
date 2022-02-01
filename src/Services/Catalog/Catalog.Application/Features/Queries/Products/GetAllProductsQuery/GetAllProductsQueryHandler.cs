@@ -24,7 +24,7 @@ namespace Catalog.Application.Features.Queries.Products.GetAllProductsQuery
         public async Task<IDataResult<List<ProductDto>>> Handle(GetAllProductsQuery request,
             CancellationToken cancellationToken)
         {
-            var result = await _productRepository.GetAllProducts(request);
+            var result = await _productRepository.GetAllProductsAsync(request);
             return new PaginatedResult<List<ProductDto>>(result, request.PageIndex, request.PageSize, result.Count);
         }
     }
