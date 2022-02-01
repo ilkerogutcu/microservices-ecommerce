@@ -10,6 +10,7 @@ namespace Catalog.Domain.Entities
         public Option Option { get; set; }
         public bool IsRequired { get; set; }
         public bool Varianter { get; set; }
+        public bool Slicer { get; set; }
         public List<OptionValue>  OptionValues { get; set; }= new List<OptionValue>();
     }
 }

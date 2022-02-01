@@ -6,9 +6,11 @@ namespace Catalog.Application.Dtos
     {
         public string CategoryId { get; set; }
         public string CategoryName { get; set; }
-        public OptionDto Option { get; set; }
         public bool Varianter { get; set; }
         public bool IsRequired { get; set; }
+        public bool Slicer { get; set; }
+        public OptionDto Option { get; set; }
+
         public List<OptionValueDto> OptionValues { get; set; }
     }
 }

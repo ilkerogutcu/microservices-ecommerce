@@ -10,7 +10,7 @@ namespace Catalog.Application.Interfaces.Repositories
     {
         Task<bool> DeleteManyByOptionIdAsync(string optionId);
        // Task<OptionValueDetailsDto> GetAllDetailsByOptionIdAsync(string optionId);
-        Task<List<OptionValueDetailsDto>> GetAllDetailsAsync();
+        Task<List<OptionWithValuesDto>> GetAllDetailsAsync();
 
     }
 }

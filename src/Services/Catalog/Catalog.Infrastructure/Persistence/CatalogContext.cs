@@ -1,5 +1,5 @@
 ﻿using System;
-using Catalog.Application.Models.Configs;
+using Catalog.Application.Configs;
 using Catalog.Domain.Common;
 using Catalog.Domain.Entities;
 using Catalog.Domain.Utilities.Messages;
@@ -16,7 +16,9 @@ namespace Catalog.Infrastructure.Persistence
         public CatalogContext()
         {
             var configuration = ServiceTool.ServiceProvider.GetService<IConfiguration>();
-            var config = configuration?.GetSection("MongoDatabaseConfig").Get<MongoDatabaseConfig>();
+            var config = configuration?.GetSection("DatabaseSettings").Get<MongoDatabaseConfig>();
+            Console.WriteLine("Connection string:"+config.ConnectionString);
+            Console.WriteLine($"collection. {config.DatabaseName}");
             ConnectionSettingControl(config);
             var client = new MongoClient(config?.ConnectionString);
             _database = client.GetDatabase(config?.DatabaseName);
@@ -25,11 +27,10 @@ namespace Catalog.Infrastructure.Persistence
             Categories = _database.GetCollection<Category>("Category");
             CategoryOptionValues = _database.GetCollection<CategoryOptionValue>("CategoryOptionValue");
             Comments = _database.GetCollection<Comment>("Comment");
-            Medias = _database.GetCollection<Media>("Media");
+            Medias = _database.GetCollection<Domain.Entities.Media>("Media");
             Options = _database.GetCollection<Option>("Option");
             OptionValues = _database.GetCollection<OptionValue>("OptionValue");
             Products = _database.GetCollection<Product>("Product");
-            Skus = _database.GetCollection<Sku>("Sku");
             //
             // CatalogContextSeed.SeedBrandData(Brands);
             // CatalogContextSeed.SeedOptionData(Options);
@@ -49,11 +50,10 @@ namespace Catalog.Infrastructure.Persistence
         public IMongoCollection<Category> Categories { get; set; }
         public IMongoCollection<CategoryOptionValue> CategoryOptionValues { get; set; }
         public IMongoCollection<Comment> Comments { get; set; }
-        public IMongoCollection<Media> Medias { get; set; }
+        public IMongoCollection<Domain.Entities.Media> Medias { get; set; }
         public IMongoCollection<Option> Options { get; set; }
         public IMongoCollection<OptionValue> OptionValues { get; set; }
         public IMongoCollection<Product> Products { get; set; }
-        public IMongoCollection<Sku> Skus { get; set; }
         public IMongoCollection<T> GetCollection()
         {
             return _database.GetCollection<T>(typeof(T).Name);

@@ -41,19 +41,20 @@ namespace Catalog.Infrastructure.Repositories
         //     return result;
         // }
 
-        public async Task<List<OptionValueDetailsDto>> GetAllDetailsAsync()
+        public async Task<List<OptionWithValuesDto>> GetAllDetailsAsync()
         {
             var options = await (await new CatalogContext<Option>().Options.FindAsync(x => true))
                 .ToListAsync();
             var optionValues = await (await Collection.FindAsync(x => true)).ToListAsync();
             var result = (from option in options
-                select new OptionValueDetailsDto
+                select new OptionWithValuesDto
                 {
                     OptionId = option.Id,
                     OptionName = option.Name,
+                    IsActive = option.IsActive,
                     OptionValues = (from optionValue in optionValues
                         where optionValue.OptionId.Equals(option.Id)
-                        select new OptionValueDto()
+                        select new OptionValueDto
                         {
                             Id = optionValue.Id,
                             Name = optionValue.Name

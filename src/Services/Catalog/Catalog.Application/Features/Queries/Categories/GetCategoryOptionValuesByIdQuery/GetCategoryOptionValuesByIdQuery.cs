@@ -1,11 +1,10 @@
-﻿using Catalog.Application.Dtos;
-using MediatR;
+﻿using MediatR;
 using Olcsan.Boilerplate.Utilities.Results;
 
 namespace Catalog.Application.Features.Queries.Categories.GetCategoryOptionValuesByIdQuery
 {
-    public class GetCategoryOptionValuesByIdQuery : IRequest<IDataResult<CategoryOptionValueDto>>
+    public class GetCategoryOptionValuesByIdQuery : IRequest<IDataResult<GetCategoryOptionValuesByIdViewModel>>
     {
-        public string Id { get; set; }
+        public string CategoryId { get; set; }
     }
 }

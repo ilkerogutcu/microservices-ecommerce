@@ -5,7 +5,7 @@ using MongoDB.Bson;
 
 namespace Catalog.Domain.Entities
 {
-    public class Category : BaseEntity
+    public  class Category : BaseEntity
     {
         public string ParentId { get; set; }
         public string Name { get; set; }
@@ -18,14 +18,7 @@ namespace Catalog.Domain.Entities
             category.ParentId = Id;
             SubCategories.Add(category);
         }
-
-        public void DeleteSubCategory(Category category, string lastUpdatedBy)
-        {
-            LastUpdatedDate = DateTime.Now;
-            LastUpdatedBy = lastUpdatedBy;
-            SubCategories.Remove(category);
-        }
-
+        
         public Category Update(string name, bool isActive, string lastUpdatedBy)
         {
             Name = name;

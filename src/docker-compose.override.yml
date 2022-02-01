@@ -1,0 +1,28 @@
+version: '3.4'
+
+services:
+  catalogdb:
+    container_name: catalogdb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+      
+  identitydb:
+    restart: always
+    container_name: identitydb
+    environment:
+      SA_PASSWORD: SwN741589631
+      ACCEPT_EULA: Y
+    ports:
+      - "1433:1433"
+      
+  catalog.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "DatabaseSettings:ConnectionString=mongodb://catalogdb:27017"
+    depends_on:
+      - catalogdb
+    ports:
+      - "8000:80"

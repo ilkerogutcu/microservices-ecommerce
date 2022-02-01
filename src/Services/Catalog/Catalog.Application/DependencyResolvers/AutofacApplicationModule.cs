@@ -22,7 +22,7 @@ namespace Catalog.Application.DependencyResolvers
             builder
                 .RegisterType<Mediator>()
                 .As<IMediator>()
-                .InstancePerLifetimeScope();
+                .SingleInstance();
             builder.Register<ServiceFactory>(context =>
             {
                 var c = context.Resolve<IComponentContext>();

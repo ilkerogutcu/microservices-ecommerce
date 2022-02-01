@@ -1,40 +1,50 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using Catalog.Application.Constants;
 using Catalog.Application.Dtos;
 using Catalog.Application.Interfaces.Repositories;
-using Catalog.Domain.Entities;
 using MediatR;
 using Olcsan.Boilerplate.Utilities.Results;
 
 namespace Catalog.Application.Features.Queries.Categories.GetCategoryOptionValuesByIdQuery
 {
     public class GetCategoryOptionValuesByIdQueryHandler : IRequestHandler<GetCategoryOptionValuesByIdQuery,
-        IDataResult<CategoryOptionValueDto>>
+        IDataResult<GetCategoryOptionValuesByIdViewModel>>
     {
         private readonly ICategoryOptionValueRepository _categoryOptionValueRepository;
         private readonly IMapper _mapper;
 
-        public GetCategoryOptionValuesByIdQueryHandler(ICategoryOptionValueRepository categoryOptionValueRepository, IMapper mapper)
+        public GetCategoryOptionValuesByIdQueryHandler(ICategoryOptionValueRepository categoryOptionValueRepository,
+            IMapper mapper)
         {
             _categoryOptionValueRepository = categoryOptionValueRepository;
             _mapper = mapper;
         }
 
-        public async Task<IDataResult<CategoryOptionValueDto>> Handle(GetCategoryOptionValuesByIdQuery request,
+        public async Task<IDataResult<GetCategoryOptionValuesByIdViewModel>> Handle(
+            GetCategoryOptionValuesByIdQuery request,
             CancellationToken cancellationToken)
         {
-            var categoryOptionValue =
-                await _categoryOptionValueRepository.GetAsync(x => x.Category.Id.Equals(request.Id));
-            if (categoryOptionValue is null)
+            var categoryOptionValues =
+                await _categoryOptionValueRepository.GetListAsync(x => x.Category.Id.Equals(request.CategoryId));
+            if (!categoryOptionValues.Any())
             {
-                return new ErrorDataResult<CategoryOptionValueDto>(Messages.DataNotFound);
+                return new ErrorDataResult<GetCategoryOptionValuesByIdViewModel>(Messages.DataNotFound);
             }
 
-            var result = _mapper.Map<CategoryOptionValueDto>(categoryOptionValue);
-            return new SuccessDataResult<CategoryOptionValueDto>(result);
+            var category = categoryOptionValues.First().Category;
+
+            var result = new GetCategoryOptionValuesByIdViewModel()
+            {
+                CategoryId = category.Id,
+                CategoryName = category.Name,
+                CategoryOptionValues = _mapper.Map<List<CategoryOptionValueDto>>(categoryOptionValues)
+            };
+
+            return new SuccessDataResult<GetCategoryOptionValuesByIdViewModel>(result);
         }
     }
 }

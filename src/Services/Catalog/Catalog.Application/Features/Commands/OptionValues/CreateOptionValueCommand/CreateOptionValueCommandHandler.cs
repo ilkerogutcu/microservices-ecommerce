@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -6,6 +7,7 @@ using Catalog.Application.Constants;
 using Catalog.Application.Interfaces.Repositories;
 using Catalog.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Olcsan.Boilerplate.Aspects.Autofac.Exception;
 using Olcsan.Boilerplate.Aspects.Autofac.Logger;
 using Olcsan.Boilerplate.Aspects.Autofac.Validation;
@@ -19,13 +21,15 @@ namespace Catalog.Application.Features.Commands.OptionValues.CreateOptionValueCo
         private readonly IMapper _mapper;
         private readonly IOptionValueRepository _optionValueRepository;
         private readonly IOptionRepository _optionRepository;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public CreateOptionValueCommandHandler(IMapper mapper, IOptionValueRepository optionValueRepository,
-            IOptionRepository optionRepository)
+            IOptionRepository optionRepository, IHttpContextAccessor httpContextAccessor)
         {
             _mapper = mapper;
             _optionValueRepository = optionValueRepository;
             _optionRepository = optionRepository;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [LogAspect(typeof(FileLogger), "Catalog-Application")]
@@ -34,6 +38,13 @@ namespace Catalog.Application.Features.Commands.OptionValues.CreateOptionValueCo
         public async Task<IDataResult<OptionValue>> Handle(CreateOptionValueCommand request,
             CancellationToken cancellationToken)
         {
+            var currentUserId = _httpContextAccessor?.HttpContext?.User?.FindFirst(ClaimTypes.NameIdentifier)
+                ?.Value;
+            if (string.IsNullOrEmpty(currentUserId))
+            {
+                return new ErrorDataResult<OptionValue>(Messages.SignInFirst);
+            }
+
             var option = await _optionRepository.GetByIdAsync(request.OptionId);
             if (option is null)
             {
@@ -49,7 +60,7 @@ namespace Catalog.Application.Features.Commands.OptionValues.CreateOptionValueCo
 
             var optionValue = _mapper.Map<OptionValue>(request);
             optionValue.NormalizedName = request.Name.ToLower();
-            optionValue.CreatedBy = "admin";
+            optionValue.CreatedBy = currentUserId;
             optionValue.CreatedDate = DateTime.Now;
 
             await _optionValueRepository.AddAsync(optionValue);
