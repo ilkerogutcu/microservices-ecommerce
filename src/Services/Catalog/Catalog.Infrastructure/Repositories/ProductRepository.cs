@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Catalog.Application.Dtos;
+using Catalog.Application.Features.Queries.Catalog.GetProductsByCategoryIdQuery;
 using Catalog.Application.Features.Queries.Catalog.ViewModels;
 using Catalog.Application.Features.Queries.Products.GetAllProductsQuery;
 using Catalog.Application.Helpers;
 using Catalog.Application.Interfaces.Repositories;
+using Catalog.Application.Utilities;
 using Catalog.Domain.Entities;
+using Catalog.Domain.Enums;
 using Catalog.Infrastructure.Persistence;
 using MongoDB.Driver;
 
@@ -63,6 +66,7 @@ namespace Catalog.Infrastructure.Repositories
                         Approved = product.Approved,
                         Locked = product.Locked,
                         Color = product.OptionValues.FirstOrDefault(x => x.OptionId.Equals(colorOption?.Id))?.Name,
+                        HexCode = ColorUtils.ToHexCode(product.OptionValues.FirstOrDefault(x => x.OptionId.Equals(colorOption?.Id))?.Name),
                         Size = product.OptionValues.FirstOrDefault(x => x.OptionId.Equals(sizeOption?.Id))?.Name,
                         CreatedBy = product.CreatedBy,
                         CreatedDate = new DateTimeOffset(product.CreatedDate).ToUnixTimeMilliseconds(),
@@ -100,24 +104,69 @@ namespace Catalog.Infrastructure.Repositories
 
         public async Task<List<ProductCardViewModel>> GetTopProductsAsync(int count)
         {
-            var result=(from product in  (await Collection.FindAsync(x=>true)).ToList().OrderBy(x=>x.ReviewsCount).Take(count)
-                        select new ProductCardViewModel
-                        {
-                            Id = product.Id,
-                            Name = product.Name,
-                            Brand = product.Brand.Name,
-                            BrandId = product.Brand.Id,
-                            ThumbnailImageUrl = product.ThumbnailImageUrl,
-                            ShortDescription = product.ShortDescription,
-                            ReviewsCount = product.ReviewsCount,
-                            RatingAverage = product.RatingAverage,
-                            Barcode = product.Barcode,
-                            StockQuantity = product.StockQuantity,
-                            SalePrice = product.SalePrice,
-                            ListPrice = product.ListPrice,
-                            IsFreeShipping = product.IsFreeShipping,
-                            DiscountRate = Convert.ToInt32((product.SalePrice - product.ListPrice) / product.ListPrice * 100),
-                        }).ToList();
+            var result = (from product in (await Collection.FindAsync(x => x.Locked == false && x.IsActive && x.Approved)).ToList()
+                    .Take(count).OrderBy(x => x.ReviewsCount)
+                select new ProductCardViewModel
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Brand = product.Brand.Name,
+                    BrandId = product.Brand.Id,
+                    ThumbnailImageUrl = product.ThumbnailImageUrl,
+                    ShortDescription = product.ShortDescription,
+                    ReviewsCount = product.ReviewsCount,
+                    RatingAverage = product.RatingAverage,
+                    Barcode = product.Barcode,
+                    StockQuantity = product.StockQuantity,
+                    SalePrice = product.SalePrice,
+                    ListPrice = product.ListPrice,
+                    IsFreeShipping = product.IsFreeShipping,
+                    DiscountRate = Convert.ToInt32((product.SalePrice - product.ListPrice) / product.ListPrice * 100),
+                }).ToList();
+            return result;
+        }
+
+        public async Task<List<ProductCardViewModel>> GetProductsByCategoryIdAsync(GetProductsByCategoryIdQuery query)
+        {
+            var result = (from product in (await Collection.FindAsync(x =>
+                        x.Category.Id.Equals(query.CategoryId) && x.Locked == false && x.IsActive && x.Approved)).ToList()
+                    .Skip(query.PageSize * query.PageIndex).Take(query.PageSize)
+                select new ProductCardViewModel
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Brand = product.Brand.Name,
+                    BrandId = product.Brand.Id,
+                    ThumbnailImageUrl = product.ThumbnailImageUrl,
+                    ShortDescription = product.ShortDescription,
+                    ReviewsCount = product.ReviewsCount,
+                    RatingAverage = product.RatingAverage,
+                    Barcode = product.Barcode,
+                    StockQuantity = product.StockQuantity,
+                    SalePrice = product.SalePrice,
+                    ListPrice = product.ListPrice,
+                    IsFreeShipping = product.IsFreeShipping,
+                    DiscountRate = Convert.ToInt32((product.SalePrice - product.ListPrice) / product.ListPrice * 100),
+                }).ToList();
+            
+            switch (query.SortBy)
+            {
+                case SortBy.PriceByAsc:
+                    result = result.OrderBy(x => x.ListPrice).ToList();
+                    break;
+                case SortBy.PriceByDesc:
+                    result = result.OrderByDescending(x => x.ListPrice).ToList();
+                    break;
+
+                case SortBy.MostRecent:
+                    result = result.OrderByDescending(x => x.ReviewsCount).ToList();
+                    break;
+                case SortBy.BestSeller:
+                default:
+                    result = result.OrderByDescending(x => x.ReviewsCount).ToList();
+                    break;
+            }
+
             return result;
         }
     }

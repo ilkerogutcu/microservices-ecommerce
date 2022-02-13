@@ -5,8 +5,13 @@ using Olcsan.Boilerplate.Utilities.Results;
 
 namespace Catalog.Application.Features.Queries.Catalog.GetTopProductsQuery
 {
-    public class GetTopProductsQuery  : IRequest<IDataResult<List<ProductCardViewModel>>>
+    public class GetTopProductsQuery : IRequest<IDataResult<List<ProductCardViewModel>>>
     {
-        public int Count { get; set; } = 10;
+        public int Count { get; }
+
+        public GetTopProductsQuery(int count = 4)
+        {
+            Count = count;
+        }
     }
 }

@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Catalog.Application.Features.Queries.Catalog.GetProductsByCategoryIdQuery;
 using Catalog.Application.Features.Queries.Catalog.GetTopProductsQuery;
 using Catalog.Application.Features.Queries.Catalog.ViewModels;
+using Catalog.Application.Wrappers;
+using Catalog.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,11 +26,21 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ProductCardViewModel>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpGet("top-products")]
-        public async Task<ActionResult<IEnumerable<ProductCardViewModel>>> GetTopProducts(
-            [FromQuery] GetTopProductsQuery query)
+        public async Task<ActionResult<IEnumerable<ProductCardViewModel>>> GetTopProducts()
         {
-            var result = await _mediator.Send(query);
+            var result = await _mediator.Send(new GetTopProductsQuery());
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
+        }
+
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResult<List<ProductCardViewModel>>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpGet("category/{categoryId}/products")]
+        public async Task<ActionResult<IEnumerable<ProductCardViewModel>>> GetProductsByCategoryId([FromRoute] string categoryId,
+            [FromQuery] SortBy sortBy, [FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 0)
+        {
+            var result = await _mediator.Send(new GetProductsByCategoryIdQuery(categoryId, sortBy, pageSize, pageIndex));
+            return result.Success ? Ok(result) : BadRequest(result.Message);
         }
     }
 }

@@ -28,6 +28,7 @@ namespace Catalog.Application.Dtos
         public bool Approved { get; set; }
         public bool Locked { get; set; }
         public string Color { get; set; }
+        public string HexCode { get; set; }
         public string Size { get; set; }
         public string CreatedBy { get; set; }
         public long CreatedDate { get; set; }
