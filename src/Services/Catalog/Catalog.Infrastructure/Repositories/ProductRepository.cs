@@ -148,7 +148,7 @@ namespace Catalog.Infrastructure.Repositories
                     IsFreeShipping = product.IsFreeShipping,
                     DiscountRate = Convert.ToInt32((product.SalePrice - product.ListPrice) / product.ListPrice * 100),
                 }).ToList();
-            
+
             switch (query.SortBy)
             {
                 case SortBy.PriceByAsc:
@@ -167,6 +167,50 @@ namespace Catalog.Infrastructure.Repositories
                     break;
             }
 
+            return result;
+        }
+
+        public async Task<List<ProductDetailsViewModel>> GetProductDetailsByIdAsync(string id)
+        {
+            var modelCode = Collection.Find(x => x.Id.Equals(id) && x.Locked == false && x.IsActive && x.Approved).FirstOrDefault()?.ModelCode;
+            var options = new CatalogContext<Option>().Options.AsQueryable();
+
+            var colorOption = options.FirstOrDefault(x => x.NormalizedName.Contains("renk"));
+            var sizeOption = options.FirstOrDefault(x => x.NormalizedName.Contains("beden"));
+
+            var result = (from product in (await Collection.FindAsync(x =>
+                    x.ModelCode.Equals(modelCode) && x.Locked == false && x.IsActive && x.Approved)).ToList()
+                select new ProductDetailsViewModel
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Brand = product.Brand.Name,
+                    BrandId = product.Brand.Id,
+                    ModelCode = modelCode,
+                    RatingAverage = product.RatingAverage ?? 0,
+                    RatingCount = product.RatingCount,
+                    LongDescription = product.LongDescription,
+                    ShortDescription = product.ShortDescription,
+                    Barcode = product.Barcode,
+                    SalePrice = product.SalePrice,
+                    ListPrice = product.ListPrice,
+                    DiscountRate = Convert.ToInt32((product.SalePrice - product.ListPrice) / product.ListPrice * 100),
+                    IsFreeShipping = product.IsFreeShipping,
+                    Color = product.OptionValues.FirstOrDefault(x => x.OptionId.Equals(colorOption?.Id))?.Name,
+                    HexCode = ColorUtils.ToHexCode(product.OptionValues.FirstOrDefault(x => x.OptionId.Equals(colorOption?.Id))?.Name),
+                    Size = product.OptionValues.FirstOrDefault(x => x.OptionId.Equals(sizeOption?.Id))?.Name,
+                    StockQuantity = product.StockQuantity,
+                    ImageUrls = product.ImageUrls.ToList(),
+                    OptionValues = (from optionValue in product.OptionValues
+                        join option in options on optionValue.OptionId equals option.Id
+                        select new OptionValueDetailsDto
+                        {
+                            OptionId = option.Id,
+                            OptionName = option.Name,
+                            OptionValueId = optionValue.Id,
+                            OptionValueName = optionValue.Name,
+                        }).ToList()
+                }).ToList();
             return result;
         }
     }

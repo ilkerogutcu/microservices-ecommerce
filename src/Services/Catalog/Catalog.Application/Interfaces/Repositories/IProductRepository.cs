@@ -5,7 +5,6 @@ using Catalog.Application.Features.Queries.Catalog.GetProductsByCategoryIdQuery;
 using Catalog.Application.Features.Queries.Catalog.ViewModels;
 using Catalog.Application.Features.Queries.Products.GetAllProductsQuery;
 using Catalog.Domain.Entities;
-using Catalog.Domain.Enums;
 
 namespace Catalog.Application.Interfaces.Repositories
 {
@@ -14,6 +13,6 @@ namespace Catalog.Application.Interfaces.Repositories
         Task<List<ProductDto>> GetAllProductsAsync(GetAllProductsQuery query);
         Task<List<ProductCardViewModel>> GetTopProductsAsync(int count);
         Task<List<ProductCardViewModel>> GetProductsByCategoryIdAsync(GetProductsByCategoryIdQuery query);
-
+        Task<List<ProductDetailsViewModel>> GetProductDetailsByIdAsync(string id);
     }
 }

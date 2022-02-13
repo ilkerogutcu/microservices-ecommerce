@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Catalog.Application.Features.Events.Products
+namespace Catalog.Application.Features.Events.Products.CommentAddedToProductEvent
 {
     public class CommentAddedToProductEvent : INotification
     {

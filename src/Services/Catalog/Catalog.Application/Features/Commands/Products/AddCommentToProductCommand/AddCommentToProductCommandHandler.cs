@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Catalog.Application.Constants;
 using Catalog.Application.Features.Events.Products;
+using Catalog.Application.Features.Events.Products.CommentAddedToProductEvent;
 using Catalog.Application.Interfaces.Repositories;
 using Catalog.Domain.Entities;
 using MediatR;

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Catalog.Application.Features.Queries.Catalog.GetProductDetailsByIdQuery;
 using Catalog.Application.Features.Queries.Catalog.GetProductsByCategoryIdQuery;
 using Catalog.Application.Features.Queries.Catalog.GetTopProductsQuery;
 using Catalog.Application.Features.Queries.Catalog.ViewModels;
@@ -41,6 +42,16 @@ namespace Catalog.API.Controllers
         {
             var result = await _mediator.Send(new GetProductsByCategoryIdQuery(categoryId, sortBy, pageSize, pageIndex));
             return result.Success ? Ok(result) : BadRequest(result.Message);
+        }
+        
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ProductDetailsViewModel>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpGet("product/{productId}")]
+        public async Task<ActionResult<IEnumerable<ProductCardViewModel>>> GetProductDetailsById([FromRoute] string productId)
+        {
+            var result = await _mediator.Send(new GetProductDetailsByIdQuery(productId));
+            return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
     }
 }
