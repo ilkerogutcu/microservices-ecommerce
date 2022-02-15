@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option csharp_namespace = "Identity.Grpc";
+
+service UserProtoService{
+  rpc GetUserById (GetUserByIdRequest) returns (UserResponse);
+}
+
+message GetUserByIdRequest {
+  string userId = 1;
+}
+
+message UserResponse {
+  string userId = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string email = 4;
+  string phone = 5;
+}

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Catalog.Application.Dtos;
+using Catalog.Application.Features.Queries.Catalog.GetCommentsByProductIdQuery;
 using Catalog.Application.Features.Queries.Catalog.GetProductDetailsByIdQuery;
 using Catalog.Application.Features.Queries.Catalog.GetProductsByCategoryIdQuery;
 using Catalog.Application.Features.Queries.Catalog.GetTopProductsQuery;
@@ -43,7 +45,7 @@ namespace Catalog.API.Controllers
             var result = await _mediator.Send(new GetProductsByCategoryIdQuery(categoryId, sortBy, pageSize, pageIndex));
             return result.Success ? Ok(result) : BadRequest(result.Message);
         }
-        
+
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ProductDetailsViewModel>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
@@ -51,6 +53,16 @@ namespace Catalog.API.Controllers
         public async Task<ActionResult<IEnumerable<ProductCardViewModel>>> GetProductDetailsById([FromRoute] string productId)
         {
             var result = await _mediator.Send(new GetProductDetailsByIdQuery(productId));
+            return result.Success ? Ok(result.Data) : BadRequest(result.Message);
+        }
+
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<CommentDto>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpGet("product/{productId}/comments")]
+        public async Task<ActionResult<IEnumerable<ProductCardViewModel>>> GetCommentsByProductId([FromRoute] string productId)
+        {
+            var result = await _mediator.Send(new GetCommentsByProductIdQuery(productId));
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
     }

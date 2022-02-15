@@ -5,6 +5,7 @@ using Catalog.Domain.Common;
 using Catalog.Infrastructure.GrpcServices;
 using Catalog.Infrastructure.Persistence;
 using Catalog.Infrastructure.Repositories;
+using Identity.Grpc;
 using Media.Grpc.Protos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,11 +21,12 @@ namespace Catalog.Infrastructure
         }
 
         public IConfiguration Configuration { get; }
+
         public void Load(IServiceCollection serviceCollection)
         {
             serviceCollection.AddSingleton(typeof(ICatalogContext<>), typeof(CatalogContext<>));
             serviceCollection.AddSingleton(typeof(IDocumentDbRepository<>), typeof(MongoDbRepositoryBase<>));
-           
+
             serviceCollection.AddSingleton<IBrandRepository, BrandRepository>();
             serviceCollection.AddSingleton<IProductRepository, ProductRepository>();
             serviceCollection.AddSingleton<IOptionRepository, OptionRepository>();
@@ -35,6 +37,11 @@ namespace Catalog.Infrastructure
             // Grpc Configuration
             serviceCollection.AddGrpcClient<MediaProtoService.MediaProtoServiceClient>
                 (o => o.Address = new Uri(Configuration["GrpcSettings:MediaUrl"]));
+
+            serviceCollection.AddSingleton<IUserGrpcService, UserGrpcService>();
+            // Grpc Configuration
+            serviceCollection.AddGrpcClient<UserProtoService.UserProtoServiceClient>
+                (o => o.Address = new Uri(Configuration["GrpcSettings:IdentityUrl"]));
         }
     }
 }

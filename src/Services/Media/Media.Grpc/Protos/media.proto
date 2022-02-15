@@ -7,7 +7,7 @@ service MediaProtoService{
 }
 
 message UploadMediaRequest{
-   bytes media = 1;
+  bytes media = 1;
 }
 message MediaModel{
   string url = 1;
@@ -16,5 +16,5 @@ message MediaModel{
   string createdBy = 4;
 }
 message MediaModelResponse{
-   MediaModel mediaModel = 1;
+  MediaModel mediaModel = 1;
 }

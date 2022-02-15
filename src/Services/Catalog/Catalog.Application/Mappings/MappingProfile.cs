@@ -11,6 +11,7 @@ using Catalog.Application.Features.Commands.OptionValues.CreateOptionValueComman
 using Catalog.Application.Features.Commands.OptionValues.UpdateOptionValueCommand;
 using Catalog.Application.Features.Commands.Products.UpdateProductCommand;
 using Catalog.Domain.Entities;
+using Identity.Grpc;
 using Media.Grpc.Protos;
 
 namespace Catalog.Application.Mappings
@@ -58,6 +59,10 @@ namespace Catalog.Application.Mappings
                             : (long?) null
                     ))
                 .ReverseMap();
+            
+            CreateMap<Comment,CommentDto>().ReverseMap();
+            CreateMap<User,UserResponse>().ReverseMap();
+
         }
     }
 }
