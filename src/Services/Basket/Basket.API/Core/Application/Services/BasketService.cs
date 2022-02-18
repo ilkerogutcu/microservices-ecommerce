@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Basket.API.Constants;
 using Basket.API.Core.Application.Repository;
@@ -32,18 +33,23 @@ namespace Basket.API.Core.Application.Services
             try
             {
                 Log.Information("GetBasketAsync called");
-                CustomerBasket customerBasket;
                 var userId = await _identityService.GetUserIdAsync();
+                var customerBasketFromCookie = GetCustomerBasketFromCookie();
 
                 if (string.IsNullOrEmpty(userId))
                 {
-                    customerBasket = GetCustomerBasketFromCookie();
-
-                    return customerBasket ?? new CustomerBasket();
+                    return customerBasketFromCookie ?? new CustomerBasket();
                 }
 
-                customerBasket = await _basketRepository.GetBasketAsync(userId);
-                return customerBasket ?? new CustomerBasket(userId);
+                var customerBasketFromRedis = await _basketRepository.GetBasketAsync(userId);
+
+                foreach (var basketItem in customerBasketFromCookie.Items.Where(basketItem =>
+                             !customerBasketFromRedis.Items.Contains(basketItem)))
+                {
+                    customerBasketFromRedis.Items.Add(basketItem);
+                }
+
+                return customerBasketFromRedis ?? new CustomerBasket(userId);
             }
             catch (Exception e)
             {
