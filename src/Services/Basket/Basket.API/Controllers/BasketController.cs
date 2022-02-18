@@ -39,7 +39,7 @@ namespace Basket.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpPost]
-        public async Task<ActionResult<CustomerBasket>> AddItemToBasket([FromBody] BasketItem basketItem)
+        public async Task<ActionResult> AddItemToBasket([FromBody] BasketItem basketItem)
         {
             var result = await _basketService.AddItemToBasketAsync(basketItem);
             return result ? Ok() : BadRequest();
@@ -49,7 +49,7 @@ namespace Basket.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpDelete]
-        public async Task<ActionResult<CustomerBasket>> DeleteBasketById()
+        public async Task<ActionResult> DeleteBasketById()
         {
             var result = await _basketService.DeleteBasketAsync();
             return result ? Ok() : BadRequest();
