@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Catalog.Domain.Common;
 
 namespace Catalog.Domain.Entities
@@ -48,6 +49,7 @@ namespace Catalog.Domain.Entities
 
         public void AddComment(Comment comment)
         {
+            comment.CreatedDate = DateTime.Now;
             Comments.Add(comment);
         }
     }

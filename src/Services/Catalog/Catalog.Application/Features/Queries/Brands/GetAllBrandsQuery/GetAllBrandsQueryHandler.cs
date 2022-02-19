@@ -35,7 +35,7 @@ namespace Catalog.Application.Features.Queries.Brands.GetAllBrandsQuery
                 .OrderBy(x => x.Name)
                 .Skip(request.PageSize * request.PageIndex)
                 .Take(request.PageSize).ToList();
-
+            
             return new PaginatedResult<List<BrandDto>>(result, request.PageIndex, request.PageSize, brands.Count());
         }
     }

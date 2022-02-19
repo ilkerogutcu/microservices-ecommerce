@@ -34,6 +34,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Protobuf Include="..\..\Identity\Identity.Grpc\Protos\user.proto" GrpcServices="Client">
+        <Link>Protos\user.proto</Link>
+      </Protobuf>
       <Protobuf Include="..\..\Media\Media.Grpc\Protos\media.proto" GrpcServices="Client">
         <Link>Protos\media.proto</Link>
       </Protobuf>

@@ -8,5 +8,6 @@ namespace Catalog.Application.Features.Commands.OptionValues.CreateOptionValueCo
     {
         public string OptionId { get; set; }
         public string Name { get; set; }
+   
     }
 }

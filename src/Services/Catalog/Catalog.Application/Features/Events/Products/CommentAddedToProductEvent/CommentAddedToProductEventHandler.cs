@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Catalog.Application.Interfaces.Repositories;
@@ -8,7 +7,7 @@ using Olcsan.Boilerplate.Aspects.Autofac.Exception;
 using Olcsan.Boilerplate.Aspects.Autofac.Logger;
 using Olcsan.Boilerplate.CrossCuttingConcerns.Logging.Serilog.Loggers;
 
-namespace Catalog.Application.Features.Events.Products
+namespace Catalog.Application.Features.Events.Products.CommentAddedToProductEvent
 {
     public class CommentAddedToProductEventHandler : INotificationHandler<CommentAddedToProductEvent>
     {

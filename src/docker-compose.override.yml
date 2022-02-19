@@ -8,7 +8,7 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
-      
+  
   identitydb:
     restart: always
     container_name: identitydb
@@ -17,7 +17,19 @@ services:
       ACCEPT_EULA: Y
     ports:
       - "1433:1433"
-      
+  
+  basketdb:
+    container_name: basketdb
+    restart: always
+    ports:
+      - "6379:6379"
+  rabbitmq:
+    container_name: rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+  
   catalog.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
