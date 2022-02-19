@@ -1,3 +1,4 @@
+using Catalog.API.Extensions;
 using Catalog.Application.Mappings;
 using Catalog.Application.Utilities.Encryption;
 using Catalog.Infrastructure;
@@ -69,28 +70,7 @@ namespace Catalog.API
                     }
                 });
             });
-            services.AddAuthentication(options =>
-                {
-                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-                .AddJwtBearer(options =>
-                {
-                    options.SaveToken = true;
-                    options.RequireHttpsMetadata = false;
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = true,
-                        ValidateAudience = true,
-                        ValidateLifetime = true,
-                        ValidIssuer = Configuration["TokenOptions:Issuer"],
-                        ValidAudience = Configuration["TokenOptions:Audience"],
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey =
-                            SecurityKeyHelper.CreateSecurityKey(Configuration["TokenOptions:SecurityKey"])
-                    };
-                });
+            services.ConfigureAuth(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
