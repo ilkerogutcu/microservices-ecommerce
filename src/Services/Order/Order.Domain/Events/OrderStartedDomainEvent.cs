@@ -6,6 +6,9 @@ namespace Order.Domain.Events
     public class OrderStartedDomainEvent : INotification
     {
         public string Email { get; set; }
+        public Guid UserId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public int CardTypeId { get; set; }
         public string CardNumber { get; set; }
         public string CardHolderName { get; set; }
@@ -14,7 +17,8 @@ namespace Order.Domain.Events
         public AggregateModels.OrderAggregate.Order Order { get; set; }
 
         public OrderStartedDomainEvent(string email, int cardTypeId, string cardNumber, string cardHolderName,
-            string cardSecurityNumber, DateTime cardExpiration, AggregateModels.OrderAggregate.Order order)
+            string cardSecurityNumber, DateTime cardExpiration, AggregateModels.OrderAggregate.Order order, Guid userId, string firstName,
+            string lastName)
         {
             Email = email;
             CardTypeId = cardTypeId;
@@ -23,6 +27,9 @@ namespace Order.Domain.Events
             CardSecurityNumber = cardSecurityNumber;
             CardExpiration = cardExpiration;
             Order = order;
+            UserId = userId;
+            FirstName = firstName;
+            LastName = lastName;
         }
     }
 }

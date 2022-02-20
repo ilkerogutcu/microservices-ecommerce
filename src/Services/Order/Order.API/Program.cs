@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Order.API
 {
@@ -13,8 +7,6 @@ namespace Order.API
     {
         public static void Main(string[] args)
         {
-            var projectDirectory = AppDomain.CurrentDomain.BaseDirectory;
-            var logFilePath = $"{projectDirectory + "/logs"}/{DateTime.Now:yyyy-MM-dd}.txt";
             CreateHostBuilder(args).Build().Run();
         }
 

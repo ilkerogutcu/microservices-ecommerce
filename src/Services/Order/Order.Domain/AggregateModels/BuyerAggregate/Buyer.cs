@@ -10,6 +10,7 @@ namespace Order.Domain.AggregateModels.BuyerAggregate
     public class Buyer : BaseEntity, IAggregateRoot
     {
         public string Email { get; set; }
+        public Guid UserId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
@@ -21,26 +22,25 @@ namespace Order.Domain.AggregateModels.BuyerAggregate
             _paymentMethods = new List<PaymentMethod>();
         }
 
-        public Buyer(string email, string firstName, string lastName) : this()
+        public Buyer(string email, Guid? userId, string firstName, string lastName) : this()
         {
             Email = email ?? throw new OrderingDomainException(nameof(email));
+            UserId = userId ?? throw new OrderingDomainException(nameof(userId));
             FirstName = firstName ?? throw new OrderingDomainException(nameof(firstName));
             LastName = lastName ?? throw new OrderingDomainException(nameof(lastName));
         }
 
-        public PaymentMethod AddPaymentMethod(int cartTypeId, string alias, string cardNumber, string securityNumber,
+        public PaymentMethod VerifyOrAddPaymentMethod(int cartTypeId, string alias, string cardNumber, string securityNumber,
             string cardHolderName, DateTime expiration, Guid orderId)
         {
-            var existingPaymentMethod =
-                _paymentMethods.FirstOrDefault(p => p.IsEqualsTo(cartTypeId, cardNumber, expiration));
+            var existingPaymentMethod = _paymentMethods.FirstOrDefault(p => p.IsEqualsTo(cartTypeId, cardNumber, expiration));
             if (existingPaymentMethod is not null)
             {
                 AddDomainEvent(new BuyerAndPaymentMethodVerifiedDomainEvent(this, existingPaymentMethod, orderId));
                 return existingPaymentMethod;
             }
 
-            var paymentMethod =
-                new PaymentMethod(alias, cardNumber, securityNumber, cardHolderName, expiration, cartTypeId);
+            var paymentMethod = new PaymentMethod(alias, cardNumber, securityNumber, cardHolderName, expiration, cartTypeId);
             _paymentMethods.Add(paymentMethod);
             AddDomainEvent(new BuyerAndPaymentMethodVerifiedDomainEvent(this, paymentMethod, orderId));
             return paymentMethod;
@@ -50,6 +50,7 @@ namespace Order.Domain.AggregateModels.BuyerAggregate
         {
             return obj is Buyer buyer &&
                    Email == buyer.Email &&
+                   UserId == buyer.UserId &&
                    FirstName == buyer.FirstName &&
                    LastName == buyer.LastName;
         }

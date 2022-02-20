@@ -1,24 +1,15 @@
 ﻿namespace Order.Domain.AggregateModels.OrderAggregate
 {
-    public record Address
+    public record Address(string FirstName, string LastName, string PhoneNumber, string City, string Zip, string District, string AddressLine,
+        string AddressTitle)
     {
-        public string Street { get; set; }
-        public string City { get; set; }
-        public string State { get; set; }
-        public string Country { get; set; }
-        public string ZipCode { get; set; }
-
-        public Address()
-        {
-        }
-
-        public Address(string street, string city, string state, string country, string zipcode)
-        {
-            Street = street;
-            City = city;
-            State = state;
-            Country = country;
-            ZipCode = zipcode;
-        }
+        public string FirstName { get; set; } = FirstName;
+        public string LastName { get; set; } = LastName;
+        public string PhoneNumber { get; set; } = PhoneNumber;
+        public string City { get; set; } = City;
+        public string Zip { get; set; } = Zip;
+        public string District { get; set; } = District;
+        public string AddressLine { get; set; } = AddressLine;
+        public string AddressTitle { get; set; } = AddressTitle;
     }
 }

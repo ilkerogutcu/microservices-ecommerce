@@ -27,24 +27,25 @@ namespace Order.Domain.AggregateModels.OrderAggregate
             _orderItems = new List<OrderItem>();
         }
 
-        public Order(string email, Address address, int cartTypeId, string cardNumber, string cardSecurityNumber,
-            string cardHolderName, DateTime cardExpiration, Guid? paymentMethodId, Guid? buyerId) : this()
+        public Order(string email, string firstName, string lastName, Guid userId, Address address, int cartTypeId, string cardNumber,
+            string cardSecurityNumber, string cardHolderName,
+            DateTime cardExpiration, Guid? buyerId) : this()
         {
             BuyerId = buyerId;
             orderStatusId = OrderStatus.Submitted.Id;
             OrderDate = DateTime.UtcNow;
             Address = address;
-            PaymentMethodId = paymentMethodId;
 
-            AddOrderStartedDomainEvent(email, cartTypeId, cardNumber, cardSecurityNumber, cardHolderName,
+            AddOrderStartedDomainEvent(email, firstName, lastName, userId, cartTypeId, cardNumber, cardSecurityNumber, cardHolderName,
                 cardExpiration);
         }
 
-        private void AddOrderStartedDomainEvent(string email, int cartTypeId, string cardNumber,
+        private void AddOrderStartedDomainEvent(string email, string firstName, string lastName, Guid userId, int cartTypeId, string cardNumber,
             string cardSecurityNumber, string cardHolderName, DateTime cardExpiration)
         {
-            var orderStartedDomainEvent = new OrderStartedDomainEvent(email, cartTypeId, cardNumber, cardSecurityNumber,
-                cardHolderName, cardExpiration, this);
+            var orderStartedDomainEvent =
+                new OrderStartedDomainEvent(email, cartTypeId, cardNumber, cardHolderName, cardSecurityNumber, cardExpiration, this, userId,
+                    firstName, lastName);
             AddDomainEvent(orderStartedDomainEvent);
         }
 
