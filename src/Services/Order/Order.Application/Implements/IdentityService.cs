@@ -2,6 +2,8 @@
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Olcsan.Boilerplate.Aspects.Autofac.Exception;
+using Olcsan.Boilerplate.CrossCuttingConcerns.Logging.Serilog.Loggers;
 using Order.Application.Interfaces.Services;
 
 namespace Order.Application.Implements
@@ -15,10 +17,11 @@ namespace Order.Application.Implements
             _httpContextAccessor = httpContextAccessor;
         }
 
+
         public Task<Guid> GetUserIdAsync()
         {
             var userId = _httpContextAccessor?.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return Task.FromResult(Guid.Parse(userId));
+            return Task.FromResult(string.IsNullOrEmpty(userId) ? default(Guid) : Guid.Parse(userId));
         }
     }
 }

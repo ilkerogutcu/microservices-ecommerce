@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.9" />
         <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.16.0" />
         <PackageReference Include="Olcsan.Boilerplate" Version="1.0.5" />
@@ -12,10 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers" />
-    </ItemGroup>
-
-    <ItemGroup>
+      <ProjectReference Include="..\..\..\BuildingBlocks\EventBus\EventBus.Factory\EventBus.Factory.csproj" />
       <ProjectReference Include="..\Order.Infrastructure\Order.Infrastructure.csproj" />
     </ItemGroup>
 

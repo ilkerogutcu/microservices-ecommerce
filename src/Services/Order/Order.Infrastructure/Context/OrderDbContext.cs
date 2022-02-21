@@ -43,14 +43,12 @@ namespace Order.Infrastructure.Context
             modelBuilder.ApplyConfiguration(new BuyerEntityConfiguration());
             modelBuilder.ApplyConfiguration(new CardTypeEntityConfiguration());
             modelBuilder.ApplyConfiguration(new OrderItemEntityConfiguration());
-            modelBuilder.ApplyConfiguration(new PaymentMethodEntityConfiguration());
             modelBuilder.ApplyConfiguration(new OrderStatusEntityConfiguration());
         }
 
         public DbSet<Domain.AggregateModels.OrderAggregate.Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<OrderStatus> OrderStatuses { get; set; }
-        public DbSet<PaymentMethod> PaymentMethods { get; set; }
         public DbSet<Buyer> Buyers { get; set; }
         public DbSet<CardType> CardTypes { get; set; }
     }

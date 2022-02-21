@@ -19,7 +19,7 @@ namespace Order.Infrastructure.Context
 {
     public class OrderDbContextSeed
     {
-        public async Task SeedAsync(OrderDbContext context, ILogger<OrderDbContext> logger)
+        public async Task SeedAsync(OrderDbContext context)
         {
             var policy = CreatePolicy(nameof(OrderDbContextSeed));
 

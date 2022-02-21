@@ -14,12 +14,10 @@ namespace Order.Domain.AggregateModels.BuyerAggregate
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-        private List<PaymentMethod> _paymentMethods;
-        public IReadOnlyCollection<PaymentMethod> PaymentMethods => _paymentMethods.AsReadOnly();
 
         protected Buyer()
         {
-            _paymentMethods = new List<PaymentMethod>();
+            CreatedDate = DateTime.Now;
         }
 
         public Buyer(string email, Guid? userId, string firstName, string lastName) : this()
@@ -30,20 +28,9 @@ namespace Order.Domain.AggregateModels.BuyerAggregate
             LastName = lastName ?? throw new OrderingDomainException(nameof(lastName));
         }
 
-        public PaymentMethod VerifyOrAddPaymentMethod(int cartTypeId, string alias, string cardNumber, string securityNumber,
-            string cardHolderName, DateTime expiration, Guid orderId)
+        public void VerifyBuyerMethod(Guid orderId)
         {
-            var existingPaymentMethod = _paymentMethods.FirstOrDefault(p => p.IsEqualsTo(cartTypeId, cardNumber, expiration));
-            if (existingPaymentMethod is not null)
-            {
-                AddDomainEvent(new BuyerAndPaymentMethodVerifiedDomainEvent(this, existingPaymentMethod, orderId));
-                return existingPaymentMethod;
-            }
-
-            var paymentMethod = new PaymentMethod(alias, cardNumber, securityNumber, cardHolderName, expiration, cartTypeId);
-            _paymentMethods.Add(paymentMethod);
-            AddDomainEvent(new BuyerAndPaymentMethodVerifiedDomainEvent(this, paymentMethod, orderId));
-            return paymentMethod;
+            AddDomainEvent(new BuyerVerifiedDomainEvent(this, orderId));
         }
 
         public override bool Equals(object obj)

@@ -1,8 +1,8 @@
 ﻿using System;
-using Basket.API.Core.Domain.Models;
 using EventBus.Base.Events;
+using Order.Domain.Models;
 
-namespace Basket.API.IntegrationEvents.Events
+namespace Order.API.IntegrationEvents.Events
 {
     public class OrderCreatedIntegrationEvent : IntegrationEvent
     {
@@ -24,13 +24,12 @@ namespace Basket.API.IntegrationEvents.Events
         public string Buyer { get; set; }
         public CustomerBasket Basket { get; set; }
 
-        public OrderCreatedIntegrationEvent(Guid userId,string email, string city, string district, string zip, string firstName,
-            string lastName, string phoneNumber, string addressLine, string addressTitle, string cardNumber,
-            string cardHolderName, DateTime cardExpiration, string cardSecurityNumber, int cardTypeId, string buyer,
-            CustomerBasket basket)
+        public OrderCreatedIntegrationEvent(Guid userId, string city, string district, string zip, string firstName, string lastName,
+            string phoneNumber, string addressLine, string addressTitle, string cardNumber, string cardHolderName, DateTime cardExpiration,
+            string cardSecurityNumber, int cardTypeId, string buyer,
+            CustomerBasket basket, string email)
         {
             UserId = userId;
-            Email = email;
             City = city;
             District = district;
             Zip = zip;
@@ -46,6 +45,7 @@ namespace Basket.API.IntegrationEvents.Events
             CardTypeId = cardTypeId;
             Buyer = buyer;
             Basket = basket;
+            Email = email;
         }
     }
 }

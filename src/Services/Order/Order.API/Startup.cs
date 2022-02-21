@@ -1,3 +1,7 @@
+using System;
+using EventBus.Base;
+using EventBus.Base.Abstraction;
+using EventBus.Factory;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -8,6 +12,9 @@ using Olcsan.Boilerplate.DependencyResolvers;
 using Olcsan.Boilerplate.Extensions;
 using Olcsan.Boilerplate.Utilities.IoC;
 using Order.API.Extensions;
+using Order.API.IntegrationEvents.EventHandlers;
+using Order.API.IntegrationEvents.Events;
+using Order.Application.Mapping.OrderMapping;
 using Order.Infrastructure;
 
 namespace Order.API
@@ -25,6 +32,8 @@ namespace Order.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddAutoMapper(typeof(OrderMappingProfile));
+
             services.AddDependencyResolvers(new ICoreModule[]
             {
                 new CoreModule(),
@@ -66,11 +75,26 @@ namespace Order.API
                 });
             });
             services.ConfigureAuth(Configuration);
+            services.ConfigureEventHandlers();
+
+            services.AddSingleton<IEventBus>(sp =>
+            {
+                EventBusConfig config = new()
+                {
+                    ConnectionRetryCount = 5,
+                    EventNameSuffix = "IntegrationEvent",
+                    SubscriberClientAppName = "BasketService",
+                    EventBusType = EventBusType.RabbitMQ
+                };
+                return EventBusFactory.Create(config, sp);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            ServiceTool.ServiceProvider = app.ApplicationServices;
+
             if (env.IsDevelopment())
             {
                 app.UseStatusCodePages();
@@ -86,6 +110,13 @@ namespace Order.API
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            ConfigureSubscription(app.ApplicationServices);
+        }
+
+        private void ConfigureSubscription(IServiceProvider serviceProvider)
+        {
+            var eventBus = serviceProvider.GetRequiredService<IEventBus>();
+            eventBus.Subscribe<OrderCreatedIntegrationEvent, OrderCreatedIntegrationEventHandler>();
         }
     }
 }

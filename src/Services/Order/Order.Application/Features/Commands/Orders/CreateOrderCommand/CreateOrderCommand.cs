@@ -10,6 +10,7 @@ namespace Order.Application.Features.Commands.Orders.CreateOrderCommand
     public class CreateOrderCommand : IRequest<IResult>
     {
         private readonly List<OrderItemDto> _orderItems;
+        public Guid UserId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
@@ -31,7 +32,7 @@ namespace Order.Application.Features.Commands.Orders.CreateOrderCommand
             _orderItems = new List<OrderItemDto>();
         }
 
-        public CreateOrderCommand(List<BasketItem> basketItems, string firstName, string lastName, string phoneNumber, string email, string city,
+        public CreateOrderCommand(List<BasketItem> basketItems, Guid userId, string firstName, string lastName, string phoneNumber, string email, string city,
             string district, string zipCode, string addressLine, string addressTitle, string cardNumber,
             string cardHolderName, DateTime cardExpiration, string cardSecurityNumber, int cardTypeId) : this()
         {
@@ -47,6 +48,7 @@ namespace Order.Application.Features.Commands.Orders.CreateOrderCommand
                 });
             }
 
+            UserId = userId;
             FirstName = firstName;
             LastName = lastName;
             PhoneNumber = phoneNumber;

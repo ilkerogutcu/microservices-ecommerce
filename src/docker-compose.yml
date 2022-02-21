@@ -6,7 +6,10 @@ services:
 
   identitydb:
     image: mcr.microsoft.com/mssql/server:2019-latest
-    
+
+  orderdb:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+
   rabbitmq:
     image: rabbitmq:3-management-alpine
   basketdb:

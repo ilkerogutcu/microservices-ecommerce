@@ -22,14 +22,14 @@ namespace Order.Infrastructure
         {
             serviceCollection.AddDbContext<OrderDbContext>(opt =>
             {
-                opt.UseSqlServer(Configuration.GetConnectionString("OrderDb"));
+                opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
                 opt.EnableSensitiveDataLogging();
             });
 
             serviceCollection.AddSingleton<IBuyerRepository, BuyerRepository>();
             serviceCollection.AddSingleton<IOrderRepository, OrderRepository>();
 
-            var optionsBuilder = new DbContextOptionsBuilder<OrderDbContext>().UseSqlServer(Configuration.GetConnectionString("OrderDb"));
+            var optionsBuilder = new DbContextOptionsBuilder<OrderDbContext>().UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             using var dbContext = new OrderDbContext(optionsBuilder.Options, null);
             dbContext.Database.EnsureCreated();
             dbContext.Database.Migrate();

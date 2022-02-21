@@ -19,11 +19,11 @@ namespace Order.Application.Mapping.OrderMapping
                 .ForMember(x => x.City, opt => opt.MapFrom(x => x.Address.City))
                 .ForMember(x => x.AddressLine, opt => opt.MapFrom(x => x.Address.AddressLine))
                 .ForMember(x => x.Zip, opt => opt.MapFrom(x => x.Address.Zip))
+                .ForMember(x => x.District, opt => opt.MapFrom(x => x.Address.District))
                 .ForMember(x => x.Date, opt => opt.MapFrom(x => x.OrderDate))
                 .ForMember(x => x.OrderNumber, opt => opt.MapFrom(x => x.Id.ToString()))
                 .ForMember(x => x.Status, opt => opt.MapFrom(x => x.OrderStatus.Name))
-                .ForMember(x => x.Total, opt => opt.MapFrom(x => x.OrderItems.Sum(x => x.Units * x.UnitPrice)))
-                    .ReverseMap();
+                .ForMember(x => x.Total, opt => opt.MapFrom(x => x.OrderItems.Sum(x => x.Units * x.UnitPrice)));
         }
     }
 }

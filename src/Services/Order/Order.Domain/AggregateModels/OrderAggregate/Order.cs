@@ -10,8 +10,6 @@ namespace Order.Domain.AggregateModels.OrderAggregate
     public class Order : BaseEntity, IAggregateRoot
     {
         public DateTime OrderDate { get; set; }
-        public int Quantity { get; set; }
-        public string Description { get; set; }
         public Guid? BuyerId { get; set; }
         public Buyer Buyer { get; set; }
         public Address Address { get; set; }
@@ -19,12 +17,12 @@ namespace Order.Domain.AggregateModels.OrderAggregate
         public OrderStatus OrderStatus { get; private set; }
         private readonly List<OrderItem> _orderItems;
         public IReadOnlyCollection<OrderItem> OrderItems => _orderItems;
-        public Guid? PaymentMethodId { get; set; }
 
         public Order()
         {
             Id = Guid.NewGuid();
             _orderItems = new List<OrderItem>();
+            CreatedDate = DateTime.Now;
         }
 
         public Order(string email, string firstName, string lastName, Guid userId, Address address, int cartTypeId, string cardNumber,
@@ -90,11 +88,6 @@ namespace Order.Domain.AggregateModels.OrderAggregate
         public void SetBuyerId(Guid buyerId)
         {
             BuyerId = buyerId;
-        }
-
-        public void SetPaymentId(Guid paymentId)
-        {
-            PaymentMethodId = paymentId;
         }
     }
 }

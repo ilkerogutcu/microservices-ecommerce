@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
@@ -13,9 +14,10 @@ namespace Basket.API.Core.Application.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public Task<string> GetUserIdAsync()
+        public Task<Guid> GetUserIdAsync()
         {
-            return Task.FromResult(_httpContextAccessor?.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            var userId = _httpContextAccessor?.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            return Task.FromResult(string.IsNullOrEmpty(userId) ? default(Guid) : Guid.Parse(userId));
         }
     }
 }

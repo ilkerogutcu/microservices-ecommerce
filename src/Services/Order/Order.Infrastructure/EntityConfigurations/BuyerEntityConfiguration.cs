@@ -15,14 +15,6 @@ namespace Order.Infrastructure.EntityConfigurations
             builder.Property(b => b.Id).ValueGeneratedOnAdd();
 
             builder.Ignore(b => b.DomainEvents);
-
-            builder.HasMany(b => b.PaymentMethods)
-                .WithOne()
-                .HasForeignKey(i => i.Id)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            var navigation = builder.Metadata.FindNavigation(nameof(Buyer.PaymentMethods));
-            navigation.SetPropertyAccessMode(PropertyAccessMode.Field);
         }
     }
 }

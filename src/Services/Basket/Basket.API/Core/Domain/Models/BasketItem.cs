@@ -19,7 +19,7 @@ namespace Basket.API.Core.Domain.Models
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (string.IsNullOrEmpty(Id) || string.IsNullOrEmpty(ProductId) || string.IsNullOrEmpty(ProductName) ||
+            if (string.IsNullOrEmpty(Id) || string.IsNullOrEmpty(ProductId) || string.IsNullOrEmpty(BrandName) || string.IsNullOrEmpty(ProductName) ||
                 string.IsNullOrEmpty(PictureUrl) || UnitPrice < 0 || Quantity < 1 || string.IsNullOrEmpty(Color) ||
                 string.IsNullOrEmpty(HexCode) || string.IsNullOrEmpty(Size))
             {

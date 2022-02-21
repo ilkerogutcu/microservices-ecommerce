@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Order.Domain.SeedWork;
 
@@ -14,9 +15,10 @@ namespace Order.Domain.AggregateModels.OrderAggregate
 
         public OrderItem()
         {
+            CreatedDate = DateTime.Now;
         }
 
-        public OrderItem(string productId, string productName, string pictureUrl, decimal unitPrice, int units)
+        public OrderItem(string productId, string productName, string pictureUrl, decimal unitPrice, int units):this()
         {
             ProductId = productId;
             ProductName = productName;

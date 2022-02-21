@@ -1,17 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Basket.API.Core.Domain.Models
 {
     public class CustomerBasket
     {
-        public string BuyerId { get; set; }
+        public Guid BuyerId { get; set; }
         public List<BasketItem> Items { get; set; }= new List<BasketItem>();
 
         public CustomerBasket()
         {
         }
 
-        public CustomerBasket(string buyerId)
+        public CustomerBasket(Guid buyerId)
         {
             BuyerId = buyerId;
         }
