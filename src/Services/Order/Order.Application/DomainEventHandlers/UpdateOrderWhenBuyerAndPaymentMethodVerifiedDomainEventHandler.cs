@@ -17,7 +17,7 @@ namespace Order.Application.DomainEventHandlers
 
         public async Task Handle(BuyerAndPaymentMethodVerifiedDomainEvent notification, CancellationToken cancellationToken)
         {
-            var orderToUpdate = await _orderRepository.GetAsync(x => x.Id == notification.OrderId);
+            var orderToUpdate = await _orderRepository.GetByIdAsync(notification.OrderId);
             orderToUpdate.SetBuyerId(notification.Buyer.Id);
             orderToUpdate.SetPaymentId(notification.PaymentMethod.Id);
         }

@@ -6,6 +6,12 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.14" />
+      <PackageReference Include="Polly" Version="7.2.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Order.Application\Order.Application.csproj" />
+      <ProjectReference Include="..\Order.Domain\Order.Domain.csproj" />
     </ItemGroup>
 
 </Project>

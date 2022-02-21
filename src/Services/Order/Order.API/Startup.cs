@@ -8,6 +8,7 @@ using Olcsan.Boilerplate.DependencyResolvers;
 using Olcsan.Boilerplate.Extensions;
 using Olcsan.Boilerplate.Utilities.IoC;
 using Order.API.Extensions;
+using Order.Infrastructure;
 
 namespace Order.API
 {
@@ -27,7 +28,7 @@ namespace Order.API
             services.AddDependencyResolvers(new ICoreModule[]
             {
                 new CoreModule(),
-                //new InfrastructureServiceRegistration(Configuration)
+                new InfrastructureServiceRegistration(Configuration)
             });
             services.AddSwaggerGen(swagger =>
             {
