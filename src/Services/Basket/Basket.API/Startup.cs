@@ -113,8 +113,9 @@ namespace Basket.API
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-            ConfigureSubscription(app.ApplicationServices);
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            ConfigureSubscription(app.ApplicationServices);
+
         }
 
         private void ConfigureSubscription(IServiceProvider serviceProvider)

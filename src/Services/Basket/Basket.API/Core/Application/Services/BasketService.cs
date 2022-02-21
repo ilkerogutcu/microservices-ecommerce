@@ -36,18 +36,20 @@ namespace Basket.API.Core.Application.Services
                 var userId = await _identityService.GetUserIdAsync();
                 var customerBasketFromCookie = GetCustomerBasketFromCookie();
 
-                if (string.IsNullOrEmpty(userId))
+                if (userId == default)
                 {
                     return customerBasketFromCookie ?? new CustomerBasket();
                 }
 
                 var customerBasketFromRedis = await _basketRepository.GetBasketAsync(userId);
 
+                if (customerBasketFromCookie is null) return customerBasketFromRedis ?? new CustomerBasket(userId);
                 foreach (var basketItem in customerBasketFromCookie.Items.Where(basketItem =>
                              !customerBasketFromRedis.Items.Contains(basketItem)))
                 {
                     customerBasketFromRedis.Items.Add(basketItem);
                 }
+
 
                 return customerBasketFromRedis ?? new CustomerBasket(userId);
             }
@@ -91,7 +93,7 @@ namespace Basket.API.Core.Application.Services
                 Log.Information("DeleteBasketAsync called");
                 var userId = await _identityService.GetUserIdAsync();
 
-                if (!string.IsNullOrEmpty(userId)) return await _basketRepository.DeleteBasketAsync(userId);
+                if (userId != default) return await _basketRepository.DeleteBasketAsync(userId);
                 _httpContextAccessor.HttpContext?.Response.Cookies.Delete(CookieNames.BasketItems);
                 return true;
             }
@@ -111,7 +113,7 @@ namespace Basket.API.Core.Application.Services
                 CustomerBasket customerBasket;
                 var userId = await _identityService.GetUserIdAsync();
 
-                if (string.IsNullOrEmpty(userId))
+                if (userId == default)
                 {
                     customerBasket = GetCustomerBasketFromCookie() ?? new CustomerBasket();
                     customerBasket.Items.Add(basketItem);
@@ -144,20 +146,20 @@ namespace Basket.API.Core.Application.Services
             {
                 Log.Information("CheckoutAsync called");
                 var userId = await _identityService.GetUserIdAsync();
-                if (string.IsNullOrEmpty(userId))
+                if (userId == default)
                 {
                     Log.Warning("CheckoutAsync failed, userId is null");
                     return false;
                 }
 
-                var customerBasket = GetCustomerBasketFromCookie();
+                var customerBasket = await _basketRepository.GetBasketAsync(userId);
                 if (customerBasket is null)
                 {
                     Log.Warning("CheckoutAsync failed, customerBasket is null");
                     return false;
                 }
 
-                var eventMessage = new OrderCreatedIntegrationEvent(userId, basketCheckout.City,
+                var eventMessage = new OrderCreatedIntegrationEvent(userId, basketCheckout.Email,basketCheckout.City,
                     basketCheckout.District, basketCheckout.Zip, basketCheckout.FirstName, basketCheckout.LastName,
                     basketCheckout.PhoneNumber, basketCheckout.AddressLine, basketCheckout.AddressTitle,
                     basketCheckout.CardNumber, basketCheckout.CardHolderName, basketCheckout.CardExpiration,
