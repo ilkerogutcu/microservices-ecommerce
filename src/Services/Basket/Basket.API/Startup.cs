@@ -1,10 +1,13 @@
 using System;
+using Basket.API.Core.Application.Mapping.CatalogMapping;
 using Basket.API.Core.Application.Repository;
 using Basket.API.Core.Application.Services;
 using Basket.API.Extensions;
+using Basket.API.Infrastructure.GrpcServices;
 using Basket.API.Infrastructure.Repository;
 using Basket.API.IntegrationEvents.EventHandlers;
 using Basket.API.IntegrationEvents.Events;
+using Catalog.Grpc.Protos;
 using EventBus.Base;
 using EventBus.Base.Abstraction;
 using EventBus.Factory;
@@ -32,7 +35,7 @@ namespace Basket.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-
+            services.AddAutoMapper(typeof(CatalogMappingProfile));
             services.AddHttpContextAccessor();
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -91,8 +94,12 @@ namespace Basket.API
             services.AddSingleton<IBasketRepository, BasketRepository>();
             services.AddTransient<IIdentityService, IdentityService>();
             services.AddSingleton<IBasketService, BasketService>();
+            services.AddSingleton<ICatalogService, CatalogService>();
 
             services.AddTransient<OrderCreatedIntegrationEventHandler>();
+            // Grpc Configuration
+            services.AddGrpcClient<CatalogProtoService.CatalogProtoServiceClient>
+                (o => o.Address = new Uri(Configuration["GrpcSettings:CatalogUrl"]));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -115,7 +122,6 @@ namespace Basket.API
             app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
             ConfigureSubscription(app.ApplicationServices);
-
         }
 
         private void ConfigureSubscription(IServiceProvider serviceProvider)

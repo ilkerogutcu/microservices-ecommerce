@@ -1,10 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="10.1.1" />
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+        <PackageReference Include="Grpc.AspNetCore" Version="2.40.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.9" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
@@ -16,6 +19,12 @@
       <ProjectReference Include="..\..\..\BuildingBlocks\EventBus\EventBus.Base\EventBus.Base.csproj" />
       <ProjectReference Include="..\..\..\BuildingBlocks\EventBus\EventBus.Factory\EventBus.Factory.csproj" />
       <ProjectReference Include="..\Basket.Application\Basket.Application.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Protobuf Include="..\..\Catalog\Catalog.Grpc\Protos\catalog.proto" GrpcServices="Client">
+        <Link>Protos\catalog.proto</Link>
+      </Protobuf>
     </ItemGroup>
 
 </Project>

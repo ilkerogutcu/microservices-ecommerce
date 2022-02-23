@@ -13,6 +13,7 @@ namespace Order.Domain.AggregateModels.OrderAggregate
         public decimal UnitPrice { get; set; }
         public int Units { get; set; }
 
+
         public OrderItem()
         {
             CreatedDate = DateTime.Now;

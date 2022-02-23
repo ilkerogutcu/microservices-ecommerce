@@ -24,10 +24,9 @@ namespace Basket.API.IntegrationEvents.Events
         public string Buyer { get; set; }
         public CustomerBasket Basket { get; set; }
 
-        public OrderCreatedIntegrationEvent(Guid userId,string email, string city, string district, string zip, string firstName,
-            string lastName, string phoneNumber, string addressLine, string addressTitle, string cardNumber,
-            string cardHolderName, DateTime cardExpiration, string cardSecurityNumber, int cardTypeId, string buyer,
-            CustomerBasket basket)
+        public OrderCreatedIntegrationEvent(Guid userId, string email, string city, string district, string zip, string firstName, string lastName,
+            string phoneNumber, string addressLine, string addressTitle, string cardNumber, string cardHolderName, DateTime cardExpiration,
+            string cardSecurityNumber, int cardTypeId, string buyer, CustomerBasket basket)
         {
             UserId = userId;
             Email = email;

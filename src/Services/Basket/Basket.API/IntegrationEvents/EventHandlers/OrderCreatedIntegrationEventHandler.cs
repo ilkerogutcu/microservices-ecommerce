@@ -20,7 +20,7 @@ namespace Basket.API.IntegrationEvents.EventHandlers
             Log.Information(
                 "----- Handling integration event: {IntegrationEventId} at - ({@IntegrationEvent})",
                 @event.Id, @event);
-             _basketService.DeleteBasketAsync();
+             _basketService.DeleteBasketAsync(@event.UserId);
             return Task.FromResult(1);
         }
     }

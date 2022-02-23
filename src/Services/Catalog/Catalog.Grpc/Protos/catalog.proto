@@ -1,0 +1,37 @@
+﻿syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+option csharp_namespace = "Catalog.Grpc.Protos";
+
+
+service CatalogProtoService{
+  rpc GetProductById(GetProductByIdRequest) returns (ProductResponse);
+  rpc UpdateProductStockQuantityById(UpdateProductStockQuantityByIdRequest) returns (.google.protobuf.BoolValue);
+}
+
+message GetProductByIdRequest{
+  string productId = 1;
+}
+
+message UpdateProductStockQuantityByIdRequest{
+  string productId = 1;
+  int32 quantity = 2;
+}
+
+message ProductResponse{
+  string productId = 1;
+  string name = 2;
+  string thumbnailImageUrl = 3;
+  int32 stockQuantity = 4;
+  int64 salePrice = 5;
+  string brandName = 6;
+  string categoryName = 7;
+  string brandId = 8;
+  string modelCode = 9;
+  string barcode = 10;
+  string color = 11;
+  string size = 12;
+  string hexCode = 13;
+}
+

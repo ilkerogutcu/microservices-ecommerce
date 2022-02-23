@@ -21,8 +21,16 @@ namespace Basket.API.Infrastructure.Repository
 
         public Task<CustomerBasket> GetBasketAsync(Guid customerId)
         {
-            var data = _database.StringGet(customerId.ToString());
-            return Task.FromResult(data.IsNullOrEmpty ? null : JsonConvert.DeserializeObject<CustomerBasket>(data));
+            try
+            {
+                var data = _database.StringGet(customerId.ToString());
+                return Task.FromResult(data.IsNullOrEmpty ? null : JsonConvert.DeserializeObject<CustomerBasket>(data));
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Error getting basket");
+                return null;
+            }
         }
 
         public Task<CustomerBasket> UpdateBasketAsync(CustomerBasket basket)

@@ -18,14 +18,16 @@ namespace Basket.API.Core.Application.Services
         private readonly IIdentityService _identityService;
         private readonly IEventBus _eventBus;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ICatalogService _catalogService;
 
         public BasketService(IHttpContextAccessor httpContextAccessor, IIdentityService identityService,
-            IBasketRepository basketRepository, IEventBus eventBus)
+            IBasketRepository basketRepository, IEventBus eventBus, ICatalogService catalogService)
         {
             _httpContextAccessor = httpContextAccessor;
             _identityService = identityService;
             _basketRepository = basketRepository;
             _eventBus = eventBus;
+            _catalogService = catalogService;
         }
 
         public async Task<CustomerBasket> GetBasketAsync()
@@ -49,7 +51,6 @@ namespace Basket.API.Core.Application.Services
                 {
                     customerBasketFromRedis.Items.Add(basketItem);
                 }
-
 
                 return customerBasketFromRedis ?? new CustomerBasket(userId);
             }
@@ -86,12 +87,11 @@ namespace Basket.API.Core.Application.Services
             }
         }
 
-        public async Task<bool> DeleteBasketAsync()
+        public async Task<bool> DeleteBasketAsync(Guid userId)
         {
             try
             {
                 Log.Information("DeleteBasketAsync called");
-                var userId = await _identityService.GetUserIdAsync();
 
                 if (userId != default) return await _basketRepository.DeleteBasketAsync(userId);
                 _httpContextAccessor.HttpContext?.Response.Cookies.Delete(CookieNames.BasketItems);
@@ -159,7 +159,28 @@ namespace Basket.API.Core.Application.Services
                     return false;
                 }
 
-                var eventMessage = new OrderCreatedIntegrationEvent(userId, basketCheckout.Email,basketCheckout.City,
+                foreach (var basketItem in customerBasket.Items)
+                {
+                    var product = await _catalogService.GetProductDetailsByIdAsync(basketItem.ProductId);
+                    if (product is null || product.StockQuantity <= 0)
+                    {
+                        customerBasket.Items.Remove(basketItem);
+                        continue;
+                    }
+
+                    basketItem.ProductId = product.Id;
+                    basketItem.BrandName = product.Brand;
+                    basketItem.ProductName = product.Name;
+                    basketItem.UnitPrice = product.SalePrice;
+                    basketItem.Color = product.Color;
+                    basketItem.HexCode = product.HexCode;
+                    basketItem.Size = product.Size;
+                    if (basketItem.Quantity <= product.StockQuantity) continue;
+                    Log.Warning("CheckoutAsync failed, product stock is not enough");
+                    return false;
+                }
+
+                var eventMessage = new OrderCreatedIntegrationEvent(userId, basketCheckout.Email, basketCheckout.City,
                     basketCheckout.District, basketCheckout.Zip, basketCheckout.FirstName, basketCheckout.LastName,
                     basketCheckout.PhoneNumber, basketCheckout.AddressLine, basketCheckout.AddressTitle,
                     basketCheckout.CardNumber, basketCheckout.CardHolderName, basketCheckout.CardExpiration,

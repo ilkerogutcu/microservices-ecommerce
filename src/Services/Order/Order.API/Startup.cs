@@ -1,4 +1,5 @@
 using System;
+using Catalog.Grpc.Protos;
 using EventBus.Base;
 using EventBus.Base.Abstraction;
 using EventBus.Factory;
@@ -14,6 +15,7 @@ using Olcsan.Boilerplate.Utilities.IoC;
 using Order.API.Extensions;
 using Order.API.IntegrationEvents.EventHandlers;
 using Order.API.IntegrationEvents.Events;
+using Order.Application.Mapping.CatalogMapping;
 using Order.Application.Mapping.OrderMapping;
 using Order.Infrastructure;
 
@@ -33,6 +35,7 @@ namespace Order.API
         {
             services.AddControllers();
             services.AddAutoMapper(typeof(OrderMappingProfile));
+            services.AddAutoMapper(typeof(CatalogMappingProfile));
 
             services.AddDependencyResolvers(new ICoreModule[]
             {
@@ -88,6 +91,8 @@ namespace Order.API
                 };
                 return EventBusFactory.Create(config, sp);
             });
+            services.AddGrpcClient<CatalogProtoService.CatalogProtoServiceClient>
+                (o => o.Address = new Uri(Configuration["GrpcSettings:CatalogUrl"]));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

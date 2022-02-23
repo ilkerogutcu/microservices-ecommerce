@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Identity.Domain.Entities;
+using Identity.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 
@@ -47,7 +47,9 @@ namespace Identity.Infrastructure.Persistence
             {
                 var userManager = services.GetService<UserManager<User>>();
                 await userManager.CreateAsync(user, "Jrypb3;<(8atpHyZ");
-                await userManager.AddToRoleAsync(user, "Administrator");
+                await userManager.AddToRoleAsync(user, Role.Administrator.ToString());
+                await userManager.AddToRoleAsync(user, Role.Buyer.ToString());
+
             }
         }
 
