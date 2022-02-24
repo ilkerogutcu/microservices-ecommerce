@@ -5,9 +5,11 @@ services:
     container_name: catalogdb
     restart: always
     ports:
-      - "27017:27017"
+      - 27017:27017
     volumes:
       - mongo_data:/data/db
+    networks:
+      - mynetwork
   
   identitydb:
     restart: always
@@ -40,10 +42,17 @@ services:
       - "15672:15672"
   
   catalog.api:
+    container_name: catalog.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - "DatabaseSettings:ConnectionString=mongodb://catalogdb:27017"
     depends_on:
       - catalogdb
     ports:
-      - "8000:80"
+      - 5000:80
+    networks:
+      - mynetwork
+
+
+networks:
+  mynetwork:
+    driver: bridge

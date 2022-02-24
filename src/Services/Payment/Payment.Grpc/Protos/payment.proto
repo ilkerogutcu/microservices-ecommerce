@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+option csharp_namespace = "Payment.Grpc.Protos";
+
+service PaymentProtoService {
+  rpc CreateThreeDPayment (PaymentRequest) returns (CreatePaymentResponse);
+  rpc CheckThreeDPayment (CheckThreeDPaymentRequest) returns (CheckThreeDPaymentResponse);
+}
+
+message PaymentRequest {
+  string conservationId = 1;
+  string price = 2;
+  string paidPrice = 3;
+  string basketId = 4;
+  string callbackUrl = 5;
+  string cardHolderName = 6;
+  string cardNumber = 7;
+  string expireMonth = 8;
+  string expireYear = 9;
+  string cvc = 10;
+  string buyerId = 11;
+  string buyerName = 12;
+  string buyerSurname = 13;
+  string buyerGsmNumber = 14;
+  string buyerEmailAddress = 15;
+  string buyerIdentityNumber = 16;
+  string buyerLastLoginDate = 17;
+  string buyerRegistrationDate = 18;
+  string buyerRegistrationAddress = 19;
+  string buyerIp = 20;
+  string buyerCity = 21;
+  string buyerCountry = 22;
+  string buyerZipCode = 23;
+  string shippingAddress = 24;
+  BasketItemList basketItems = 25;
+}
+
+message BasketItemList{
+  repeated BasketItem basketItem = 1;
+}
+message BasketItem{
+  string productId = 1;
+  string productName = 2;
+  string productCategory = 3;
+  string productPrice = 4;
+}
+
+message CreatePaymentResponse {
+  string htmlContent = 1;
+  string status = 2;
+  string conservationId = 3;
+  string errorCode = 4;
+  string errorMessage = 5;
+}
+
+message CheckThreeDPaymentRequest {
+  string status = 1;
+  string paymentId = 2;
+  string conservationData = 3;
+  string conservationId = 4;
+  string mdStatus = 5;
+}
+
+message CheckThreeDPaymentResponse{
+  string paymentStatus = 1;
+  string status = 2;
+  string conservationId = 3;
+  string errorCode = 4;
+  string errorMessage = 5;
+  string paymentId = 6;
+}
