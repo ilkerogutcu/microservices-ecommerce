@@ -42,7 +42,8 @@ message BasketItem{
   string productId = 1;
   string productName = 2;
   string productCategory = 3;
-  string productPrice = 4;
+  int64 basketItemTotalPrice = 4;
+  
 }
 
 message CreatePaymentResponse {
@@ -54,11 +55,9 @@ message CreatePaymentResponse {
 }
 
 message CheckThreeDPaymentRequest {
-  string status = 1;
   string paymentId = 2;
   string conservationData = 3;
   string conservationId = 4;
-  string mdStatus = 5;
 }
 
 message CheckThreeDPaymentResponse{

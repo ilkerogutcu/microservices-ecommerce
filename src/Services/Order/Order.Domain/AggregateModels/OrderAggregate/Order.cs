@@ -13,8 +13,10 @@ namespace Order.Domain.AggregateModels.OrderAggregate
         public Guid? BuyerId { get; set; }
         public Buyer Buyer { get; set; }
         public Address Address { get; set; }
-        private int orderStatusId;
-        public OrderStatus OrderStatus { get; private set; }
+        public string PaymentHtmlContent { get; set; }
+        public int orderStatusId;
+        public string PaymentId { get; set; }
+        public OrderStatus OrderStatus { get;  set; }
         private readonly List<OrderItem> _orderItems;
         public IReadOnlyCollection<OrderItem> OrderItems => _orderItems;
 
@@ -26,23 +28,21 @@ namespace Order.Domain.AggregateModels.OrderAggregate
         }
 
         public Order(string email, string firstName, string lastName, Guid userId, Address address, int cartTypeId, string cardNumber,
-            string cardSecurityNumber, string cardHolderName,
-            DateTime cardExpiration, Guid? buyerId) : this()
+            string cardSecurityNumber, string cardHolderName, string cardExpirationMonth, string cardExpirationYear, Guid? buyerId) : this()
         {
             BuyerId = buyerId;
-            orderStatusId = OrderStatus.Submitted.Id;
+            orderStatusId = OrderStatus.WaitingForPayment.Id;
             OrderDate = DateTime.UtcNow;
             Address = address;
-
             AddOrderStartedDomainEvent(email, firstName, lastName, userId, cartTypeId, cardNumber, cardSecurityNumber, cardHolderName,
-                cardExpiration);
+                cardExpirationMonth,cardExpirationYear);
         }
 
         private void AddOrderStartedDomainEvent(string email, string firstName, string lastName, Guid userId, int cartTypeId, string cardNumber,
-            string cardSecurityNumber, string cardHolderName, DateTime cardExpiration)
+            string cardSecurityNumber, string cardHolderName, string cardExpirationMonth, string cardExpirationYear)
         {
             var orderStartedDomainEvent =
-                new OrderStartedDomainEvent(email, cartTypeId, cardNumber, cardHolderName, cardSecurityNumber, cardExpiration, this, userId,
+                new OrderStartedDomainEvent(email, cartTypeId, cardNumber, cardHolderName, cardSecurityNumber, cardExpirationMonth, cardExpirationYear,this, userId,
                     firstName, lastName);
             AddDomainEvent(orderStartedDomainEvent);
         }

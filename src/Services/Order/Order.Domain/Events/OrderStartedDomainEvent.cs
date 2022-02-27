@@ -13,11 +13,12 @@ namespace Order.Domain.Events
         public string CardNumber { get; set; }
         public string CardHolderName { get; set; }
         public string CardSecurityNumber { get; set; }
-        public DateTime CardExpiration { get; set; }
+        public string CardExpirationMonth { get; set; }
+        public string CardExpirationYear { get; set; }
         public AggregateModels.OrderAggregate.Order Order { get; set; }
 
         public OrderStartedDomainEvent(string email, int cardTypeId, string cardNumber, string cardHolderName,
-            string cardSecurityNumber, DateTime cardExpiration, AggregateModels.OrderAggregate.Order order, Guid userId, string firstName,
+            string cardSecurityNumber, string cardExpirationMonth, string cardExpirationYear,  AggregateModels.OrderAggregate.Order order, Guid userId, string firstName,
             string lastName)
         {
             Email = email;
@@ -25,7 +26,8 @@ namespace Order.Domain.Events
             CardNumber = cardNumber;
             CardHolderName = cardHolderName;
             CardSecurityNumber = cardSecurityNumber;
-            CardExpiration = cardExpiration;
+            CardExpirationMonth = cardExpirationMonth;
+            CardExpirationYear = cardExpirationYear;
             Order = order;
             UserId = userId;
             FirstName = firstName;

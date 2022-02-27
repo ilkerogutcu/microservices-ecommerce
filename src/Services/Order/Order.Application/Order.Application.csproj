@@ -24,6 +24,9 @@
       <Protobuf Include="..\..\Catalog\Catalog.Grpc\Protos\catalog.proto" GrpcServices="Client">
         <Link>Protos\catalog.proto</Link>
       </Protobuf>
+      <Protobuf Include="..\..\Payment\Payment.Grpc\Protos\payment.proto" GrpcServices="Client">
+        <Link>Protos\payment.proto</Link>
+      </Protobuf>
     </ItemGroup>
 
 </Project>

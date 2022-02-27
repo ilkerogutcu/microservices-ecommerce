@@ -7,5 +7,7 @@
         public const string DataAlreadyExist = "Data already exist!";
         public const string InvalidParameter = "Invalid parameter!";
         public const string SignInFirst = "Please sign in first.";
+        public const string SuccessfullyPayment = "Successfully payment.";
+        public const string PaymentFailed = "Payment failed.";
     }
 }

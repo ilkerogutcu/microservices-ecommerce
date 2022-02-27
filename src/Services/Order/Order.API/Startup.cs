@@ -18,6 +18,7 @@ using Order.API.IntegrationEvents.Events;
 using Order.Application.Mapping.CatalogMapping;
 using Order.Application.Mapping.OrderMapping;
 using Order.Infrastructure;
+using Payment.Grpc.Protos;
 
 namespace Order.API
 {
@@ -93,6 +94,8 @@ namespace Order.API
             });
             services.AddGrpcClient<CatalogProtoService.CatalogProtoServiceClient>
                 (o => o.Address = new Uri(Configuration["GrpcSettings:CatalogUrl"]));
+            services.AddGrpcClient<PaymentProtoService.PaymentProtoServiceClient>
+                (o => o.Address = new Uri(Configuration["GrpcSettings:PaymentUrl"]));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

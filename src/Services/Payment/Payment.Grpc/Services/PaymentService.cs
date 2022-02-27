@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Grpc.Core;
@@ -9,6 +10,7 @@ using Iyzipay.Request;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Olcsan.Boilerplate.Utilities.IoC;
+using Serilog;
 using BasketItem = Iyzipay.Model.BasketItem;
 
 namespace Payment.Grpc.Services
@@ -34,27 +36,53 @@ namespace Payment.Grpc.Services
 
         public override Task<CreatePaymentResponse> CreateThreeDPayment(PaymentRequest request, ServerCallContext context)
         {
-            var createPaymentRequest = GetCreatePaymentRequest(request);
-
-
-            var basketItems = GetBasketItems(request).ToList();
-
-            createPaymentRequest.PaymentCard = GetPaymentCard(request);
-            createPaymentRequest.Buyer = GetBuyer(request);
-            createPaymentRequest.ShippingAddress = GetAddress(request);
-            createPaymentRequest.BillingAddress = GetAddress(request);
-            createPaymentRequest.BasketItems = basketItems;
-
-            var result = ThreedsInitialize.Create(createPaymentRequest, _options);
-
-            return Task.FromResult(new CreatePaymentResponse
+            try
             {
-                Status = result.Status,
-                ConservationId = result.ConversationId,
-                ErrorCode = result.ErrorCode,
-                ErrorMessage = result.ErrorMessage,
-                HtmlContent = result.HtmlContent
-            });
+                var createPaymentRequest = GetCreatePaymentRequest(request);
+
+
+                var basketItems = GetBasketItems(request).ToList();
+
+                createPaymentRequest.PaymentCard = GetPaymentCard(request);
+                createPaymentRequest.Buyer = GetBuyer(request);
+                createPaymentRequest.ShippingAddress = GetAddress(request);
+                createPaymentRequest.BillingAddress = GetAddress(request);
+                createPaymentRequest.BasketItems = basketItems;
+
+                var result = ThreedsInitialize.Create(createPaymentRequest, _options);
+                var response = new CreatePaymentResponse();
+                if (!string.IsNullOrEmpty(result.Status))
+                {
+                    response.Status = result.Status;
+                }
+
+                if (!string.IsNullOrEmpty(result.ConversationId))
+                {
+                    response.ConservationId = result.ConversationId;
+                }
+
+                if (!string.IsNullOrEmpty(result.ErrorCode))
+                {
+                    response.ErrorCode = result.ErrorCode;
+                }
+
+                if (!string.IsNullOrEmpty(result.ErrorMessage))
+                {
+                    response.ErrorCode = result.ErrorMessage;
+                }
+
+                if (!string.IsNullOrEmpty(result.HtmlContent))
+                {
+                    response.HtmlContent = result.HtmlContent;
+                }
+
+                return Task.FromResult(response);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Error in CreateThreeDPayment");
+                return null;
+            }
         }
 
         public override Task<CheckThreeDPaymentResponse> CheckThreeDPayment(CheckThreeDPaymentRequest request, ServerCallContext context)
@@ -67,16 +95,39 @@ namespace Payment.Grpc.Services
                 ConversationData = request.ConservationData
             };
             var threedsPayment = ThreedsPayment.Create(createThreedsPaymentRequest, _options);
-
-            return Task.FromResult(new CheckThreeDPaymentResponse()
+            var checkThreeDPaymentResponse = new CheckThreeDPaymentResponse();
+            if (!string.IsNullOrEmpty(threedsPayment.Status))
             {
-                Status = threedsPayment.Status,
-                ErrorCode = threedsPayment.ErrorCode,
-                ErrorMessage = threedsPayment.ErrorMessage,
-                PaymentId = threedsPayment.PaymentId,
-                ConservationId = threedsPayment.ConversationId,
-                PaymentStatus = threedsPayment.PaymentStatus,
-            });
+                checkThreeDPaymentResponse.Status = threedsPayment.Status;
+            }
+
+            if (!string.IsNullOrEmpty(threedsPayment.ErrorCode))
+            {
+                checkThreeDPaymentResponse.ErrorCode = threedsPayment.ErrorCode;
+            }
+
+
+            if (!string.IsNullOrEmpty(threedsPayment.ErrorMessage))
+            {
+                checkThreeDPaymentResponse.ErrorCode = threedsPayment.ErrorMessage;
+            }
+
+            if (!string.IsNullOrEmpty(threedsPayment.ConversationId))
+            {
+                checkThreeDPaymentResponse.ConservationId = threedsPayment.ConversationId;
+            }
+
+            if (!string.IsNullOrEmpty(threedsPayment.PaymentId))
+            {
+                checkThreeDPaymentResponse.PaymentId = threedsPayment.PaymentId;
+            }
+
+            if (!string.IsNullOrEmpty(threedsPayment.PaymentStatus))
+            {
+                checkThreeDPaymentResponse.PaymentStatus = threedsPayment.PaymentStatus;
+            }
+
+            return Task.FromResult(checkThreeDPaymentResponse);
         }
 
         private PaymentCard GetPaymentCard(PaymentRequest request)
@@ -98,8 +149,8 @@ namespace Payment.Grpc.Services
             {
                 Locale = _locale,
                 ConversationId = request.ConservationId,
-                Price = request.Price,
-                PaidPrice = request.PaidPrice,
+                Price = request.Price.Replace(",", ""),
+                PaidPrice = request.PaidPrice.Replace(",", ""),
                 Currency = Currency.TRY.ToString(),
                 Installment = 1,
                 PaymentChannel = PaymentChannel.WEB.ToString(),
@@ -148,7 +199,7 @@ namespace Payment.Grpc.Services
                 Name = basketItem.ProductName,
                 Category1 = basketItem.ProductCategory,
                 ItemType = BasketItemType.PHYSICAL.ToString(),
-                Price = basketItem.ProductPrice,
+                Price = basketItem.BasketItemTotalPrice.ToString(),
             });
         }
     }

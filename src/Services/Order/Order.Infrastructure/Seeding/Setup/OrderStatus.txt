@@ -1,5 +1,5 @@
 ﻿OrderStatus
-Submitted
+WaitingForPayment
 AwaitingValidation
 StockConfirmed
 Paid

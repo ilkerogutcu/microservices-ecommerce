@@ -8,7 +8,7 @@ namespace Order.Domain.AggregateModels.OrderAggregate
 {
     public class OrderStatus : Enumeration
     {
-        public static OrderStatus Submitted = new OrderStatus(1, nameof(Submitted).ToLowerInvariant());
+        public static OrderStatus WaitingForPayment = new OrderStatus(1, nameof(WaitingForPayment).ToLowerInvariant());
 
         public static OrderStatus AwaitingValidation =
             new OrderStatus(2, nameof(AwaitingValidation).ToLowerInvariant());
@@ -23,7 +23,7 @@ namespace Order.Domain.AggregateModels.OrderAggregate
         }
 
         public static IEnumerable<OrderStatus> List() => new[]
-            {Submitted, AwaitingValidation, StockConfirmed, Paid, Shipped, Cancelled};
+            {WaitingForPayment, AwaitingValidation, StockConfirmed, Paid, Shipped, Cancelled};
 
         public static OrderStatus FromName(string name)
         {

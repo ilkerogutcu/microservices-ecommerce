@@ -39,6 +39,7 @@ namespace Catalog.Grpc.Repositories
                     HexCode = ColorUtils.ToHexCode(product.OptionValues.FirstOrDefault(x => x.OptionId.Equals(colorOption?.Id))?.Name),
                     Size = product.OptionValues.FirstOrDefault(x => x.OptionId.Equals(sizeOption?.Id))?.Name,
                     StockQuantity = product.StockQuantity,
+                    CategoryName = product.Category.Name
                 }).FirstOrDefault();
             return result;
         }

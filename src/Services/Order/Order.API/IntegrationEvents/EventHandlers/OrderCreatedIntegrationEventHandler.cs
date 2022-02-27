@@ -25,9 +25,10 @@ namespace Order.API.IntegrationEvents.EventHandlers
             {
                 Log.Information(
                     $"Handling Integration Event: {@event.Id} at {typeof(Startup).Namespace} - {nameof(OrderCreatedIntegrationEventHandler)}");
-                var createOrderCommand = new CreateOrderCommand(@event.Basket.Items,@event.UserId, @event.FirstName, @event.LastName, @event.PhoneNumber, @event.Email,
-                    @event.City, @event.District, @event.Zip, @event.AddressLine, @event.AddressTitle, @event.CardNumber, @event.CardHolderName,
-                    @event.CardExpiration, @event.CardSecurityNumber, @event.CardTypeId);
+                var createOrderCommand = new CreateOrderCommand(@event.Basket.Items, @event.UserId, @event.FirstName, @event.LastName,
+                    @event.PhoneNumber, @event.Email, @event.City, @event.District, @event.Zip, @event.AddressLine, @event.AddressTitle,
+                    @event.CardNumber, @event.CardHolderName, @event.CardExpirationMonth, @event.CardExpirationYear, @event.CardSecurityNumber,
+                    @event.CardTypeId);
 
                 await _mediator.Send(createOrderCommand);
                 Log.Information("Integration Event Handled: {@event.Id}", @event.Id);

@@ -7,6 +7,7 @@ namespace Catalog.Grpc.ViewModels
         public string BrandId { get; set; }
         public string Brand { get; set; }
         public string Name { get; set; }
+        public string CategoryName { get; set; }
         public string ModelCode { get; set; }
         public string Barcode { get; set; }
         public decimal SalePrice { get; set; }

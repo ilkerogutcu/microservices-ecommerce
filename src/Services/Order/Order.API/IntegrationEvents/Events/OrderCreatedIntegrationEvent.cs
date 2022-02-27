@@ -18,14 +18,15 @@ namespace Order.API.IntegrationEvents.Events
         public string AddressTitle { get; set; }
         public string CardNumber { get; set; }
         public string CardHolderName { get; set; }
-        public DateTime CardExpiration { get; set; }
+        public string CardExpirationMonth { get; set; }
+        public string CardExpirationYear { get; set; }
         public string CardSecurityNumber { get; set; }
         public int CardTypeId { get; set; }
         public string Buyer { get; set; }
         public CustomerBasket Basket { get; set; }
 
         public OrderCreatedIntegrationEvent(Guid userId, string city, string district, string zip, string firstName, string lastName,
-            string phoneNumber, string addressLine, string addressTitle, string cardNumber, string cardHolderName, DateTime cardExpiration,
+            string phoneNumber, string addressLine, string addressTitle, string cardNumber, string cardHolderName, string cardExpirationMonth,string cardExpirationYear,
             string cardSecurityNumber, int cardTypeId, string buyer,
             CustomerBasket basket, string email)
         {
@@ -40,7 +41,8 @@ namespace Order.API.IntegrationEvents.Events
             AddressTitle = addressTitle;
             CardNumber = cardNumber;
             CardHolderName = cardHolderName;
-            CardExpiration = cardExpiration;
+            CardExpirationMonth = cardExpirationMonth;
+            CardExpirationYear = cardExpirationYear;
             CardSecurityNumber = cardSecurityNumber;
             CardTypeId = cardTypeId;
             Buyer = buyer;

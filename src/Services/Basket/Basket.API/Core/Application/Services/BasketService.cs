@@ -180,11 +180,11 @@ namespace Basket.API.Core.Application.Services
                     return false;
                 }
 
-                var eventMessage = new OrderCreatedIntegrationEvent(userId, basketCheckout.Email, basketCheckout.City,
-                    basketCheckout.District, basketCheckout.Zip, basketCheckout.FirstName, basketCheckout.LastName,
-                    basketCheckout.PhoneNumber, basketCheckout.AddressLine, basketCheckout.AddressTitle,
-                    basketCheckout.CardNumber, basketCheckout.CardHolderName, basketCheckout.CardExpiration,
-                    basketCheckout.CardSecurityNumber, basketCheckout.CardTypeId, basketCheckout.Buyer, customerBasket);
+                var eventMessage = new OrderCreatedIntegrationEvent(userId, basketCheckout.City, basketCheckout.District, basketCheckout.Zip,
+                    basketCheckout.FirstName, basketCheckout.LastName, basketCheckout.PhoneNumber, basketCheckout.AddressLine,
+                    basketCheckout.AddressTitle, basketCheckout.CardNumber, basketCheckout.CardHolderName, basketCheckout.CardExpirationMonth,
+                    basketCheckout.CardExpirationYear, basketCheckout.CardSecurityNumber, basketCheckout.CardTypeId, basketCheckout.Buyer,
+                    customerBasket, basketCheckout.Email);
 
                 _eventBus.Publish(eventMessage);
                 return true;

@@ -15,7 +15,8 @@ namespace Basket.API.Core.Domain.Models
         public string AddressTitle { get; set; }
         public string CardNumber { get; set; }
         public string CardHolderName { get; set; }
-        public DateTime CardExpiration { get; set; }
+        public string CardExpirationMonth { get; set; }
+        public string CardExpirationYear { get; set; }
         public string CardSecurityNumber { get; set; }
         public int CardTypeId { get; set; }
         public string Buyer { get; set; }

@@ -30,8 +30,10 @@ namespace Order.Infrastructure
 
             serviceCollection.AddSingleton<IBuyerRepository, BuyerRepository>();
             serviceCollection.AddSingleton<IOrderRepository, OrderRepository>();
-            
+
             serviceCollection.AddSingleton<ICatalogService, CatalogService>();
+            serviceCollection.AddSingleton<IPaymentService, PaymentService>();
+
 
             var optionsBuilder = new DbContextOptionsBuilder<OrderDbContext>().UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             using var dbContext = new OrderDbContext(optionsBuilder.Options, null);

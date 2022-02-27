@@ -22,7 +22,9 @@ namespace Order.Application.Features.Commands.Orders.CreateOrderCommand
         public string AddressTitle { get; set; }
         public string CardNumber { get; }
         public string CardHolderName { get; }
-        public DateTime CardExpiration { get; }
+        public string CardExpirationMonth { get; }
+        public string CardExpirationYear { get; }
+
         public string CardSecurityNumber { get; }
         public int CardTypeId { get; }
         public IEnumerable<OrderItemDto> OrderItems => _orderItems;
@@ -34,7 +36,7 @@ namespace Order.Application.Features.Commands.Orders.CreateOrderCommand
 
         public CreateOrderCommand(List<BasketItem> basketItems, Guid userId, string firstName, string lastName, string phoneNumber, string email, string city,
             string district, string zipCode, string addressLine, string addressTitle, string cardNumber,
-            string cardHolderName, DateTime cardExpiration, string cardSecurityNumber, int cardTypeId) : this()
+            string cardHolderName, string cardExpirationMonth, string cardExpirationYear, string cardSecurityNumber, int cardTypeId) : this()
         {
             foreach (var item in basketItems)
             {
@@ -60,7 +62,8 @@ namespace Order.Application.Features.Commands.Orders.CreateOrderCommand
             AddressTitle = addressTitle;
             CardNumber = cardNumber;
             CardHolderName = cardHolderName;
-            CardExpiration = cardExpiration;
+            CardExpirationMonth = cardExpirationMonth;
+            CardExpirationYear = cardExpirationYear;
             CardSecurityNumber = cardSecurityNumber;
             CardTypeId = cardTypeId;
         }
