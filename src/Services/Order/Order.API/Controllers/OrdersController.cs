@@ -16,12 +16,12 @@ namespace Order.API.Controllers
 {
     [ApiController]
     [Route("api/v1/orders")]
-    public class OrderController : ControllerBase
+    public class OrdersController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
 
-        public OrderController(IMediator mediator, IConfiguration configuration)
+        public OrdersController(IMediator mediator, IConfiguration configuration)
         {
             _mediator = mediator;
             _configuration = configuration;

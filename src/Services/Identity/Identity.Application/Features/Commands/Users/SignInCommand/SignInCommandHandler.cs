@@ -1,4 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,7 +26,7 @@ namespace Identity.Application.Features.Commands.Users.SignInCommand
         private readonly SignInManager<User> _signInManager;
         private readonly IMediator _mediator;
         private readonly IConfiguration _configuration;
-        
+
         public SignInCommandHandler(UserManager<User> userManager, SignInManager<User> signInManager,
             IMediator mediator, IConfiguration configuration)
         {
@@ -41,47 +42,59 @@ namespace Identity.Application.Features.Commands.Users.SignInCommand
         public async Task<IDataResult<SignInResponseViewModel>> Handle(SignInCommand request,
             CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByEmailAsync(request.Email);
-            if (user is null)
+            try
             {
-                return new ErrorDataResult<SignInResponseViewModel>(Messages.EmailOrPasswordIsIncorrect);
-            }
+                var user = await _userManager.FindByEmailAsync(request.Email);
+                
+                if (user is null)
+                {
+                    return new ErrorDataResult<SignInResponseViewModel>(Messages.EmailOrPasswordIsIncorrect);
+                }
 
-            if (!user.EmailConfirmed)
-            {
-                return new ErrorDataResult<SignInResponseViewModel>(Messages.EmailIsNotConfirmed);
-            }
+                if (!user.EmailConfirmed)
+                {
+                    return new ErrorDataResult<SignInResponseViewModel>(Messages.EmailIsNotConfirmed);
+                }
 
-            var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password,
-                true, true);
-            if (result.IsLockedOut)
-            {
-                return new ErrorDataResult<SignInResponseViewModel>(
-                    $"Your account is locked out. Please wait until {user.LockoutEnd?.LocalDateTime} try again");
-            }
+                var result = await _signInManager.PasswordSignInAsync(user.UserName, request.Password,
+                    true, true);
 
-            if (result.RequiresTwoFactor)
-            {
-                _mediator.Publish(new SendEmailTwoFactorTokenEvent(user.Id));
-                return new ErrorDataResult<SignInResponseViewModel>(Messages.Sent2FaCodeEmailSuccessfully);
-            }
+                if (result.IsLockedOut)
+                {
+                    return new ErrorDataResult<SignInResponseViewModel>(
+                        $"Your account is locked out. Please wait until {user.LockoutEnd?.LocalDateTime} try again");
+                }
 
-            if (!result.Succeeded)
-            {
-                return new ErrorDataResult<SignInResponseViewModel>(Messages.EmailOrPasswordIsIncorrect);
-            }
+                if (result.RequiresTwoFactor)
+                {
+                    _mediator.Publish(new SendEmailTwoFactorTokenEvent(user.Id));
+                    return new ErrorDataResult<SignInResponseViewModel>(Messages.Sent2FaCodeEmailSuccessfully);
+                }
 
-            var token = await AuthenticationHelper.GenerateJwtToken(user, _configuration, _userManager,
-                request.IpAddress);
-            var userRoles = await _userManager.GetRolesAsync(user);
-            _mediator.Publish(new UserSignedInEvent(request.IpAddress, user));
-            return new SuccessDataResult<SignInResponseViewModel>(new SignInResponseViewModel
+                if (!result.Succeeded)
+                {
+                    return new ErrorDataResult<SignInResponseViewModel>(Messages.EmailOrPasswordIsIncorrect);
+                }
+
+                var token = await AuthenticationHelper.GenerateJwtToken(user, _configuration, _userManager,
+                    request.IpAddress);
+
+                var userRoles = await _userManager.GetRolesAsync(user);
+
+                _mediator.Publish(new UserSignedInEvent(request.IpAddress, user));
+
+                return new SuccessDataResult<SignInResponseViewModel>(new SignInResponseViewModel
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    Roles = userRoles.ToList(),
+                    JwtToken = new JwtSecurityTokenHandler().WriteToken(token)
+                }, Messages.SignedInSuccessfully);
+            }
+            catch (Exception e)
             {
-                Id = user.Id,
-                Email = user.Email,
-                Roles = userRoles.ToList(),
-                JwtToken = new JwtSecurityTokenHandler().WriteToken(token)
-            }, Messages.SignedInSuccessfully);
+                return new ErrorDataResult<SignInResponseViewModel>(Messages.DataNotFound);
+            }
         }
     }
 }

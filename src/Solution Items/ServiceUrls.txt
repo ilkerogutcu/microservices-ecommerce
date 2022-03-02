@@ -1,0 +1,13 @@
+
+
+Web.ApiGateway            ---> http://localhost:5000
+Basket.API                ---> http://localhost:5001
+Catalog.API               ---> http://localhost:5002
+Catalog.Grpc              ---> http://localhost:5003
+Identity.API              ---> http://localhost:5004
+Identity.Grpc             ---> http://localhost:5005
+Mail.Grpc                 ---> http://localhost:5006
+Media.Grpc                ---> http://localhost:5007
+Order.API                 ---> http://localhost:5008
+Payment.Grpc              ---> http://localhost:5009
+

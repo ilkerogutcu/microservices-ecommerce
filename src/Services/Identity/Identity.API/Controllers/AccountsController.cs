@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Identity.Application.Features.Commands.Users.AddAddressCommand;
 using Identity.Application.Features.Commands.Users.ConfirmEmailCommand;
@@ -20,6 +21,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Olcsan.Boilerplate.Utilities.IoC;
 using Olcsan.Boilerplate.Utilities.Results;
 
 namespace Identity.API.Controllers
@@ -39,6 +43,15 @@ namespace Identity.API.Controllers
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SuccessDataResult<UserViewModel>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpPost("meas")]
+        public async Task<IActionResult> GetCurrentUsers()
+        {
+            return Ok("selam");
+        }
+        // POST api/v1/[controller]/me
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SuccessDataResult<UserViewModel>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpGet("me")]
         public async Task<IActionResult> GetCurrentUser()
         {
@@ -53,7 +66,9 @@ namespace Identity.API.Controllers
         [HttpPost("sign-up")]
         public async Task<IActionResult> SignUp([FromBody] SignUpCommand command)
         {
+            Debug.WriteLine("sign up başladı");
             var result = await _mediator.Send(command);
+            Debug.WriteLine($"result controller'a ulaştı Success mi?: {result.Success} ");
             return result.Success ? Ok(result) : BadRequest(result.Message);
         }
 
@@ -90,7 +105,6 @@ namespace Identity.API.Controllers
         public async Task<IActionResult> SignIn(SignInCommand command)
         {
             command.IpAddress = HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress?.ToString();
-
             var result = await _mediator.Send(command);
             return result.Success ? Ok(result) : BadRequest(result.Message);
         }

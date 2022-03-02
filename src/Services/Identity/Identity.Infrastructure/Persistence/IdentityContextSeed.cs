@@ -13,7 +13,6 @@ namespace Identity.Infrastructure.Persistence
 {
     public class IdentityContextSeed
     {
-
         public static async Task SeedAsync(IdentityContext identityContext, IServiceProvider services)
         {
             var user = new User
@@ -37,19 +36,16 @@ namespace Identity.Infrastructure.Persistence
             await SeedCitiesOfDistricts(identityContext, user);
             await SeedUsers(identityContext, user, services);
             identityContext.SaveChanges();
-
         }
 
         private static async Task SeedUsers(IdentityContext identityContext, User user, IServiceProvider services)
         {
-
             if (!identityContext.Users.Any())
             {
                 var userManager = services.GetService<UserManager<User>>();
                 await userManager.CreateAsync(user, "Jrypb3;<(8atpHyZ");
                 await userManager.AddToRoleAsync(user, Role.Administrator.ToString());
                 await userManager.AddToRoleAsync(user, Role.Buyer.ToString());
-
             }
         }
 
@@ -57,7 +53,7 @@ namespace Identity.Infrastructure.Persistence
         {
             if (!identityContext.Roles.Any())
             {
-                var roles = new string[] { "Administrator", "Editor", "Buyer" };
+                var roles = new string[] {"Administrator", "Editor", "Buyer"};
                 var roleManager = services.GetService<RoleManager<IdentityRole>>();
                 foreach (string role in roles)
                 {
@@ -66,7 +62,6 @@ namespace Identity.Infrastructure.Persistence
                         Name = role,
                         NormalizedName = role.ToUpper()
                     });
-
                 }
             }
         }
@@ -76,14 +71,14 @@ namespace Identity.Infrastructure.Persistence
             if (!identityContext.Cities.Any() && !identityContext.Districts.Any())
             {
                 var currentDir = Path.GetDirectoryName(Environment.CurrentDirectory);
+                Console.WriteLine(currentDir);
                 var citiesOfDistrictsList =
                     JsonConvert.DeserializeObject<List<CitiesOfDistrict>>(File.ReadAllText(
-                            $@"{currentDir}/Identity.Infrastructure/Persistence/SeedHelpers/CitiesOfDistricts.json"));
+                        $@"{currentDir}/Identity.Infrastructure/Persistence/SeedHelpers/CitiesOfDistricts.json"));
                 if (citiesOfDistrictsList is not null)
                 {
                     foreach (var citiesOfDistricts in citiesOfDistrictsList)
                     {
-
                         var city = await identityContext.Cities.AddAsync(new City(citiesOfDistricts.City, user.Id));
                         foreach (var district in citiesOfDistricts.Districts)
                         {
@@ -91,8 +86,8 @@ namespace Identity.Infrastructure.Persistence
                         }
                     }
                 }
-                await identityContext.SaveChangesAsync();
 
+                await identityContext.SaveChangesAsync();
             }
         }
 
