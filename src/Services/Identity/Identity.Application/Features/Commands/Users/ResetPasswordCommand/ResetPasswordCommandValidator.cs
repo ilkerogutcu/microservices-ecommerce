@@ -12,7 +12,6 @@ namespace Identity.Application.Features.Commands.Users.ResetPasswordCommand
         {
             RuleFor(x => x.Password).Equal(x => x.ConfirmPassword)
                 .WithMessage("Passwords don't match!");
-            RuleFor(x => x.UserId).NotEmpty().WithMessage("User id  cannot be empty!");
             RuleFor(x => x.ResetPasswordToken).NotEmpty().WithMessage("Token cannot be empty!");
         }
     }

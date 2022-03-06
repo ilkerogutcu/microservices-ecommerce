@@ -1,11 +1,15 @@
 ﻿using System;
+using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Identity.Application.Constants;
 using Identity.Application.Features.Events.Users.UserUpdatedEvent;
+using Identity.Application.Features.Queries.Users.GetCurrentUserIdQuery;
+using Identity.Application.Features.Queries.Users.ViewModels;
 using Identity.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
 using Olcsan.Boilerplate.Aspects.Autofac.Exception;
@@ -20,11 +24,15 @@ namespace Identity.Application.Features.Commands.Users.ResetPasswordCommand
     {
         private readonly UserManager<User> _userManager;
         private readonly IMediator _mediator;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ResetPasswordCommandHandler(UserManager<User> userManager, IMediator mediator)
+
+        
+        public ResetPasswordCommandHandler(UserManager<User> userManager, IMediator mediator, IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
             _mediator = mediator;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [ExceptionLogAspect(typeof(FileLogger), "Identity-Service")]
@@ -32,7 +40,12 @@ namespace Identity.Application.Features.Commands.Users.ResetPasswordCommand
         [ValidationAspect(typeof(ResetPasswordValidator))]
         public async Task<IResult> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
         {
-            var user = await _userManager.FindByIdAsync(request.UserId);
+            var currentUserId = await _mediator.Send(new GetCurrentUserIdQuery(), cancellationToken);
+            if (currentUserId==default)
+            {
+                return new ErrorResult(Messages.SignInFirst);
+            }
+            var user = await _userManager.FindByIdAsync(currentUserId.ToString());
             if (user is null)
             {
                 return new ErrorResult(Messages.UserNotFound);

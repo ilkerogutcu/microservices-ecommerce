@@ -14,6 +14,7 @@ using Identity.Application.Features.Commands.Users.UpdateAddressCommand;
 using Identity.Application.Features.Commands.Users.ViewModels;
 using Identity.Application.Features.Events.Users.SendEmailConfirmationTokenEvent;
 using Identity.Application.Features.Queries.Users.GetCurrentUserQuery;
+using Identity.Application.Features.Queries.Users.ViewModels;
 using Identity.Application.Features.Queries.ViewModels;
 using Identity.Domain.Enums;
 using MediatR;
@@ -43,15 +44,6 @@ namespace Identity.API.Controllers
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SuccessDataResult<UserViewModel>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
-        [HttpPost("meas")]
-        public async Task<IActionResult> GetCurrentUsers()
-        {
-            return Ok("selam");
-        }
-        // POST api/v1/[controller]/me
-        [Produces("application/json", "text/plain")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SuccessDataResult<UserViewModel>))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpGet("me")]
         public async Task<IActionResult> GetCurrentUser()
         {
@@ -66,9 +58,7 @@ namespace Identity.API.Controllers
         [HttpPost("sign-up")]
         public async Task<IActionResult> SignUp([FromBody] SignUpCommand command)
         {
-            Debug.WriteLine("sign up başladı");
             var result = await _mediator.Send(command);
-            Debug.WriteLine($"result controller'a ulaştı Success mi?: {result.Success} ");
             return result.Success ? Ok(result) : BadRequest(result.Message);
         }
 
@@ -151,7 +141,7 @@ namespace Identity.API.Controllers
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
-        [HttpPost("me/address")]
+        [HttpPost("me/addresses")]
         public async Task<IActionResult> AddAddress(AddAddressToUserCommand command)
         {
             var result = await _mediator.Send(command);
@@ -162,7 +152,7 @@ namespace Identity.API.Controllers
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
-        [HttpPut("me/address/{addressId:guid}")]
+        [HttpPut("me/addresses/{addressId:guid}")]
         public async Task<IActionResult> UpdateAddress([FromRoute] Guid addressId,
             [FromBody] UpdateAddressFromUserCommand command)
         {
@@ -175,7 +165,7 @@ namespace Identity.API.Controllers
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
-        [HttpDelete("me/address/{addressId:guid}")]
+        [HttpDelete("me/addresses/{addressId:guid}")]
         public async Task<IActionResult> DeleteAddress(Guid addressId)
         {
             var result = await _mediator.Send(new DeleteAddressFromUserCommand(addressId));

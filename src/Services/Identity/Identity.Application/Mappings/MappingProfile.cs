@@ -2,6 +2,7 @@
 using Identity.Application.Features.Commands.Users.CreateUserCommand;
 using Identity.Application.Features.Commands.Users.SignUpCommand;
 using Identity.Application.Features.Commands.Users.UpdateAddressCommand;
+using Identity.Application.Features.Queries.Users.ViewModels;
 using Identity.Application.Features.Queries.ViewModels;
 using Identity.Domain.Entities;
 

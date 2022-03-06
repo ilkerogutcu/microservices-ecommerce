@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using Identity.Application.Constants;
+using Identity.Application.Features.Queries.Users.ViewModels;
 using Identity.Application.Features.Queries.ViewModels;
 using Identity.Application.Interfaces.Repositories;
 using Identity.Domain.Entities;

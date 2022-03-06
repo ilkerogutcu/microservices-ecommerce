@@ -49,7 +49,7 @@ namespace Catalog.API.Controllers
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ProductDetailsViewModel>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
-        [HttpGet("product/{productId}")]
+        [HttpGet("products/{productId}")]
         public async Task<ActionResult<IEnumerable<ProductCardViewModel>>> GetProductDetailsById([FromRoute] string productId)
         {
             var result = await _mediator.Send(new GetProductDetailsByIdQuery(productId));
@@ -59,7 +59,7 @@ namespace Catalog.API.Controllers
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<CommentDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
-        [HttpGet("product/{productId}/comments")]
+        [HttpGet("products/{productId}/comments")]
         public async Task<ActionResult<IEnumerable<ProductCardViewModel>>> GetCommentsByProductId([FromRoute] string productId)
         {
             var result = await _mediator.Send(new GetCommentsByProductIdQuery(productId));

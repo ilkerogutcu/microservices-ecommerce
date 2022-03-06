@@ -29,6 +29,8 @@ namespace Web.ApiGateway
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOcelot();
+
+            services.AddCors();
             services.AddControllers();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Web.ApiGateway", Version = "v1"}); });
         }
@@ -46,8 +48,9 @@ namespace Web.ApiGateway
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            app.UseAuthorization();
+            app.UseCors(
+                options => options.WithOrigins("http://localhost:3000").AllowAnyMethod()
+            );            app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
             await app.UseOcelot();

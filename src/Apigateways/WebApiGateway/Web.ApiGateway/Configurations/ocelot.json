@@ -47,17 +47,17 @@
       }
     },
     {
-      "DownstreamPathTemplate": "/api/v1/catalog/{everything}",
+      "DownstreamPathTemplate": "/api/v1/products/{productId}/comment",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 5003
+          "Port": 5002
         }
       ],
-      "UpstreamPathTemplate": "/catalog/{everything}",
+      "UpstreamPathTemplate": "/catalog/products/{productId}/comments",
       "UpstreamHttpMethod": [
-        "Get"
+        "Post"
       ],
       "RateLimitOptions": {
         "ClientWhitelist": [],

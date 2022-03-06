@@ -1,14 +1,8 @@
 version: '3.4'
 
 services:
-  identitydb:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    
-  rabbitmq:
-    image: rabbitmq:3-management-alpine
-    
-  identity.api:
-    image: ${DOCKER_REGISTRY-}identityapi
-    build:
-      context: .
-      dockerfile: Services/Identity/Identity.API/Dockerfile
+  catalogdb:
+    image: mongo
+
+volumes:
+  mongo_data:

@@ -26,14 +26,6 @@ namespace Basket.API.Controllers
             return Ok(basket);
         }
 
-        [Produces("application/json", "text/plain")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(CustomerBasket))]
-        [HttpPut]
-        public async Task<ActionResult<CustomerBasket>> UpdateBasketAsync([FromBody] CustomerBasket basket)
-        {
-            var result = await _basketService.UpdateBasketAsync(basket);
-            return Ok(result);
-        }
 
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK)]

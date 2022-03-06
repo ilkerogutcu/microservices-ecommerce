@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Identity.Application.Features.Queries.ViewModels;
 
-namespace Identity.Application.Features.Queries.ViewModels
+namespace Identity.Application.Features.Queries.Users.ViewModels
 {
     public class UserViewModel
     {

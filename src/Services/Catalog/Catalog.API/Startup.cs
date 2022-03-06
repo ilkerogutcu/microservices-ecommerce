@@ -18,6 +18,8 @@ namespace Catalog.API
 {
     public class Startup
     {
+        readonly string ApiCorsPolicy = "_apiCorsPolicy";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -35,6 +37,8 @@ namespace Catalog.API
                 new CoreModule(),
                 new InfrastructureServiceRegistration(Configuration)
             });
+            services.AddCors(options =>
+                options.AddPolicy(ApiCorsPolicy, builder => { builder.WithOrigins("http://localhost:3000").AllowAnyOrigin(); }));
             services.AddSwaggerGen(swagger =>
             {
                 //This is to generate the Default UI of Swagger Documentation  
@@ -86,10 +90,7 @@ namespace Catalog.API
             }
 
             // Make sure you call this before calling app.UseMvc()
-            app.UseCors(builder => builder
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
+            app.UseCors(ApiCorsPolicy);
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();

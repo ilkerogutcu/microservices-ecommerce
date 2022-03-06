@@ -1,45 +1,11 @@
 version: '3.4'
 
 services:
-  
-  
-  rabbitmq:
-    container_name: rabbitmq
-    networks:
-      - net_backendservices
+
+  catalogdb:
+    container_name: catalogdb
     restart: always
     ports:
-      - "5672:5672"
-      - "15672:15672"
-  
-  identity.api:
-    build: .
-    container_name: identity.api
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - "ConnectionStrings:IdentityDbConnectionString=Server=identitydb;Database=IdentityDb;User Id=sa;Password=SwN741589631"
-      - "EventBusSettings:HostAddress=amqp://guest:guest@rabbitmq:5672"
-      - ASPNETCORE_URLS=http://+5004
-    networks:
-      - net_backendservices
-    depends_on:
-      - identitydb
-      - rabbitmq
-    ports:
-      - "5004:5004"
-  
-  identitydb:
-    restart: always
-    container_name: identitydb
-    networks:
-      - net_backendservices
-    environment:
-      SA_PASSWORD: SwN741589631
-      ACCEPT_EULA: Y
-    ports:
-      - "1433:1433"
-  
-networks:
-  net_backendservices:
-    driver: bridge
-    external: true
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
