@@ -27,9 +27,9 @@ namespace Identity.API
             CreateHostBuilder(args).Build().MigrateDatabase<IdentityContext>((context, services) =>
                 {
                     
-                    // IdentityContextSeed
-                    //     .SeedAsync(context, services)
-                    //     .Wait();
+                    IdentityContextSeed
+                        .SeedAsync(context, services)
+                        .Wait();
                 })
                 .Run();
         }

@@ -68,7 +68,7 @@ namespace Identity.Application.Features.Commands.Users.SignInCommand
                 if (result.RequiresTwoFactor)
                 {
                     _mediator.Publish(new SendEmailTwoFactorTokenEvent(user.Id));
-                    return new ErrorDataResult<SignInResponseViewModel>(Messages.Sent2FaCodeEmailSuccessfully);
+                    return new SuccessDataResult<SignInResponseViewModel>(Messages.Sent2FaCodeEmailSuccessfully);
                 }
 
                 if (!result.Succeeded)

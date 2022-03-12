@@ -24,6 +24,7 @@ namespace Identity.Infrastructure
             serviceCollection.AddSingleton<IMailService, MailService>();
             serviceCollection.AddSingleton<IDistrictRepository, DistrictRepository>();
             serviceCollection.AddSingleton<IAddressRepository, AddressRepository>();
+            serviceCollection.AddSingleton<ICityRepository, CityRepository>();
 
             // Grpc Configuration
             serviceCollection.AddGrpcClient<MailProtoService.MailProtoServiceClient>

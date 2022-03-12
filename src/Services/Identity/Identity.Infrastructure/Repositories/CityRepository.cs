@@ -4,9 +4,9 @@ using Identity.Infrastructure.Persistence;
 
 namespace Identity.Infrastructure.Repositories
 {
-    public class DistrictRepository : EfEntityRepositoryBase<District, IdentityContext>, IDistrictRepository
+    public class CityRepository: EfEntityRepositoryBase<City, IdentityContext>, ICityRepository
     {
-        public DistrictRepository(IdentityContext context) : base(context)
+        public CityRepository(IdentityContext context) : base(context)
         {
         }
     }

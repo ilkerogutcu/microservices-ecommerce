@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +20,8 @@ namespace Web.ApiGateway
 {
     public class Startup
     {
+        readonly string ApiCorsPolicy = "_apiCorsPolicy";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -29,8 +33,20 @@ namespace Web.ApiGateway
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOcelot();
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.Cookie.SameSite = SameSiteMode.None;
+                    options.Cookie.HttpOnly = true;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+                });
+            services.AddCors(o => o.AddPolicy("AllowAnyOrigins", builder =>
+            {
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            }));
 
-            services.AddCors();
             services.AddControllers();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Web.ApiGateway", Version = "v1"}); });
         }
@@ -48,9 +64,9 @@ namespace Web.ApiGateway
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            app.UseCors(
-                options => options.WithOrigins("http://localhost:3000").AllowAnyMethod()
-            );            app.UseAuthorization();
+            app.UseCors("AllowAnyOrigins");
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
             await app.UseOcelot();

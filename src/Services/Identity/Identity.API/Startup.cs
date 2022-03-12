@@ -8,6 +8,7 @@ using Identity.Application.Utilities.Encryption;
 using Identity.Domain.Entities;
 using Identity.Infrastructure;
 using Identity.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -32,6 +33,8 @@ namespace Identity.API
 {
     public class Startup
     {
+        readonly string ApiCorsPolicy = "_apiCorsPolicy";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -49,6 +52,13 @@ namespace Identity.API
             services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<IdentityContext>()
                 .AddDefaultTokenProviders();
             services.AddControllers();
+            
+            services.AddCors(o => o.AddPolicy("AllowAnyOrigins", builder =>
+            {
+                builder.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader();
+            }));
             services.AddSwaggerGen(swagger =>
             {
                 //This is to generate the Default UI of Swagger Documentation  
@@ -97,29 +107,29 @@ namespace Identity.API
                 options.Lockout.MaxFailedAccessAttempts = 5;
             });
             services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-               .AddJwtBearer(options =>
-               {
-                   options.SaveToken = true;
-                   options.RequireHttpsMetadata = false;
-                   options.TokenValidationParameters = new TokenValidationParameters
-                   {
-                       ValidateIssuer = true,
-                       ValidateAudience = true,
-                       ValidateLifetime = true,
-                       ValidIssuer = Configuration["TokenOptions:Issuer"],
-                       ValidAudience = Configuration["TokenOptions:Audience"],
-                       ValidateIssuerSigningKey = true,
-                       IssuerSigningKey =
-                           SecurityKeyHelper.CreateSecurityKey(Configuration["TokenOptions:SecurityKey"])
-                   };
-               });
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
+                {
+                    options.SaveToken = true;
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidIssuer = Configuration["TokenOptions:Issuer"],
+                        ValidAudience = Configuration["TokenOptions:Audience"],
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey =
+                            SecurityKeyHelper.CreateSecurityKey(Configuration["TokenOptions:SecurityKey"])
+                    };
+                });
 
-            
+
             services.AddDependencyResolvers(new ICoreModule[]
             {
                 new CoreModule(),
@@ -137,7 +147,8 @@ namespace Identity.API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity.API v1"));
             }
-            app.UseRouting();
+
+            app.UseCors("AllowAnyOrigins");            app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });

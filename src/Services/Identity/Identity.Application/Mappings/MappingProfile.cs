@@ -2,6 +2,7 @@
 using Identity.Application.Features.Commands.Users.CreateUserCommand;
 using Identity.Application.Features.Commands.Users.SignUpCommand;
 using Identity.Application.Features.Commands.Users.UpdateAddressCommand;
+using Identity.Application.Features.Queries.Cities.ViewModels;
 using Identity.Application.Features.Queries.Users.ViewModels;
 using Identity.Application.Features.Queries.ViewModels;
 using Identity.Domain.Entities;
@@ -21,6 +22,7 @@ namespace Identity.Application.Mappings
                 .ForMember(dest => dest.District, opt => opt.MapFrom(src => src.District.Name))
                 .ReverseMap();
             CreateMap<Address, UpdateAddressFromUserCommand>().ReverseMap();
+            CreateMap<City, CityViewModel>().ReverseMap();
         }
     }
 }

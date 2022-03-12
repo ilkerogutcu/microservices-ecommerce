@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using Identity.Application.Constants;
 using Identity.Application.Features.Commands.Users.AddAddressCommand;
 using Identity.Application.Features.Commands.Users.ConfirmEmailCommand;
 using Identity.Application.Features.Commands.Users.CreateUserCommand;
@@ -15,16 +16,12 @@ using Identity.Application.Features.Commands.Users.ViewModels;
 using Identity.Application.Features.Events.Users.SendEmailConfirmationTokenEvent;
 using Identity.Application.Features.Queries.Users.GetCurrentUserQuery;
 using Identity.Application.Features.Queries.Users.ViewModels;
-using Identity.Application.Features.Queries.ViewModels;
 using Identity.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Olcsan.Boilerplate.Utilities.IoC;
 using Olcsan.Boilerplate.Utilities.Results;
 
 namespace Identity.API.Controllers
@@ -90,12 +87,18 @@ namespace Identity.API.Controllers
         // POST api/v1/[controller]/sign-in
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(SuccessDataResult<SignInResponseViewModel>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPost("sign-in")]
         public async Task<IActionResult> SignIn(SignInCommand command)
         {
             command.IpAddress = HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress?.ToString();
             var result = await _mediator.Send(command);
+            if (result.Message.Equals(Messages.Sent2FaCodeEmailSuccessfully))
+            {
+                return Ok(result.Message);
+            }
+
             return result.Success ? Ok(result) : BadRequest(result.Message);
         }
 
@@ -107,12 +110,9 @@ namespace Identity.API.Controllers
         public async Task<IActionResult> SignInWithTwoFactorSecurity(SignInWithTwoFactorCommand command)
         {
             var ipAddress = HttpContext.Features.Get<IHttpConnectionFeature>()?.RemoteIpAddress?.ToString();
-            var result = await _mediator.Send(new SignInWithTwoFactorCommand
-            {
-                Code = command.Code,
-                IpAddress = ipAddress
-            });
-            return result.Success ? Ok(result) : BadRequest(result.Message);
+            command.IpAddress = ipAddress;
+            var result = await _mediator.Send(command);
+            return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
 
         // POST api/v1/[controller]/forgot-password

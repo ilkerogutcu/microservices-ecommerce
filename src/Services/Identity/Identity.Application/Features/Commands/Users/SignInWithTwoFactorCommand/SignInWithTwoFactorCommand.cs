@@ -8,6 +8,7 @@ namespace Identity.Application.Features.Commands.Users.SignInWithTwoFactorComman
     public class SignInWithTwoFactorCommand : IRequest<IDataResult<SignInResponseViewModel>>
     {
         public string Code { get; set; }
+        public string Email { get; set; }
         [JsonIgnore] public string IpAddress { get; set; }
     }
 }
