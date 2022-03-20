@@ -116,8 +116,10 @@ namespace Basket.API.Core.Application.Services
                     customerBasket.Items.Add(item);
                     return Task.CompletedTask;
                 }
+                var newUnitPrice=(item.UnitPrice * item.Quantity) + (basketItem.UnitPrice * basketItem.Quantity);
 
                 basketItem.Quantity += item.Quantity;
+                basketItem.UnitPrice = newUnitPrice;
  
                 return Task.CompletedTask;
             }
