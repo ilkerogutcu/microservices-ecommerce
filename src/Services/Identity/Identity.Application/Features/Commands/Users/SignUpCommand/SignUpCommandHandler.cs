@@ -73,19 +73,14 @@ namespace Identity.Application.Features.Commands.Users.SignUpCommand
 
 
             var result = await _userManager.AddToRoleAsync(user, nameof(Role.Buyer));
-            Debug.WriteLine($"result geldi buraya");
             if (!result.Succeeded)
             {
                 await _userManager.DeleteAsync(user);
                 return new ErrorDataResult<SignUpResponse>(Messages.SignUpFailed);
             }
 
-            Console.WriteLine($"publish edicek");
 
             _mediator.Publish(new SendEmailConfirmationTokenEvent(user.Id));
-            Debug.WriteLine($"publish etti");
-            Debug.WriteLine($"return edicek");
-
             return new SuccessDataResult<SignUpResponse>(new SignUpResponse()
             {
                 Email = user.Email,

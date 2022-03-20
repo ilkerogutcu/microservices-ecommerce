@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -33,20 +34,20 @@ namespace Web.ApiGateway
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOcelot();
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                .AddCookie(options =>
-                {
-                    options.Cookie.SameSite = SameSiteMode.None;
-                    options.Cookie.HttpOnly = true;
-                    options.Cookie.SecurePolicy = CookieSecurePolicy.None;
-                });
-            services.AddCors(o => o.AddPolicy("AllowAnyOrigins", builder =>
+            services.Configure<CookiePolicyOptions>(options =>
             {
-                builder.AllowAnyOrigin()
-                    .AllowAnyMethod()
-                    .AllowAnyHeader();
-            }));
-
+                options.HttpOnly = HttpOnlyPolicy.None;
+                options.Secure = CookieSecurePolicy.None;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+            services.AddCors(options =>
+            {
+                options.AddPolicy(ApiCorsPolicy, builder =>
+                {
+                    builder.WithOrigins("http://localhost:3000") 
+                        .AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+                });
+            });
             services.AddControllers();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Web.ApiGateway", Version = "v1"}); });
         }
@@ -64,7 +65,7 @@ namespace Web.ApiGateway
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            app.UseCors("AllowAnyOrigins");
+            app.UseCors(ApiCorsPolicy);
             app.UseAuthentication();
             app.UseAuthorization();
 

@@ -24,6 +24,8 @@ namespace Basket.API
 {
     public class Startup
     {
+        readonly string ApiCorsPolicy = "_apiCorsPolicy";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -37,11 +39,19 @@ namespace Basket.API
             services.AddControllers();
             services.AddAutoMapper(typeof(CatalogMappingProfile));
             services.AddHttpContextAccessor();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(ApiCorsPolicy, builder =>
+                {
+                    builder.WithOrigins("http://localhost:3000") 
+                        .AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+                });
+            });
             services.Configure<CookiePolicyOptions>(options =>
             {
                 options.HttpOnly = HttpOnlyPolicy.Always;
-                options.Secure = CookieSecurePolicy.SameAsRequest;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
+                options.Secure = CookieSecurePolicy.None;
+                options.MinimumSameSitePolicy = SameSiteMode.Strict;
             });
             services.AddSwaggerGen(swagger =>
             {
@@ -112,12 +122,9 @@ namespace Basket.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Basket.API v1"));
             }
 
-            app.UseCors(builder => builder
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader());
-
             app.UseRouting();
+            app.UseCors(ApiCorsPolicy);
+
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });

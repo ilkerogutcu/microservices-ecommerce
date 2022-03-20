@@ -23,6 +23,7 @@ namespace Identity.Application.Mappings
                 .ReverseMap();
             CreateMap<Address, UpdateAddressFromUserCommand>().ReverseMap();
             CreateMap<City, CityViewModel>().ReverseMap();
+            CreateMap<District, DistrictViewModel>().ReverseMap();
         }
     }
 }

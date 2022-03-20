@@ -10,6 +10,12 @@ services:
     ports:
       - "1433:1433"
 
+  basketdb:
+    container_name: basketdb
+    restart: always
+    ports:
+      - "6379:6379"
+
   catalogdb:
     container_name: catalogdb
     restart: always

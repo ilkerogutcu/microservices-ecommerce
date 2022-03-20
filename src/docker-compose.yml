@@ -7,5 +7,8 @@ services:
   catalogdb:
     image: mongo
 
+  basketdb:
+    image: redis:alpine
+
 volumes:
   mongo_data:

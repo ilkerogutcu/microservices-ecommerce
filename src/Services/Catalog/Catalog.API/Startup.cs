@@ -38,7 +38,13 @@ namespace Catalog.API
                 new InfrastructureServiceRegistration(Configuration)
             });
             services.AddCors(options =>
-                options.AddPolicy(ApiCorsPolicy, builder => { builder.WithOrigins("http://localhost:3000").AllowAnyOrigin(); }));
+            {
+                options.AddPolicy(ApiCorsPolicy, builder =>
+                {
+                    builder.WithOrigins("http://localhost:3000") 
+                        .AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+                });
+            });
             services.AddSwaggerGen(swagger =>
             {
                 //This is to generate the Default UI of Swagger Documentation  

@@ -87,11 +87,12 @@ namespace Basket.API.Core.Application.Services
             }
         }
 
-        public async Task<bool> DeleteBasketAsync(Guid userId)
+        public async Task<bool> DeleteBasketAsync()
         {
             try
             {
                 Log.Information("DeleteBasketAsync called");
+                var userId = await _identityService.GetUserIdAsync();
 
                 if (userId != default) return await _basketRepository.DeleteBasketAsync(userId);
                 _httpContextAccessor.HttpContext?.Response.Cookies.Delete(CookieNames.BasketItems);
@@ -103,7 +104,29 @@ namespace Basket.API.Core.Application.Services
                 return false;
             }
         }
-        
+
+        private Task IncreaseQuantityAsync(BasketItem item, ref CustomerBasket customerBasket)
+        {
+            try
+            {
+                Log.Information("IncreaseQuantityAsync called");
+                var basketItem = customerBasket.Items.FirstOrDefault(x => x.ProductId == item.ProductId);
+                if (basketItem is null)
+                {
+                    customerBasket.Items.Add(item);
+                    return Task.CompletedTask;
+                }
+
+                basketItem.Quantity += item.Quantity;
+ 
+                return Task.CompletedTask;
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "IncreaseQuantityAsync failed");
+                return null;
+            }
+        }
 
         public async Task<bool> AddItemToBasketAsync(BasketItem basketItem)
         {
@@ -117,7 +140,7 @@ namespace Basket.API.Core.Application.Services
                 if (userId == default)
                 {
                     customerBasket = GetCustomerBasketFromCookie() ?? new CustomerBasket();
-                    customerBasket.Items.Add(basketItem);
+                    await IncreaseQuantityAsync(basketItem, ref customerBasket);
                     _httpContextAccessor.HttpContext?.Response.Cookies.Append(CookieNames.BasketItems,
                         JsonConvert.SerializeObject(customerBasket),
                         new CookieOptions
@@ -128,7 +151,7 @@ namespace Basket.API.Core.Application.Services
                 else
                 {
                     customerBasket = await _basketRepository.GetBasketAsync(userId) ?? new CustomerBasket(userId);
-                    customerBasket.Items.Add(basketItem);
+                    await IncreaseQuantityAsync(basketItem, ref customerBasket);
                     await _basketRepository.UpdateBasketAsync(customerBasket);
                 }
 
@@ -138,7 +161,7 @@ namespace Basket.API.Core.Application.Services
             {
                 Log.Error(e, "AddItemToBasketAsync failed");
                 return false;
-            }
+            } 
         }
 
         public async Task<bool> CheckoutAsync(BasketCheckout basketCheckout)

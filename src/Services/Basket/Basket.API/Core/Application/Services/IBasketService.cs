@@ -8,7 +8,7 @@ namespace Basket.API.Core.Application.Services
     {
         Task<CustomerBasket> GetBasketAsync();
         Task<CustomerBasket> UpdateBasketAsync(CustomerBasket basket);
-        Task<bool> DeleteBasketAsync(Guid userId = default);
+        Task<bool> DeleteBasketAsync();
 
         Task<bool> AddItemToBasketAsync(BasketItem basketItem);
         Task<bool> CheckoutAsync(BasketCheckout basketCheckout);
