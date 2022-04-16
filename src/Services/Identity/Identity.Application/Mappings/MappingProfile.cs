@@ -4,7 +4,6 @@ using Identity.Application.Features.Commands.Users.SignUpCommand;
 using Identity.Application.Features.Commands.Users.UpdateAddressCommand;
 using Identity.Application.Features.Queries.Cities.ViewModels;
 using Identity.Application.Features.Queries.Users.ViewModels;
-using Identity.Application.Features.Queries.ViewModels;
 using Identity.Domain.Entities;
 
 namespace Identity.Application.Mappings

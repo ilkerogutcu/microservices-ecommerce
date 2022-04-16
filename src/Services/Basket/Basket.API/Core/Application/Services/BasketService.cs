@@ -46,10 +46,19 @@ namespace Basket.API.Core.Application.Services
                 var customerBasketFromRedis = await _basketRepository.GetBasketAsync(userId);
 
                 if (customerBasketFromCookie is null) return customerBasketFromRedis ?? new CustomerBasket(userId);
-                foreach (var basketItem in customerBasketFromCookie.Items.Where(basketItem =>
-                             !customerBasketFromRedis.Items.Contains(basketItem)))
+                foreach (var basketItem in customerBasketFromCookie.Items)
                 {
-                    customerBasketFromRedis.Items.Add(basketItem);
+                    // if item is already in redis, update the quantity
+                    var redisItem = customerBasketFromRedis?.Items.FirstOrDefault(x => x.ProductId == basketItem.ProductId);
+                    if (redisItem is null)
+                    {
+                        customerBasketFromRedis?.Items.Add(basketItem);
+                    }
+                    else
+                    {
+                        redisItem.Quantity += basketItem.Quantity;
+                        redisItem.UnitPrice *= redisItem.Quantity;
+                    }
                 }
 
                 return customerBasketFromRedis ?? new CustomerBasket(userId);
@@ -87,15 +96,14 @@ namespace Basket.API.Core.Application.Services
             }
         }
 
-        public async Task<bool> DeleteBasketAsync()
+        public async Task<bool> DeleteBasketAsync(Guid userId)
         {
             try
             {
                 Log.Information("DeleteBasketAsync called");
-                var userId = await _identityService.GetUserIdAsync();
 
-                if (userId != default) return await _basketRepository.DeleteBasketAsync(userId);
-                _httpContextAccessor.HttpContext?.Response.Cookies.Delete(CookieNames.BasketItems);
+                // if (userId != default) return await _basketRepository.DeleteBasketAsync(userId);
+                // _httpContextAccessor.HttpContext?.Response.Cookies.Delete(CookieNames.BasketItems);
                 return true;
             }
             catch (Exception e)
@@ -116,11 +124,12 @@ namespace Basket.API.Core.Application.Services
                     customerBasket.Items.Add(item);
                     return Task.CompletedTask;
                 }
-                var newUnitPrice=(item.UnitPrice * item.Quantity) + (basketItem.UnitPrice * basketItem.Quantity);
+
+                var newUnitPrice = (item.UnitPrice * item.Quantity) + (basketItem.UnitPrice * basketItem.Quantity);
 
                 basketItem.Quantity += item.Quantity;
                 basketItem.UnitPrice = newUnitPrice;
- 
+
                 return Task.CompletedTask;
             }
             catch (Exception e)
@@ -163,7 +172,7 @@ namespace Basket.API.Core.Application.Services
             {
                 Log.Error(e, "AddItemToBasketAsync failed");
                 return false;
-            } 
+            }
         }
 
         public async Task<bool> CheckoutAsync(BasketCheckout basketCheckout)
@@ -178,7 +187,7 @@ namespace Basket.API.Core.Application.Services
                     return false;
                 }
 
-                var customerBasket = await _basketRepository.GetBasketAsync(userId);
+                var customerBasket = await GetBasketAsync();
                 if (customerBasket is null)
                 {
                     Log.Warning("CheckoutAsync failed, customerBasket is null");

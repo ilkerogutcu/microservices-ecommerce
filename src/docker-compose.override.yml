@@ -1,6 +1,7 @@
 version: '3.4'
 
 services:
+  
   identitydb:
     restart: always
     container_name: identitydb
@@ -9,6 +10,15 @@ services:
       ACCEPT_EULA: Y
     ports:
       - "1433:1433"
+  
+  orderdb:
+    restart: always
+    container_name: orderdb
+    environment:
+      SA_PASSWORD: SwN741589631
+      ACCEPT_EULA: Y
+    ports:
+      - "1434:1433"
 
   basketdb:
     container_name: basketdb
@@ -23,3 +33,6 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+  
+  
+

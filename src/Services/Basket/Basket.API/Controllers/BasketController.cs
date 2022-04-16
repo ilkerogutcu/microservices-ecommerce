@@ -11,10 +11,12 @@ namespace Basket.API.Controllers
     public class BasketController : ControllerBase
     {
         private readonly IBasketService _basketService;
+        private readonly IIdentityService _identityService;
 
-        public BasketController(IBasketService basketService)
+        public BasketController(IBasketService basketService, IIdentityService identityService)
         {
             _basketService = basketService;
+            _identityService = identityService;
         }
 
         [Produces("application/json", "text/plain")]
@@ -43,7 +45,8 @@ namespace Basket.API.Controllers
         [HttpDelete]
         public async Task<ActionResult> DeleteBasketById()
         {
-            var result = await _basketService.DeleteBasketAsync();
+            var currentUserId = await _identityService.GetUserIdAsync();
+            var result = await _basketService.DeleteBasketAsync(currentUserId);
             return result ? Ok() : BadRequest();
         }
 

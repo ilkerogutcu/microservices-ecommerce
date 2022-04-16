@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Identity.Application.Features.Queries.ViewModels
+namespace Identity.Application.Features.Queries.Users.ViewModels
 {
     public class AddressViewModel
     {

@@ -45,7 +45,7 @@ namespace Identity.API.Controllers
         public async Task<IActionResult> GetCurrentUser()
         {
             var result = await _mediator.Send(new GetCurrentUserQuery());
-            return result.Success ? Ok(result) : BadRequest(result.Message);
+            return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
 
         // POST api/v1/[controller]/sign-up

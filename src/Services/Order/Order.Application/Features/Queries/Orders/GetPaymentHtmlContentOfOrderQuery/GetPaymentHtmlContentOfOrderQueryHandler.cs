@@ -39,6 +39,10 @@ namespace Order.Application.Features.Queries.Orders.GetPaymentHtmlContentOfOrder
                 var lastWaitingForPaymentOrderOfCurrentUser = await _orderRepository.GetAsync(
                     x => x.Buyer.UserId == currentUserId && x.OrderStatus.Equals(OrderStatus.WaitingForPayment),
                     x => x.Buyer);
+                if(lastWaitingForPaymentOrderOfCurrentUser == null)
+                {
+                    return new ErrorDataResult<PaymentContentOfOrderViewModel>("Sipariş bulunamadı");
+                }
                 return new SuccessDataResult<PaymentContentOfOrderViewModel>(new PaymentContentOfOrderViewModel()
                 {
                     BuyerId = lastWaitingForPaymentOrderOfCurrentUser.Buyer.Id.ToString(),

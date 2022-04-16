@@ -90,9 +90,10 @@ namespace Order.Application.Features.Commands.Orders.CreateOrderCommand
                     order.PaymentHtmlContent = createPaymentResponse.HtmlContent;
                     await _orderRepository.AddAsync(order);
                     await _orderRepository.SaveChangesAsync();
+                    return new SuccessResult("Ödeme başarılı");
                 }
 
-                return new SuccessResult();
+                return new ErrorResult("Ödeme başarısız");
             }
             catch (Exception e)
             {

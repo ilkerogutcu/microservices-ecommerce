@@ -71,6 +71,7 @@ namespace Order.Application.Features.Commands.Orders.CheckThreeDPaymentCommand
                 {
                     order.orderStatusId = OrderStatus.Paid.Id;
                     _orderRepository.Update(order);
+                   await _orderRepository.SaveChangesAsync();
                     return new SuccessDataResult<CheckPaymentViewModel>(Messages.SuccessfullyPayment);
                 }
 

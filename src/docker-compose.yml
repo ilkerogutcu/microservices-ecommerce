@@ -3,12 +3,17 @@ version: '3.4'
 services:
   identitydb:
     image: mcr.microsoft.com/mssql/server:2019-latest
+    
+  orderdb:
+    image: mcr.microsoft.com/mssql/server:2019-latest
 
   catalogdb:
     image: mongo
 
   basketdb:
     image: redis:alpine
+  
+  
 
 volumes:
   mongo_data:

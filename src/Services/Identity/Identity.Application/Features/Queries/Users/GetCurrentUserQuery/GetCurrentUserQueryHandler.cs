@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Identity.Application.Constants;
 using Identity.Application.Features.Queries.Users.ViewModels;
-using Identity.Application.Features.Queries.ViewModels;
 using Identity.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
