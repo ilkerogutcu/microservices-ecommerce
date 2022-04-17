@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CloudinaryDotNet" Version="1.15.2" />
+      <PackageReference Include="MongoDB.Driver" Version="2.14.1" />
+      <PackageReference Include="Olcsan.Boilerplate" Version="1.0.5" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Catalog.Application\Catalog.Application.csproj" />
+    </ItemGroup>
+
+</Project>

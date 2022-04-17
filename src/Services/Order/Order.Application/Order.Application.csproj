@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\BuildingBlocks\EventBus\EventBus.Base\EventBus.Base.csproj" />
+      <ProjectReference Include="..\Order.Domain\Order.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="11.0.0" />
+      <PackageReference Include="Google.Protobuf" Version="3.18.0" />
+      <PackageReference Include="Grpc.Net.ClientFactory" Version="2.40.0" />
+      <PackageReference Include="Grpc.Tools" Version="2.40.0">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Olcsan.Boilerplate" Version="1.0.5" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Protobuf Include="..\..\Catalog\Catalog.Grpc\Protos\catalog.proto" GrpcServices="Client">
+        <Link>Protos\catalog.proto</Link>
+      </Protobuf>
+      <Protobuf Include="..\..\Payment\Payment.Grpc\Protos\payment.proto" GrpcServices="Client">
+        <Link>Protos\payment.proto</Link>
+      </Protobuf>
+    </ItemGroup>
+
+</Project>

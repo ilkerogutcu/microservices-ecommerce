@@ -1,0 +1,20 @@
+﻿syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+option csharp_namespace = "Media.Grpc.Protos";
+
+service MediaProtoService{
+  rpc UploadImage(UploadMediaRequest) returns (MediaModelResponse);
+}
+
+message UploadMediaRequest{
+  bytes media = 1;
+}
+message MediaModel{
+  string url = 1;
+  string publicId = 2;
+  google.protobuf.Timestamp createdTimestamp = 3;
+  string createdBy = 4;
+}
+message MediaModelResponse{
+  MediaModel mediaModel = 1;
+}
