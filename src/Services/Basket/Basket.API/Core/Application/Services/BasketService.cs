@@ -102,8 +102,8 @@ namespace Basket.API.Core.Application.Services
             {
                 Log.Information("DeleteBasketAsync called");
 
-                // if (userId != default) return await _basketRepository.DeleteBasketAsync(userId);
-                // _httpContextAccessor.HttpContext?.Response.Cookies.Delete(CookieNames.BasketItems);
+                if (userId != default) return await _basketRepository.DeleteBasketAsync(userId);
+                _httpContextAccessor.HttpContext?.Response.Cookies.Delete(CookieNames.BasketItems);
                 return true;
             }
             catch (Exception e)
@@ -115,21 +115,25 @@ namespace Basket.API.Core.Application.Services
 
         private Task IncreaseQuantityAsync(BasketItem item, ref CustomerBasket customerBasket)
         {
+            decimal newUnitPrice = 0;
             try
             {
                 Log.Information("IncreaseQuantityAsync called");
                 var basketItem = customerBasket.Items.FirstOrDefault(x => x.ProductId == item.ProductId);
+                var basketItemIndex = customerBasket.Items.IndexOf(basketItem);
                 if (basketItem is null)
                 {
+                    newUnitPrice =  (item.UnitPrice * item.Quantity);
+                    item.UnitPrice = newUnitPrice;
                     customerBasket.Items.Add(item);
                     return Task.CompletedTask;
                 }
 
-                var newUnitPrice = (item.UnitPrice * item.Quantity) + (basketItem.UnitPrice * basketItem.Quantity);
+                 newUnitPrice = (item.UnitPrice * item.Quantity) + (basketItem.UnitPrice * basketItem.Quantity);
 
                 basketItem.Quantity += item.Quantity;
                 basketItem.UnitPrice = newUnitPrice;
-
+                customerBasket.Items[basketItemIndex] = basketItem;
                 return Task.CompletedTask;
             }
             catch (Exception e)
