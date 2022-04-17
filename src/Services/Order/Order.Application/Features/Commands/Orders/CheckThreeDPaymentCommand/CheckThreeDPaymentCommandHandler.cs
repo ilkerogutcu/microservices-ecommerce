@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using EventBus.Base.Abstraction;
 using MediatR;
 using Newtonsoft.Json;
 using Olcsan.Boilerplate.Utilities.Results;
 using Order.Application.Constants;
 using Order.Application.Features.Queries.ViewModels;
+using Order.Application.IntegrationEvents;
 using Order.Application.Interfaces.Repositories;
 using Order.Application.Interfaces.Services;
 using Order.Domain.AggregateModels.OrderAggregate;
@@ -18,18 +20,20 @@ namespace Order.Application.Features.Commands.Orders.CheckThreeDPaymentCommand
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IPaymentService _paymentService;
+        private readonly IEventBus _eventBus;
 
-        public CheckThreeDPaymentCommandHandler(IOrderRepository orderRepository, IPaymentService paymentService)
+
+        public CheckThreeDPaymentCommandHandler(IOrderRepository orderRepository, IPaymentService paymentService, IEventBus eventBus)
         {
             _orderRepository = orderRepository;
             _paymentService = paymentService;
+            _eventBus = eventBus;
         }
 
         public async Task<IDataResult<CheckPaymentViewModel>> Handle(CheckThreeDPaymentCommand request, CancellationToken cancellationToken)
         {
             try
             {
-
                 if (request.Status.Equals("failure"))
                 {
                     return new ErrorDataResult<CheckPaymentViewModel>(Messages.PaymentFailed);
@@ -71,7 +75,10 @@ namespace Order.Application.Features.Commands.Orders.CheckThreeDPaymentCommand
                 {
                     order.orderStatusId = OrderStatus.Paid.Id;
                     _orderRepository.Update(order);
-                   await _orderRepository.SaveChangesAsync();
+                    await _orderRepository.SaveChangesAsync();
+
+                    _eventBus.Publish(new PaymentSuccessfulIntegrationEvent(order.Buyer.UserId));
+
                     return new SuccessDataResult<CheckPaymentViewModel>(Messages.SuccessfullyPayment);
                 }
 

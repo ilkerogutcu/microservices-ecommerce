@@ -43,7 +43,7 @@ namespace Basket.API
             {
                 options.AddPolicy(ApiCorsPolicy, builder =>
                 {
-                    builder.WithOrigins("http://localhost:3000") 
+                    builder.WithOrigins("http://localhost:3000")
                         .AllowAnyMethod().AllowAnyHeader().AllowCredentials();
                 });
             });
@@ -106,7 +106,7 @@ namespace Basket.API
             services.AddSingleton<IBasketService, BasketService>();
             services.AddSingleton<ICatalogService, CatalogService>();
 
-            services.AddTransient<OrderCreatedIntegrationEventHandler>();
+            services.AddTransient<PaymentSuccessfulIntegrationEventHandler>();
             // Grpc Configuration
             services.AddGrpcClient<CatalogProtoService.CatalogProtoServiceClient>
                 (o => o.Address = new Uri(Configuration["GrpcSettings:CatalogUrl"]));
@@ -134,7 +134,7 @@ namespace Basket.API
         private void ConfigureSubscription(IServiceProvider serviceProvider)
         {
             var eventBus = serviceProvider.GetRequiredService<IEventBus>();
-            eventBus.Subscribe<OrderCreatedIntegrationEvent, OrderCreatedIntegrationEventHandler>();
+            eventBus.Subscribe<PaymentSuccessfulIntegrationEvent, PaymentSuccessfulIntegrationEventHandler>();
         }
     }
 }
