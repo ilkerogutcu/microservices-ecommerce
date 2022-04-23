@@ -4,8 +4,8 @@ using MongoDB.Driver;
 
 namespace Catalog.Infrastructure.Persistence
 {
-    public interface ICatalogContext<T> where T : BaseEntity
+    public interface ICatalogContext
     {
-        IMongoCollection<T> GetCollection();
+        IMongoCollection<T> GetCollection<T>();
     }
 }

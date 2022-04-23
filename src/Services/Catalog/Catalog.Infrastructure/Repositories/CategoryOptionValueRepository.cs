@@ -11,7 +11,7 @@ namespace Catalog.Infrastructure.Repositories
     public class CategoryOptionValueRepository : MongoDbRepositoryBase<CategoryOptionValue>,
         ICategoryOptionValueRepository
     {
-        public CategoryOptionValueRepository(ICatalogContext<CategoryOptionValue> context) : base(context)
+        public CategoryOptionValueRepository(ICatalogContext context) : base(context)
         {
         }
   

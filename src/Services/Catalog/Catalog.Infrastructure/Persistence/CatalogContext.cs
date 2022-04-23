@@ -10,15 +10,14 @@ using Olcsan.Boilerplate.Utilities.IoC;
 
 namespace Catalog.Infrastructure.Persistence
 {
-    public class CatalogContext<T> : ICatalogContext<T> where  T: BaseEntity
+    public class CatalogContext : ICatalogContext
     {
         private readonly IMongoDatabase _database;
         public CatalogContext()
         {
             var configuration = ServiceTool.ServiceProvider.GetService<IConfiguration>();
             var config = configuration?.GetSection("DatabaseSettings").Get<MongoDatabaseConfig>();
-            Console.WriteLine("Connection string:"+config.ConnectionString);
-            Console.WriteLine($"collection. {config.DatabaseName}");
+            
             ConnectionSettingControl(config);
             var client = new MongoClient(config?.ConnectionString);
             _database = client.GetDatabase(config?.DatabaseName);
@@ -54,7 +53,8 @@ namespace Catalog.Infrastructure.Persistence
         public IMongoCollection<Option> Options { get; set; }
         public IMongoCollection<OptionValue> OptionValues { get; set; }
         public IMongoCollection<Product> Products { get; set; }
-        public IMongoCollection<T> GetCollection()
+
+        public IMongoCollection<T> GetCollection<T>()
         {
             return _database.GetCollection<T>(typeof(T).Name);
         }

@@ -6,7 +6,7 @@ namespace Catalog.Infrastructure.Repositories
 {
     public class CategoryRepository : MongoDbRepositoryBase<Category>, ICategoryRepository
     {
-        public CategoryRepository(ICatalogContext<Category> context) : base(context)
+        public CategoryRepository(ICatalogContext context) : base(context)
         {
         }
     }

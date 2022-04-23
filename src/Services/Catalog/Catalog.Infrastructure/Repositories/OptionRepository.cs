@@ -7,7 +7,7 @@ namespace Catalog.Infrastructure.Repositories
 {
     public class OptionRepository : MongoDbRepositoryBase<Option>, IOptionRepository
     {
-        public OptionRepository(ICatalogContext<Option> context) : base(context)
+        public OptionRepository(ICatalogContext context) : base(context)
         {
         }
     }

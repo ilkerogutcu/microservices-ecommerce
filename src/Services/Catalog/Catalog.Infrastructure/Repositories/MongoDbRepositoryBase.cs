@@ -15,9 +15,9 @@ namespace Catalog.Infrastructure.Repositories
     {
         protected readonly IMongoCollection<T> Collection;
 
-        public MongoDbRepositoryBase(ICatalogContext<T> context)
+        public MongoDbRepositoryBase(ICatalogContext context)
         {
-            Collection = context.GetCollection();
+            Collection = context.GetCollection<T>();
         }
 
         public T Add(T entity)
