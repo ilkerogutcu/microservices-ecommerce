@@ -29,12 +29,12 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ProductCardViewModel>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpGet("top-products")]
-        public async Task<ActionResult<IEnumerable<ProductCardViewModel>>> GetTopProducts()
+        public async Task<ActionResult<IEnumerable<ProductCardViewModel>>> GetTopProducts([FromQuery] int count = 10)
         {
-            var result = await _mediator.Send(new GetTopProductsQuery());
+            var result = await _mediator.Send(new GetTopProductsQuery(count));
             return result.Success ? Ok(result.Data) : BadRequest(result.Message);
         }
-
+        
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResult<List<ProductCardViewModel>>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]

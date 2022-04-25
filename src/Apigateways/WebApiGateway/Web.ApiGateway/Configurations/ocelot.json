@@ -47,6 +47,27 @@
       }
     },
     {
+      "DownstreamPathTemplate": "/api/v1/categories/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5002
+        }
+      ],
+      "UpstreamPathTemplate": "/categories/{everything}",
+      "UpstreamHttpMethod": [
+        "Get"
+      ],
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "5s",
+        "PeriodTimespan": 50,
+        "Limit": 10
+      }
+    },
+    {
       "DownstreamPathTemplate": "/api/v1/products/{productId}/comment",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

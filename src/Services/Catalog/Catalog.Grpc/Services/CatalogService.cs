@@ -28,6 +28,7 @@ namespace Catalog.Grpc.Services
             try
             {
                 var productDetails = await _productRepository.GetProductDetailsByIdAsync(request.ProductId);
+                if (string.IsNullOrEmpty(productDetails.Size)) productDetails.Size = "Tek Ebat";
                 var result = _mapper.Map<ProductResponse>(productDetails);
                 return result;
             }

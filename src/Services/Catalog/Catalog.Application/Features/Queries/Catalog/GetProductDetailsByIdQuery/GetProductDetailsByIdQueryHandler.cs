@@ -29,7 +29,7 @@ namespace Catalog.Application.Features.Queries.Catalog.GetProductDetailsByIdQuer
                 return new ErrorDataResult<List<ProductDetailsViewModel>>(Messages.DataNotFound);
             }
 
-            _mediator.Publish(new ProductViewedEvent(request.Id));
+            await _mediator.Publish(new ProductViewedEvent(request.Id));
             return new SuccessDataResult<List<ProductDetailsViewModel>>(result);
         }
     }

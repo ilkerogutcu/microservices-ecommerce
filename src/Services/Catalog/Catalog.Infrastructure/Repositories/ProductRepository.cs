@@ -129,7 +129,7 @@ namespace Catalog.Infrastructure.Repositories
         public async Task<List<ProductCardViewModel>> GetProductsByCategoryIdAsync(GetProductsByCategoryIdQuery query)
         {
             var result = (from product in (await Collection.FindAsync(x =>
-                        x.Category.Id.Equals(query.CategoryId) && x.Locked == false && x.IsActive && x.Approved)).ToList()
+                        x.Category.Id == query.CategoryId && x.Locked == false && x.IsActive && x.Approved)).ToList()
                     .Skip(query.PageSize * query.PageIndex).Take(query.PageSize)
                 select new ProductCardViewModel
                 {
