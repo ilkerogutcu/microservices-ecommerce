@@ -27,7 +27,6 @@ namespace Identity.Application.Features.Commands.Users.ResetPasswordCommand
         private readonly IHttpContextAccessor _httpContextAccessor;
 
 
-        
         public ResetPasswordCommandHandler(UserManager<User> userManager, IMediator mediator, IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
@@ -40,12 +39,8 @@ namespace Identity.Application.Features.Commands.Users.ResetPasswordCommand
         [ValidationAspect(typeof(ResetPasswordValidator))]
         public async Task<IResult> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
         {
-            var currentUserId = await _mediator.Send(new GetCurrentUserIdQuery(), cancellationToken);
-            if (currentUserId==default)
-            {
-                return new ErrorResult(Messages.SignInFirst);
-            }
-            var user = await _userManager.FindByIdAsync(currentUserId.ToString());
+            
+            var user = await _userManager.FindByIdAsync(request.UserId.ToString());
             if (user is null)
             {
                 return new ErrorResult(Messages.UserNotFound);

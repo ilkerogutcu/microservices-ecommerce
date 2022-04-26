@@ -1,10 +1,12 @@
-﻿using MediatR;
+﻿using System;
+using MediatR;
 using Olcsan.Boilerplate.Utilities.Results;
 
 namespace Identity.Application.Features.Commands.Users.ResetPasswordCommand
 {
     public class ResetPasswordCommand : IRequest<IResult>
     {
+        public Guid UserId { get; set; }
 
         /// <summary>
         ///     Generated token by identity service

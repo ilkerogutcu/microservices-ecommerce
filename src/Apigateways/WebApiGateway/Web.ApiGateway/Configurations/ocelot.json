@@ -170,6 +170,20 @@
       "UpstreamHttpMethod": [
         "Get",
         "Post"
+      ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/orders/payment",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5008
+        }
+      ],
+      "UpstreamPathTemplate": "/orders/payment",
+      "UpstreamHttpMethod": [
+        "Get"
       ],
       "RateLimitOptions": {
         "ClientWhitelist": [],

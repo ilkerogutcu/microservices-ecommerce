@@ -20,9 +20,8 @@ namespace Basket.API.Core.Domain.Models
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if ( string.IsNullOrEmpty(ProductId) || string.IsNullOrEmpty(BrandName) || string.IsNullOrEmpty(ProductName) ||
-                string.IsNullOrEmpty(PictureUrl) || UnitPrice < 0 || Quantity < 1 || string.IsNullOrEmpty(Color) 
-                )
+            if (string.IsNullOrEmpty(ProductId) || string.IsNullOrEmpty(BrandName) || string.IsNullOrEmpty(ProductName) ||
+                string.IsNullOrEmpty(PictureUrl) || UnitPrice < 0 || Quantity < 1)
             {
                 yield return new ValidationResult("Invalid basket item", new[] {"BasketItem"});
             }
