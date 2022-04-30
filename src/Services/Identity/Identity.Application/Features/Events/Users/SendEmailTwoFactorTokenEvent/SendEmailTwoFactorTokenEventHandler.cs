@@ -39,7 +39,7 @@ namespace Identity.Application.Features.Events.Users.SendEmailTwoFactorTokenEven
             using var reader = new StreamReader(emailTemplatePath);
             var mailTemplate = await reader.ReadToEndAsync();
             reader.Close();
-            await _mailService.SendMail(mailTemplate.Replace("[2FACode]", code), $"Your code is {code}", user.Email);
+            await _mailService.SendMail(mailTemplate.Replace("[2FACode]", code), $"Doğrulama Kodunuz: {code}", user.Email);
         }
     }
 }

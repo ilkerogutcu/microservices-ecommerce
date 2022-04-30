@@ -41,7 +41,7 @@ namespace Identity.Application.Features.Events.Users.ForgotPasswordEvent
             var mailTemplate = await reader.ReadToEndAsync();
             reader.Close();
             await _mailService.SendMail(mailTemplate.Replace("[resetPasswordLink]", resetTokenUrl),
-                "You have requested to reset your password", notification.Email, new List<IFormFile>());
+                "Şifre sıfırlama isteği gönderdiniz", notification.Email, new List<IFormFile>());
         }
     }
 }
