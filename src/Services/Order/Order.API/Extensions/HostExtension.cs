@@ -28,6 +28,7 @@ namespace Order.API.Extensions
                             TimeSpan.FromSeconds(3),
                             TimeSpan.FromSeconds(5),
                             TimeSpan.FromSeconds(10),
+                            TimeSpan.FromSeconds(15),
                         });
                     retry.Execute(() => InvokeSeeder(seeder, context, services));
                     Log.Information("Migrated database associated with context {DbContextName}", typeof(TContext).Name);
