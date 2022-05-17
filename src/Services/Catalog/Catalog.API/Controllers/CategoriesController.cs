@@ -97,7 +97,6 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPut]
         [Authorize(Roles = "Administrator")]
-
         public async Task<IActionResult> Update([FromBody] UpdateCategoryCommand command)
         {
             var result = await _mediator.Send(command);

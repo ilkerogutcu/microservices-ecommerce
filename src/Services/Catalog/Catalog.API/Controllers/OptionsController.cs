@@ -30,7 +30,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Option))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPost]
-      //  [Authorize(Roles = "Administrator")]
+       [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Create([FromBody] CreateOptionCommand command)
         {
             var result = await _mediator.Send(command);

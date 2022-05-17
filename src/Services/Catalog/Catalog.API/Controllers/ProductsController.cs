@@ -32,7 +32,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<Product>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPost]
-        //[Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> CreateProduct(CreateManyProductsCommand command)
         {
             var result = await _mediator.Send(command);
@@ -44,7 +44,7 @@ namespace Catalog.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
         [HttpPost("{productId}/comment")]
-        //[Authorize(Roles = "Buyer")]
+        [Authorize(Roles = "Buyer")]
         public async Task<IActionResult> AddCommentToProduct([FromRoute] string productId,
             [FromBody] AddCommentToProductCommand command)
         {

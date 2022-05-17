@@ -32,6 +32,7 @@ namespace Catalog.API.Controllers
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResult<List<BrandDto>>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [Authorize(Roles = "Administrator")]
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 0,
             [FromQuery] bool? isActive = null)
@@ -86,6 +87,7 @@ namespace Catalog.API.Controllers
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Brand))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [Authorize(Roles = "Administrator")]
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] UpdateBrandCommand command)
         {
@@ -98,7 +100,7 @@ namespace Catalog.API.Controllers
         [Produces("application/json", "text/plain")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Brand))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
-      //  [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateBrandCommand command)
         {
