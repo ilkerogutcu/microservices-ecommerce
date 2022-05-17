@@ -28,6 +28,11 @@ namespace Catalog.Grpc.Services
             try
             {
                 var productDetails = await _productRepository.GetProductDetailsByIdAsync(request.ProductId);
+                if (string.IsNullOrEmpty(productDetails.Size)) productDetails.Size = "Tek Ebat";
+                if (string.IsNullOrEmpty(productDetails.Color)) productDetails.Color = "Tek Renk";
+                if (string.IsNullOrEmpty(productDetails.HexCode)) productDetails.HexCode = "#FFFFFF";
+
+
                 var result = _mapper.Map<ProductResponse>(productDetails);
                 return result;
             }

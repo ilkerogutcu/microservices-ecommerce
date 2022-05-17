@@ -59,7 +59,7 @@ namespace Identity.Application.Features.Events.Users.SendEmailConfirmationTokenE
             var mailTemplate = await reader.ReadToEndAsync();
             reader.Close();
             await _mailService.SendMail(mailTemplate.Replace("[verificationUrl]", verificationUrl),
-                "Please verification your email", user.Email, new List<IFormFile>());
+                "Lütfen e-mail adresinizi onaylayın", user.Email, new List<IFormFile>());
         }
     }
 }

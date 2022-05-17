@@ -11,7 +11,7 @@ namespace Catalog.Infrastructure.Repositories
 {
     public class OptionValueRepository : MongoDbRepositoryBase<OptionValue>, IOptionValueRepository
     {
-        public OptionValueRepository(ICatalogContext<OptionValue> context) : base(context)
+        public OptionValueRepository(ICatalogContext context) : base(context)
         {
         }
 
@@ -43,7 +43,7 @@ namespace Catalog.Infrastructure.Repositories
 
         public async Task<List<OptionWithValuesDto>> GetAllDetailsAsync()
         {
-            var options = await (await new CatalogContext<Option>().Options.FindAsync(x => true))
+            var options = await (await new CatalogContext().Options.FindAsync(x => true))
                 .ToListAsync();
             var optionValues = await (await Collection.FindAsync(x => true)).ToListAsync();
             var result = (from option in options

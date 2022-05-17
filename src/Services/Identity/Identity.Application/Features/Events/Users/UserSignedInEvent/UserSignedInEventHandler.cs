@@ -49,7 +49,7 @@ namespace Identity.Application.Features.Events.Users.UserSignedInEvent
             mailTemplate = mailTemplate.Replace("[LoginDate]", notification.User.LastLoginDate?.ToString("MM/dd/yyyy HH:mm"));
             mailTemplate = mailTemplate.Replace("[IpAddress]", notification.User.LastLoginIp);
 
-            await _mailService.SendMail(mailTemplate, "E-Commerce Last Login Info", notification.User.Email);
+            await _mailService.SendMail(mailTemplate, "E-Commerce Hesabınıza Giriş Yapıldı", notification.User.Email);
         }
     }
 }

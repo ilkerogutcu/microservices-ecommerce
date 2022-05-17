@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Identity.Application.Constants;
 using Identity.Application.Features.Commands.Users.AddAddressCommand;
+using Identity.Application.Features.Commands.Users.ChangePasswordCommand;
 using Identity.Application.Features.Commands.Users.ConfirmEmailCommand;
 using Identity.Application.Features.Commands.Users.CreateUserCommand;
 using Identity.Application.Features.Commands.Users.DeleteAddressCommand;
@@ -181,6 +182,17 @@ namespace Identity.API.Controllers
         {
             var result = await _mediator.Send(command);
             return result.Success ? Ok() : BadRequest(result.Message);
+        }
+
+        // POST api/v1/[controller]/change-password
+        [Produces("application/json", "text/plain")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(string))]
+        [HttpPost("me/change-password")]
+        public async Task<IActionResult> ChangePasswordAsync(ChangePasswordCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return result.Success ? Ok(result.Message) : BadRequest(result.Message);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace Catalog.Infrastructure.Repositories
 {
     public class ProductRepository : MongoDbRepositoryBase<Product>, IProductRepository
     {
-        public ProductRepository(ICatalogContext<Product> context) : base(context)
+        public ProductRepository(ICatalogContext context) : base(context)
         {
         }
 
@@ -31,7 +31,7 @@ namespace Catalog.Infrastructure.Repositories
                 ? DateTime.Now
                 : HelperFunctions.ConvertTimestampToDateTime(query.EndDate);
 
-            var options = new CatalogContext<Option>().Options.AsQueryable();
+            var options = new CatalogContext().Options.AsQueryable();
 
             var colorOption = options.FirstOrDefault(x => x.NormalizedName.Contains("renk"));
             var sizeOption = options.FirstOrDefault(x => x.NormalizedName.Contains("beden"));
@@ -129,7 +129,7 @@ namespace Catalog.Infrastructure.Repositories
         public async Task<List<ProductCardViewModel>> GetProductsByCategoryIdAsync(GetProductsByCategoryIdQuery query)
         {
             var result = (from product in (await Collection.FindAsync(x =>
-                        x.Category.Id.Equals(query.CategoryId) && x.Locked == false && x.IsActive && x.Approved)).ToList()
+                        x.Category.Id == query.CategoryId && x.Locked == false && x.IsActive && x.Approved)).ToList()
                     .Skip(query.PageSize * query.PageIndex).Take(query.PageSize)
                 select new ProductCardViewModel
                 {
@@ -173,7 +173,7 @@ namespace Catalog.Infrastructure.Repositories
         public async Task<List<ProductDetailsViewModel>> GetProductDetailsByIdAsync(string id)
         {
             var modelCode = Collection.Find(x => x.Id.Equals(id) && x.Locked == false && x.IsActive && x.Approved).FirstOrDefault()?.ModelCode;
-            var options = new CatalogContext<Option>().Options.AsQueryable();
+            var options = new CatalogContext().Options.AsQueryable();
 
             var colorOption = options.FirstOrDefault(x => x.NormalizedName.Contains("renk"));
             var sizeOption = options.FirstOrDefault(x => x.NormalizedName.Contains("beden"));

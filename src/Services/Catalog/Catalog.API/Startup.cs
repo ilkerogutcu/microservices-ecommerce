@@ -1,7 +1,10 @@
+using System;
 using Catalog.API.Extensions;
 using Catalog.Application.Mappings;
 using Catalog.Application.Utilities.Encryption;
 using Catalog.Infrastructure;
+using Identity.Grpc;
+using Media.Grpc.Protos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -81,6 +84,7 @@ namespace Catalog.API
                 });
             });
             services.ConfigureAuth(Configuration);
+           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

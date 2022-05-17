@@ -24,7 +24,7 @@ namespace Catalog.Infrastructure
 
         public void Load(IServiceCollection serviceCollection)
         {
-            serviceCollection.AddSingleton(typeof(ICatalogContext<>), typeof(CatalogContext<>));
+            serviceCollection.AddSingleton(typeof(ICatalogContext), typeof(CatalogContext));
             serviceCollection.AddSingleton(typeof(IDocumentDbRepository<>), typeof(MongoDbRepositoryBase<>));
 
             serviceCollection.AddSingleton<IBrandRepository, BrandRepository>();

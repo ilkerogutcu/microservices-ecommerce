@@ -6,7 +6,7 @@ namespace Catalog.Infrastructure.Repositories
 {
     public class BrandRepository : MongoDbRepositoryBase<Brand>, IBrandRepository
     {
-        public BrandRepository(ICatalogContext<Brand> context) : base(context)
+        public BrandRepository(ICatalogContext context) : base(context)
         {
         }
     }
